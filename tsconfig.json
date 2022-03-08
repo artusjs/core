@@ -1,0 +1,41 @@
+{
+    "compilerOptions": {
+        "outDir": "./lib",
+        "rootDir": "./src",
+        "target": "es2017",
+        "module": "commonjs",
+        "lib": [
+            "es2015",
+            "es2016",
+            "es2017"
+        ],
+        "allowJs": false,
+        "jsx": "react",
+        "declaration": true,
+        "skipDefaultLibCheck": true,
+        "skipLibCheck": true,
+        "strictNullChecks": true,
+        "strictFunctionTypes": true,
+        "strictPropertyInitialization": true,
+        "noImplicitThis": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "moduleResolution": "node",
+        "types": [
+            "node",
+            "jest",
+            "reflect-metadata"
+        ],
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true
+    },
+    "exclude": [
+        "lib",
+        "test",
+        "**/*.test.ts"
+    ],
+}

@@ -1,0 +1,27 @@
+{
+  "name": "@artusjs/core",
+  "version": "1.0.0-alpha.0",
+  "description": "Core package of Artus",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/artusjs/core.git"
+  },
+  "author": "Artus Working Group",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/artusjs/core/issues"
+  },
+  "homepage": "https://github.com/artusjs/core#readme",
+  "devDependencies": {
+    "@types/jest": "^27.4.1",
+    "jest": "^27.5.1",
+    "reflect-metadata": "^0.1.13",
+    "ts-jest": "^27.1.3",
+    "typescript": "^4.6.2"
+  }
+}
