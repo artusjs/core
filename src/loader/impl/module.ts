@@ -1,7 +1,7 @@
 import { Container } from '@artusjs/injection';
 import { Loader } from '..';
 import { DefineLoader } from '../loaderStore';
-import { ManifestUnit } from '../../typings';
+import { ManifestUnit } from '../types';
 
 @DefineLoader('module')
 class ModuleLoader implements Loader {

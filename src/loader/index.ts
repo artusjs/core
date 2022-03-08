@@ -1,6 +1,6 @@
 import { Container } from '@artusjs/injection';
 import { DEFAULT_LOADER } from '../constraints';
-import { Manifest, ManifestUnit } from '../typings';
+import { Manifest, ManifestUnit } from './types';
 import { getLoaderClazz, DefineLoader } from './loaderStore';
 
 // Import inner impls
