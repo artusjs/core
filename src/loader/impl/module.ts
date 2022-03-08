@@ -15,12 +15,12 @@ class ModuleLoader implements Loader {
     console.log(unit.path);
     try {
       const moduleObj = await import(unit.path);
-      const moduleClazz = moduleObj.default;
-      const metaData = moduleObj.__META__;
-      console.log('metaData', metaData);
+      const moduleClazz = moduleObj?.default ?? moduleObj;
       console.log('moduleClazz', moduleClazz);
       this.container.set({
         // id: moduleClazz,
+        id: unit.id,
+        path: unit.path,
         type: moduleClazz
       });
       console.log('container', this.container);

@@ -1,7 +1,4 @@
 {
-  "name": "demo-app-repo",
-  "eggModule": {
-    "name": "app-repo"
-  },
-  "main": "index.js"
+  "name": "demo-app-repo-ts",
+  "main": "src/index.ts"
 }
