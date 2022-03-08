@@ -1,3 +1,4 @@
+import { Container } from '@artusjs/injection';
 import { DEFAULT_LOADER } from '../constraints';
 import { Manifest, ManifestUnit } from '../typings';
 import { getLoaderClazz, DefineLoader } from './loaderStore';
@@ -6,16 +7,16 @@ import { getLoaderClazz, DefineLoader } from './loaderStore';
 import './impl';
 
 interface LoaderConstructor {
-  new(container): Loader;
+  new(container: Container): Loader;
 };
 interface Loader {
   load(unit: ManifestUnit): Promise<void>;
 };
 
 class LoaderFactory {
-  private container;
+  private container: Container;
 
-  constructor (container) {
+  constructor (container: Container) {
     this.container = container;
   }
 

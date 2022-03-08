@@ -1,10 +1,11 @@
+import { Container } from '@artusjs/injection';
 import { Loader } from '..';
 import { DefineLoader } from '../loaderStore';
 import { ManifestUnit } from '../../typings';
 
 @DefineLoader('module')
 class ModuleLoader implements Loader {
-  private container: Record<string, any>;
+  private container: Container;
 
   constructor(container) {
     this.container = container;
@@ -17,7 +18,10 @@ class ModuleLoader implements Loader {
     const metaData = moduleObj.__META__;
     console.log('metaData', metaData);
     console.log('moduleClazz', moduleClazz);
-    this.container.set(metaData.key, new moduleClazz());
+    this.container.set({
+      id: moduleClazz,
+      type: moduleClazz
+    });
     console.log('container', this.container);
   }
 }

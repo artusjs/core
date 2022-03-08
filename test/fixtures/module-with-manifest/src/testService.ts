@@ -1,8 +1,6 @@
-export const __META__ = {
-  key: 'testService',
-  scope: 'singleton'
-};
+import { injectable } from '../../../../src';
 
+@injectable('testService')
 export default class TestService {
   testMethod () {
     return 'Hello Artus';
