@@ -7,7 +7,11 @@ export default ({
   units: [
     {
       loader: 'module',
-      path: path.resolve(rootDir, './src/testService.ts')
+      path: path.resolve(rootDir, './testServiceA.ts')
+    },
+    {
+      loader: 'module',
+      path: path.resolve(rootDir, './testServiceB.ts')
     }
   ]
 });
