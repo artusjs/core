@@ -1,3 +1,5 @@
+import { Container } from '@artusjs/injection';
+
 type LoaderType = 'module'|'file'|string;
 
 interface Manifest {
@@ -11,9 +13,18 @@ interface ManifestUnit extends Record<string, any> {
   type?: string;
 }
 
+interface LoaderConstructor {
+  new(container: Container): Loader;
+};
+interface Loader {
+  load(unit: ManifestUnit): Promise<void>;
+};
+
 export {
   LoaderType,
   Manifest,
-  ManifestUnit
+  ManifestUnit,
+  LoaderConstructor,
+  Loader
 };
 
