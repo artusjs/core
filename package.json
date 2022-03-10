@@ -1,5 +1,5 @@
 {
-  "name": "@artusjs/core",
+  "name": "@artus/core",
   "version": "1.0.0-alpha.0",
   "description": "Core package of Artus",
   "main": "lib/index.js",
@@ -25,6 +25,6 @@
     "typescript": "^4.6.2"
   },
   "dependencies": {
-    "@artusjs/injection": "^0.0.1-alpha.0"
+    "@artus/injection": "^0.0.1-alpha.0"
   }
 }
