@@ -1,4 +1,4 @@
-import { Container } from '@artusjs/injection';
+import { Container } from '@artus/injection';
 import { DEFAULT_LOADER } from '../constraints';
 import { Manifest, ManifestUnit, LoaderConstructor } from './types';
 

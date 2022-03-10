@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 
-import { Container } from '@artusjs/injection';
+import { Container } from '@artus/injection';
 import assert from 'assert';
 import { LoaderFactory } from '../src';
 

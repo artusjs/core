@@ -1,4 +1,4 @@
-import { Container } from '@artusjs/injection';
+import { Container } from '@artus/injection';
 import { DefineLoader } from '../decorator';
 import { ManifestUnit, Loader } from '../types';
 

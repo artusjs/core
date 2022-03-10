@@ -1,7 +1,7 @@
 export {
-  inject,
-  injectable
-} from '@artusjs/injection';
+  Inject,
+  Injectable
+} from '@artus/injection';
 
 export * from './loader';
 
