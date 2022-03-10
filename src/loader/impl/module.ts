@@ -11,18 +11,15 @@ class ModuleLoader implements Loader {
   }
 
   async load(unit: ManifestUnit) {
-    console.log(unit.path);
     try {
       const moduleObj = await import(unit.path);
       const moduleClazz = moduleObj?.default ?? moduleObj;
-      console.log('moduleClazz', moduleClazz);
       this.container.set({
         // id: moduleClazz,
         id: unit.id,
         path: unit.path,
         type: moduleClazz
       });
-      console.log('container', this.container);
     } catch (error) {
       console.error(error);
     }
