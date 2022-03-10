@@ -107,3 +107,6 @@ dist
 package-lock.json
 yarn.lock
 pnpm-lock.yaml
+
+# Visual Studio Code Workspace Configuration
+.vscode/
