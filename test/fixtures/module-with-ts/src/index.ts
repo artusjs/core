@@ -4,7 +4,7 @@ const rootDir = path.resolve(__dirname, './');
 
 export default ({
   rootDir,
-  units: [
+  items: [
     {
       loader: 'module',
       path: path.resolve(rootDir, './testServiceA.ts')

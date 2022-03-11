@@ -4,7 +4,7 @@ const rootDir = path.resolve(__dirname, './');
 
 module.exports = ({
   rootDir,
-  units: [
+  items: [
     {
       loader: 'module',
       id: 'testServiceA',
@@ -13,6 +13,7 @@ module.exports = ({
     {
       loader: 'module',
       id: 'testServiceB',
+      scope: 'Execution',
       path: path.resolve(rootDir, './testServiceB.js')
     }
   ]

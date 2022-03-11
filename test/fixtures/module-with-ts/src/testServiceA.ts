@@ -7,8 +7,6 @@ import TestServiceB from './testServiceB';
   scope: ScopeEnum.SINGLETON
 })
 export default class TestServiceA {
-
-  // @ts-ignore
   @Inject('testServiceB')
   // @ts-ignore
   testServiceB: TestServiceB;

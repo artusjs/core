@@ -1,6 +1,6 @@
 import { Container } from '@artus/injection';
 import { DEFAULT_LOADER } from '../constraints';
-import { Manifest, ManifestUnit, LoaderConstructor } from './types';
+import { Manifest, ManifestItem, LoaderConstructor } from './types';
 
 export class LoaderFactory {
   private container: Container;
@@ -19,17 +19,17 @@ export class LoaderFactory {
   }
 
   async loadManifest(manifest: Manifest): Promise<void> {
-    for (const unit of manifest.units) {
-      await this.loadUnit(unit);
+    for (const item of manifest.items) {
+      await this.loadItem(item);
     }
   }
 
-  async loadUnit(unit: ManifestUnit): Promise<void> {
-    const LoaderClazz = LoaderFactory.loaderClazzMap.get(unit.loader || DEFAULT_LOADER);
+  async loadItem(item: ManifestItem): Promise<void> {
+    const LoaderClazz = LoaderFactory.loaderClazzMap.get(item.loader || DEFAULT_LOADER);
     if (!LoaderClazz) {
-      throw new Error(`Cannot find loader '${unit.loader}'`);
+      throw new Error(`Cannot find loader '${item.loader}'`);
     }
     const loader = new LoaderClazz(this.container);
-    await loader.load(unit);
+    await loader.load(item);
   }
 }

@@ -1,13 +1,13 @@
-import { Container } from '@artusjs/injection';
+import { Container } from '@artus/injection';
 
 type LoaderType = 'module'|'file'|string;
 
 interface Manifest {
   rootDir: string;
-  units: ManifestUnit[];
+  items: ManifestItem[];
 }
 
-interface ManifestUnit extends Record<string, any> {
+interface ManifestItem extends Record<string, any> {
   loader: LoaderType;
   path: string;
   type?: string;
@@ -17,13 +17,13 @@ interface LoaderConstructor {
   new(container: Container): Loader;
 };
 interface Loader {
-  load(unit: ManifestUnit): Promise<void>;
+  load(item: ManifestItem): Promise<void>;
 };
 
 export {
   LoaderType,
   Manifest,
-  ManifestUnit,
+  ManifestItem,
   LoaderConstructor,
   Loader
 };

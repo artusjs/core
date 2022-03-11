@@ -1,6 +1,6 @@
 import { Container } from '@artus/injection';
 import { DefineLoader } from '../decorator';
-import { ManifestUnit, Loader } from '../types';
+import { ManifestItem, Loader } from '../types';
 
 @DefineLoader('module')
 class ModuleLoader implements Loader {
@@ -10,14 +10,14 @@ class ModuleLoader implements Loader {
     this.container = container;
   }
 
-  async load(unit: ManifestUnit) {
+  async load(item: ManifestItem) {
     try {
-      const moduleObj = await import(unit.path);
+      const moduleObj = await import(item.path);
       const moduleClazz = moduleObj?.default ?? moduleObj;
       this.container.set({
         // id: moduleClazz,
-        id: unit.id,
-        path: unit.path,
+        id: item.id,
+        path: item.path,
         type: moduleClazz
       });
     } catch (error) {
