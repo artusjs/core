@@ -1,5 +1,7 @@
+import { Manifest } from './loader';
+
 export interface Application {
-  load();
+  load(manifest: Manifest): Promise<Application>;
   run(): Promise<void>;
 }
 
