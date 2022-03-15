@@ -12,6 +12,9 @@ export class ArtusApplication implements Application {
   constructor() {
     this.container = new Container(ROOT_CONTAINER_NAME);
     this.lifecycleManager = new LifecycleManager(this);
+
+    process.on('SIGINT', () => this.close());
+    process.on('SIGTERM', () => this.close());
   }
 
   async load(manifest: Manifest) {
@@ -29,6 +32,10 @@ export class ArtusApplication implements Application {
 
   registerHook(hookName: string, hookFn: HookFunction) {
     this.lifecycleManager.registerHook(hookName, hookFn);
+  }
+
+  async close() {
+    await this.lifecycleManager.emitHook('beforeClose');
   }
 }
 

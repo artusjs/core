@@ -42,7 +42,6 @@ export class LifecycleManager {
   }
 
   async emitHook<T = unknown>(hookName: string, payload?: T) {
-    console.log('emitHook', hookName);
     if (!this.hookFnMap.has(hookName)) {
       return;
     }
