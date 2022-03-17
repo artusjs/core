@@ -9,7 +9,7 @@ describe('test/loader/Loader.test.ts', () => {
         main,
         app,
         isListening
-      } = require('./fixtures/app-koa-with-ts/app');
+      } = await import('./fixtures/app-koa-with-ts/app');
       await main();
       const testResponse = await axios.get('http://127.0.0.1:3000');
       assert(testResponse.status === 200);
