@@ -15,7 +15,7 @@ describe('test/trigger.test.ts', () => {
         await main();
         const testResponse = await axios.get('http://127.0.0.1:3001');
         assert(testResponse.status === 200);
-        assert(testResponse.data === 'Hello Artus');
+        assert(testResponse.data.title === 'Hello Artus');
         await app.close();
         assert(!isListening());
       } catch (err) {
