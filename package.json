@@ -35,9 +35,6 @@
   },
   "ci": {
     "type": "github",
-    "os": {
-      "github": "linux, windows, macos"
-    },
     "version": "12, 14, 16"
   }
 }
