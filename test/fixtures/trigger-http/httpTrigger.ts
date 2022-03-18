@@ -18,10 +18,6 @@ export class HttpTrigger extends Trigger {
     });
   }
 
-  async initContext(): Promise<Context> {
-    return new Context(this.input);
-  }
-
   async respond(ctx: Context) {
     const { res } = ctx.input.params;
     const { data } = ctx.output;

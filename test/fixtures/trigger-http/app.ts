@@ -6,7 +6,7 @@ import http from 'http';
 import { Context, Input } from '@artus/pipeline';
 
 artusContainer.set({ type: HttpTrigger });
-const app = artusContainer.get(ArtusApplication);
+const app: ArtusApplication = artusContainer.get(ArtusApplication);
 let server: Server;
 
 export class ApplicationHookExtension {

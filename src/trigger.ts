@@ -18,12 +18,12 @@ export class Trigger {
     this.input = input ?? this.input;
   }
 
-  async use(middleware: MiddlewareInput): Promise<void> {
+  use(middleware: MiddlewareInput) {
     this.#pipeline.use(middleware);
   }
 
   async initContext(): Promise<Context> {
-    return new Context();
+    return new Context(this.input);
   }
 
   async startPipeline(): Promise<Context> {
