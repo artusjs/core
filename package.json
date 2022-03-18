@@ -28,6 +28,7 @@
     "typescript": "^4.6.2"
   },
   "dependencies": {
-    "@artus/injection": "^0.0.2"
+    "@artus/injection": "^0.0.2",
+    "@artus/pipeline": "^0.1.0"
   }
 }

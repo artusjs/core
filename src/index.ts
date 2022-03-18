@@ -7,6 +7,7 @@ export * from './loader';
 export * from './lifecycle';
 
 export * from './application';
+export * from './trigger';
 
 export type {
   Manifest

@@ -1,4 +1,5 @@
 import { Container, Injectable, Inject } from '@artus/injection';
+import { ARTUS_TRIGGER_ID } from './constraints';
 import { HookFunction, LifecycleManager } from './lifecycle';
 import { LoaderFactory, Manifest } from './loader';
 import { Trigger } from './trigger';
@@ -8,9 +9,9 @@ const ROOT_CONTAINER_NAME = 'artus-application-root';
 
 @Injectable()
 export class ArtusApplication implements Application {
-  @Inject(Trigger)
+  @Inject(ARTUS_TRIGGER_ID)
   // @ts-ignore
-  private trigger: Trigger;
+  public trigger: Trigger;
   private container: Container;
   private lifecycleManager: LifecycleManager;
 
@@ -33,10 +34,6 @@ export class ArtusApplication implements Application {
   async run() {
     await this.lifecycleManager.emitHook('willReady'); // 通知协议实现层启动服务器
     await this.lifecycleManager.emitHook('didReady');
-  }
-
-  async handleTrigger() {
-    this.trigger.stratPipeline();
   }
 
   registerHook(hookName: string, hookFn: HookFunction) {
