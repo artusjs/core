@@ -5,7 +5,8 @@
   "main": "lib/index.js",
   "scripts": {
     "build": "tsc",
-    "test": "jest"
+    "test": "jest",
+    "ci": "npm run test"
   },
   "repository": {
     "type": "git",
@@ -21,6 +22,7 @@
     "@types/jest": "^27.4.1",
     "@types/koa": "^2.13.4",
     "axios": "^0.26.1",
+    "egg-ci": "^1.19.0",
     "jest": "^27.5.1",
     "koa": "^2.13.4",
     "reflect-metadata": "^0.1.13",
@@ -30,5 +32,12 @@
   "dependencies": {
     "@artus/injection": "^0.0.2",
     "@artus/pipeline": "^0.1.0"
+  },
+  "ci": {
+    "type": "github",
+    "os": {
+      "github": "linux, windows, macos"
+    },
+    "version": "12, 14, 16"
   }
 }
