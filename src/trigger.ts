@@ -18,7 +18,8 @@ export class Trigger {
     this.input = input ?? this.input;
   }
 
-  use(middleware: MiddlewareInput) {
+  async use(middleware: MiddlewareInput): Promise<void> {
+    // TODO: async hook before pipeline.use(middleware)
     this.#pipeline.use(middleware);
   }
 
