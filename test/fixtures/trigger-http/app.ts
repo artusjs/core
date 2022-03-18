@@ -1,6 +1,6 @@
 import { Server } from 'http';
 import { artusContainer, ArtusApplication } from '../../../src';
-import { ApplicationHook } from '../../../src/decorator';
+import { ApplicationHook, ApplicationHookClass } from '../../../src/decorator';
 import { HttpTrigger } from './httpTrigger';
 import http from 'http';
 import { Context, Input } from '@artus/pipeline';
@@ -9,8 +9,9 @@ artusContainer.set({ type: HttpTrigger });
 const app: ArtusApplication = artusContainer.get(ArtusApplication);
 let server: Server;
 
+@ApplicationHookClass()
 export class ApplicationHookExtension {
-  @ApplicationHook(app)
+  @ApplicationHook()
   async didLoad() {
     app.trigger.use(async (ctx: Context) => {
       const { data } = ctx.output;
@@ -18,7 +19,7 @@ export class ApplicationHookExtension {
     });
   }
 
-  @ApplicationHook(app)
+  @ApplicationHook()
   willReady() {
     server = http
       .createServer(async (req: http.IncomingMessage, res: http.ServerResponse) => {
@@ -30,7 +31,7 @@ export class ApplicationHookExtension {
       .listen(3001)
   }
 
-  @ApplicationHook(app)
+  @ApplicationHook()
   beforeClose() {
     server?.close();
   }

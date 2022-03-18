@@ -1,24 +1,26 @@
 import { Server } from 'http';
 import Koa from 'koa';
 import { artusContainer, ArtusApplication } from '../../../src';
-import { ApplicationHook } from '../../../src/decorator';
+import { ApplicationHook, ApplicationHookClass } from '../../../src/decorator';
 
 const app = artusContainer.get(ArtusApplication);
 let server: Server;
 const koaApp = new Koa();
 
-koaApp.use((ctx) => {
-  ctx.status = 200;
-  ctx.body = 'Hello Artus';
-});
-
+@ApplicationHookClass()
 export class ApplicationHookExtension {
-  @ApplicationHook(app)
+  testStr: string = 'Hello Artus';
+
+  @ApplicationHook()
   willReady() {
+    koaApp.use((ctx) => {
+      ctx.status = 200;
+      ctx.body = this.testStr;
+    });
     server = koaApp.listen(3000);
   }
 
-  @ApplicationHook(app)
+  @ApplicationHook()
   beforeClose() {
     server?.close();
   }

@@ -1,3 +1,5 @@
+import { artusContainer } from '..';
+import { HOOK_META_SYMBOL } from '../constraints';
 import { Application } from '../types';
 
 export type HookFunction = <T = unknown>(hookProps : {
@@ -50,7 +52,12 @@ export class LifecycleManager {
       return;
     }
     for (const hookFn of fnList) {
-      await hookFn<T>({
+      const that = hookFn[HOOK_META_SYMBOL]
+        ? artusContainer.get(hookFn[HOOK_META_SYMBOL])
+        : {
+          app: this.app
+        };
+      await hookFn.call(that, {
         app: this.app,
         lifecycleManager: this,
         payload
