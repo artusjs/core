@@ -7,10 +7,11 @@ import { ARTUS_TRIGGER_ID } from "./constraints";
   scope: ScopeEnum.SINGLETON
 })
 export class Trigger {
-  #pipeline = new Pipeline();
+  private pipeline: Pipeline;
   protected input: Input;
 
   constructor(){
+    this.pipeline = new Pipeline();
     this.input = new Input();
   }
 
@@ -20,7 +21,7 @@ export class Trigger {
 
   async use(middleware: MiddlewareInput): Promise<void> {
     // TODO: async hook before pipeline.use(middleware)
-    this.#pipeline.use(middleware);
+    this.pipeline.use(middleware);
   }
 
   async initContext(): Promise<Context> {
@@ -29,7 +30,7 @@ export class Trigger {
 
   async startPipeline(): Promise<Context> {
     const ctx = await this.initContext();
-    await this.#pipeline.run(ctx);
+    await this.pipeline.run(ctx);
     return ctx;
   }
 }
