@@ -1,9 +1,9 @@
 import { Server } from 'http';
 import Koa from 'koa';
-import { ArtusApplication } from '../../../src';
+import { artusContainer, ArtusApplication } from '../../../src';
 import { ApplicationHook } from '../../../src/decorator';
 
-const app = new ArtusApplication();
+const app = artusContainer.get(ArtusApplication);
 let server: Server;
 const koaApp = new Koa();
 
@@ -24,7 +24,7 @@ export class ApplicationHookExtension {
   }
 }
 
-async function main () {
+async function main() {
   await app.load({
     rootDir: __dirname,
     items: []
@@ -32,7 +32,7 @@ async function main () {
   await app.run();
 };
 
-const isListening = () => { server.listening }
+const isListening = () => server.listening;
 
 export {
   main,

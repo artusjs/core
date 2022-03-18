@@ -4,7 +4,7 @@ import { Container } from '@artus/injection';
 import assert from 'assert';
 import { LoaderFactory } from '../src';
 
-describe('test/loader/Loader.test.ts', () => {
+describe('test/loader.test.ts', () => {
   describe('module with ts', () => {
     it('should load module testServiceA.ts and testServiceB.ts', async () => {
       const conatiner = new Container('testDefault');

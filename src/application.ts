@@ -1,11 +1,17 @@
-import { Container } from '@artus/injection';
+import { Container, Injectable, Inject } from '@artus/injection';
+import { ARTUS_TRIGGER_ID } from './constraints';
 import { HookFunction, LifecycleManager } from './lifecycle';
 import { LoaderFactory, Manifest } from './loader';
+import { Trigger } from './trigger';
 import { Application } from './types';
 
 const ROOT_CONTAINER_NAME = 'artus-application-root';
 
+@Injectable()
 export class ArtusApplication implements Application {
+  @Inject(ARTUS_TRIGGER_ID)
+  // @ts-ignore
+  public trigger: Trigger;
   private container: Container;
   private lifecycleManager: LifecycleManager;
 

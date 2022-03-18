@@ -110,3 +110,5 @@ pnpm-lock.yaml
 
 # Visual Studio Code Workspace Configuration
 .vscode/
+
+lib
