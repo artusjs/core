@@ -8,7 +8,6 @@ export function ApplicationHookClass(): ClassDecorator {
     // TODO: 待替换为 injection 提供的属性方法
     target.constructor.prototype.app = getArtusApplication();
     artusContainer.set({
-      id: target,
       type: target
     });
   };

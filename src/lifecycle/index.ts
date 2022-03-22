@@ -58,7 +58,6 @@ export class LifecycleManager {
           app: this.app
         };
       await hookFn.call(that, {
-        app: this.app,
         lifecycleManager: this,
         payload
       });
