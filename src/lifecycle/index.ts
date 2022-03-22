@@ -18,8 +18,6 @@ export class LifecycleManager {
     'beforeClose' // 应用即将关闭
   ];
   hookFnMap: Map<string, HookFunction[]> = new Map();
-
-  // @ts-expect-error
   private app: Application;
 
   constructor(app: Application) {
@@ -63,6 +61,7 @@ export class LifecycleManager {
         }
       }
       await hookFn.call(that, {
+        app: this.app,
         lifecycleManager: this,
         payload
       });

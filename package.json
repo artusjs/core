@@ -20,6 +20,7 @@
   "homepage": "https://github.com/artusjs/core#readme",
   "devDependencies": {
     "@types/jest": "^27.4.1",
+    "@types/js-yaml": "^4.0.5",
     "@types/koa": "^2.13.4",
     "axios": "^0.26.1",
     "egg-ci": "^1.19.0",
@@ -31,7 +32,8 @@
   },
   "dependencies": {
     "@artus/injection": "^0.0.2",
-    "@artus/pipeline": "^0.1.2"
+    "@artus/pipeline": "^0.1.2",
+    "js-yaml": "^4.1.0"
   },
   "ci": {
     "type": "github",
