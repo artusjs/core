@@ -32,9 +32,17 @@ export class ArtusApplication implements Application {
     process.on('SIGTERM', () => this.close());
   }
 
+  // TODO: do config merge
+  configWillLoad() {
+
+  }
+
+
   async load(manifest: Manifest) {
     this.manifest = manifest;
     // TODO: 需要增加 loadConfig及对应的钩子
+    this.configWillLoad()
+
     await LoaderFactory.create(this.container)
       .loadManifest(manifest);
     await this.lifecycleManager.emitHook('didLoad');

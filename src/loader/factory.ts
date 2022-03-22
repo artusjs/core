@@ -24,6 +24,11 @@ export class LoaderFactory {
     }
   }
 
+  // TODO: get all config files by default env
+  getTypeFiles() {
+
+  }
+
   async loadItem(item: ManifestItem): Promise<void> {
     const LoaderClazz = LoaderFactory.loaderClazzMap.get(item.loader || DEFAULT_LOADER);
     if (!LoaderClazz) {
