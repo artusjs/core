@@ -1,42 +1,48 @@
 import { Server } from 'http';
-import { artusContainer, ArtusApplication } from '../../../src';
-import { ApplicationHook } from '../../../src/decorator';
+import { Inject } from '@artus/injection';
+import { artusContainer, ArtusApplication, getArtusApplication } from '../../../src';
+import { ApplicationHook, ApplicationHookClass } from '../../../src/decorator';
 import { HttpTrigger } from './httpTrigger';
 import http from 'http';
 import { Context, Input } from '@artus/pipeline';
 
 artusContainer.set({ type: HttpTrigger });
-const app: ArtusApplication = artusContainer.get(ArtusApplication);
 let server: Server;
 
+@ApplicationHookClass()
 export class ApplicationHookExtension {
-  @ApplicationHook(app)
+  @Inject(ArtusApplication)
+  // @ts-ignore
+  app: ArtusApplication;
+
+  @ApplicationHook()
   async didLoad() {
-    app.trigger.use(async (ctx: Context) => {
+    this.app.trigger.use(async (ctx: Context) => {
       const { data } = ctx.output;
       data.content = { title: 'Hello Artus' };
     });
   }
 
-  @ApplicationHook(app)
+  @ApplicationHook()
   willReady() {
     server = http
       .createServer(async (req: http.IncomingMessage, res: http.ServerResponse) => {
         const input = new Input();
         input.params = { req, res };
-        await app.trigger.init(input);
-        await app.trigger.startPipeline();
+        await this.app.trigger.init(input);
+        await this.app.trigger.startPipeline();
       })
       .listen(3001)
   }
 
-  @ApplicationHook(app)
+  @ApplicationHook()
   beforeClose() {
     server?.close();
   }
 }
 
 async function main() {
+  const app: ArtusApplication = getArtusApplication();
   await app.load({
     rootDir: __dirname,
     items: []
@@ -48,6 +54,5 @@ const isListening = () => server.listening;
 
 export {
   main,
-  app,
   isListening
 };

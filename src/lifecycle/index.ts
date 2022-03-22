@@ -1,3 +1,5 @@
+import { artusContainer } from '..';
+import { HOOK_META_SYMBOL } from '../constraints';
 import { Application } from '../types';
 
 export type HookFunction = <T = unknown>(hookProps : {
@@ -16,6 +18,8 @@ export class LifecycleManager {
     'beforeClose' // 应用即将关闭
   ];
   hookFnMap: Map<string, HookFunction[]> = new Map();
+
+  // @ts-expect-error
   private app: Application;
 
   constructor(app: Application) {
@@ -50,8 +54,15 @@ export class LifecycleManager {
       return;
     }
     for (const hookFn of fnList) {
-      await hookFn<T>({
-        app: this.app,
+      let that: any;
+      if (hookFn[HOOK_META_SYMBOL]) {
+        try {
+          that = artusContainer.get(hookFn[HOOK_META_SYMBOL]);
+        } catch (error) {
+          // SEEME: 临时行为，待 injection 的 get 提供参数允许 id 不存在
+        }
+      }
+      await hookFn.call(that, {
         lifecycleManager: this,
         payload
       });

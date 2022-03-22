@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import axios from 'axios';
 import assert from 'assert';
+import { getArtusApplication } from '../src';
 
 describe('test/trigger.test.ts', () => {
   describe('trigger with http', () => {
@@ -9,9 +10,9 @@ describe('test/trigger.test.ts', () => {
       try {
         const {
           main,
-          app,
           isListening
         } = await import('./fixtures/trigger-http/app');
+        const app = getArtusApplication();
         await main();
         const testResponse = await axios.get('http://127.0.0.1:3001');
         assert(testResponse.status === 200);
