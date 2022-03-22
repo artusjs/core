@@ -10,7 +10,7 @@ export function ApplicationHookClass(): ClassDecorator {
     artusContainer.set({
       id: target,
       type: target
-    })
+    });
   };
 };
 

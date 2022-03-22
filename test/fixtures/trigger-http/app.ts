@@ -1,4 +1,5 @@
 import { Server } from 'http';
+import { Inject } from '@artus/injection';
 import { artusContainer, ArtusApplication } from '../../../src';
 import { ApplicationHook, ApplicationHookClass } from '../../../src/decorator';
 import { HttpTrigger } from './httpTrigger';
@@ -11,9 +12,13 @@ let server: Server;
 
 @ApplicationHookClass()
 export class ApplicationHookExtension {
+  @Inject(ArtusApplication)
+  // @ts-ignore
+  app: ArtusApplication;
+
   @ApplicationHook()
   async didLoad() {
-    app.trigger.use(async (ctx: Context) => {
+    this.app.trigger.use(async (ctx: Context) => {
       const { data } = ctx.output;
       data.content = { title: 'Hello Artus' };
     });
