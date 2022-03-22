@@ -1,13 +1,12 @@
 import { Server } from 'http';
 import { Inject } from '@artus/injection';
-import { artusContainer, ArtusApplication } from '../../../src';
+import { artusContainer, ArtusApplication, getArtusApplication } from '../../../src';
 import { ApplicationHook, ApplicationHookClass } from '../../../src/decorator';
 import { HttpTrigger } from './httpTrigger';
 import http from 'http';
 import { Context, Input } from '@artus/pipeline';
 
 artusContainer.set({ type: HttpTrigger });
-const app: ArtusApplication = artusContainer.get(ArtusApplication);
 let server: Server;
 
 @ApplicationHookClass()
@@ -30,8 +29,8 @@ export class ApplicationHookExtension {
       .createServer(async (req: http.IncomingMessage, res: http.ServerResponse) => {
         const input = new Input();
         input.params = { req, res };
-        await app.trigger.init(input);
-        await app.trigger.startPipeline();
+        await this.app.trigger.init(input);
+        await this.app.trigger.startPipeline();
       })
       .listen(3001)
   }
@@ -43,6 +42,7 @@ export class ApplicationHookExtension {
 }
 
 async function main() {
+  const app: ArtusApplication = getArtusApplication();
   await app.load({
     rootDir: __dirname,
     items: []
@@ -54,6 +54,5 @@ const isListening = () => server.listening;
 
 export {
   main,
-  app,
   isListening
 };
