@@ -1,8 +1,9 @@
+import { ARTUS_EXCEPTION_DEFAULT_LOCALE } from '../constraints';
 import { ExceptionItem } from './types';
 
 export const ErrorCodeUtils = {
   getI18NDesc (code: string, locale?: string) {
-    const currentLocale = locale || process.env.ARTUS_ERROR_LOCALE || 'en';
+    const currentLocale = locale || process.env.ARTUS_ERROR_LOCALE || ARTUS_EXCEPTION_DEFAULT_LOCALE;
     const exceptionItem = ArtusStdError.errorCodeMap.get(code);
     if (!exceptionItem) {
       return 'Unknown Error';
@@ -38,7 +39,8 @@ export class ArtusStdError extends Error {
   }
   
   get desc(): string {
-      return ErrorCodeUtils.getI18NDesc(this._code);
+    // TODO: 待支持从 Config 获取 I18N 的 Locale
+    return ErrorCodeUtils.getI18NDesc(this._code);
   }
   
   get detailUrl(): string|undefined {
