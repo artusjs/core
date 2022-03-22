@@ -8,15 +8,9 @@ import { ARTUS_TRIGGER_ID } from "./constraints";
 })
 export class Trigger {
   private pipeline: Pipeline;
-  protected input: Input;
 
-  constructor(){
+  constructor() {
     this.pipeline = new Pipeline();
-    this.input = new Input();
-  }
-
-  async init(input: Input) {
-    this.input = input ?? this.input;
   }
 
   async use(middleware: MiddlewareInput): Promise<void> {
@@ -24,12 +18,12 @@ export class Trigger {
     this.pipeline.use(middleware);
   }
 
-  async initContext(): Promise<Context> {
-    return new Context(this.input);
+  async initContext(input: Input): Promise<Context> {
+    return new Context(input);
   }
 
-  async startPipeline(): Promise<Context> {
-    const ctx = await this.initContext();
+  async startPipeline(input: Input = new Input()): Promise<Context> {
+    const ctx = await this.initContext(input);
     await this.pipeline.run(ctx);
     return ctx;
   }

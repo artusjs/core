@@ -29,8 +29,7 @@ export class ApplicationHookExtension {
       .createServer(async (req: http.IncomingMessage, res: http.ServerResponse) => {
         const input = new Input();
         input.params = { req, res };
-        await this.app.trigger.init(input);
-        await this.app.trigger.startPipeline();
+        await this.app.trigger.startPipeline(input);
       })
       .listen(3001)
   }
