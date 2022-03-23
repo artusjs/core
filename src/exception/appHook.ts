@@ -1,4 +1,4 @@
-import fs from 'fs';
+import { readFile } from 'fs/promises';
 import path from 'path';
 import yaml from 'js-yaml';
 import { ExceptionItem } from './types';
@@ -31,19 +31,22 @@ export const initException: HookFunction = async ({ app }) => {
   for (const rootPath of pathList) {
     for (const [filename, parserFunc] of FILE_META_LIST) {
       const filePath = path.resolve(rootPath, filename);
-      if (!fs.existsSync(filePath)) {
-        continue;
-      }
-      const content = fs.readFileSync(filePath, 'utf-8');
-      if (!content) {
-        continue;
-      }
       try {
+        const content = await readFile(filePath, {
+          encoding: 'utf-8'
+        });
+        if (!content) {
+          continue;
+        }
         const codeMap = parserFunc(content);
         for (const [errCode, exceptionItem] of Object.entries(codeMap)) {
           ArtusStdError.registerCode(errCode, exceptionItem);
         }
       } catch (error) {
+        if (error?.code === 'ENOENT') {
+          // Skip for next if sub-path is not exists.
+          continue;
+        }
         console.warn(`[Artus-Exception] Parse CodeMap ${filename} failed: ${error.message}`);
       }
     }
