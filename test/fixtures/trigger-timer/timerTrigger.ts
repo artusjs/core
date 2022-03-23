@@ -15,7 +15,8 @@ export class TimerTrigger extends Trigger {
       const start = Date.now();
       await next();
       const cost = Date.now() - start;
-      ctx.output.data.cost = cost;
+      const { input: { params: { task: id, execution } } } = ctx;
+      execution[`task${id}`].cost += cost;
     });
   }
 }

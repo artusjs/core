@@ -5,26 +5,19 @@ import { getArtusApplication } from '../../src';
 
 describe('test/trigger/http.test.ts', () => {
   it('should run succeed', async () => {
-    let error;
-    try {
-      const {
-        main,
-        isListening
-      } = await import('../fixtures/trigger-http/app');
-      const app = getArtusApplication();
-      await main();
-      const testResponse = await axios.get('http://127.0.0.1:3001');
-      await axios.get('http://127.0.0.1:3001');
-      await axios.get('http://127.0.0.1:3001');
-      await axios.get('http://127.0.0.1:3001');
-      assert(testResponse.status === 200);
-      assert(testResponse.data.title === 'Hello Artus');
-      await app.close();
-      assert(!isListening());
-    } catch (err) {
-      error = err;
-    }
-    error && console.log(error);
-    assert(!error);
+    const {
+      main,
+      isListening
+    } = await import('../fixtures/trigger-http/app');
+    const app = getArtusApplication();
+    await main();
+    const testResponse = await axios.get('http://127.0.0.1:3001');
+    await axios.get('http://127.0.0.1:3001');
+    await axios.get('http://127.0.0.1:3001');
+    await axios.get('http://127.0.0.1:3001');
+    assert(testResponse.status === 200);
+    assert(testResponse.data.title === 'Hello Artus');
+    await app.close();
+    assert(!isListening());
   });
 });
