@@ -1,5 +1,6 @@
 import { Container, Injectable, Inject } from '@artus/injection';
 import { ARTUS_TRIGGER_ID } from './constraints';
+import { ArtusStdError, ExceptionHandler, initException } from './exception';
 import { HookFunction, LifecycleManager } from './lifecycle';
 import { LoaderFactory, Manifest } from './loader';
 import { Trigger } from './trigger';
@@ -12,18 +13,27 @@ export class ArtusApplication implements Application {
   @Inject(ARTUS_TRIGGER_ID)
   // @ts-ignore
   public trigger: Trigger;
+
+  @Inject(ExceptionHandler)
+  // @ts-ignore
+  public exceptionHandler: ExceptionHandler;
+
+  public manifest?: Manifest;
   private container: Container;
   private lifecycleManager: LifecycleManager;
 
   constructor() {
     this.container = new Container(ROOT_CONTAINER_NAME);
     this.lifecycleManager = new LifecycleManager(this);
+    
+    this.registerHook('didLoad', initException);
 
     process.on('SIGINT', () => this.close());
     process.on('SIGTERM', () => this.close());
   }
 
   async load(manifest: Manifest) {
+    this.manifest = manifest;
     // TODO: 需要增加 loadConfig及对应的钩子
     await LoaderFactory.create(this.container)
       .loadManifest(manifest);
@@ -42,6 +52,14 @@ export class ArtusApplication implements Application {
 
   async close() {
     await this.lifecycleManager.emitHook('beforeClose');
+  }
+
+  throwException(code: string): void {
+    this.exceptionHandler.throw(code);
+  }
+
+  createException(code: string): ArtusStdError {
+    return this.exceptionHandler.create(code);
   }
 }
 
