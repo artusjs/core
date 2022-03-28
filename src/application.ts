@@ -19,6 +19,7 @@ export class ArtusApplication implements Application {
   public exceptionHandler: ExceptionHandler;
 
   public manifest?: Manifest;
+  public config?: Record<string, any>;
   private container: Container;
   private lifecycleManager: LifecycleManager;
 
@@ -35,10 +36,11 @@ export class ArtusApplication implements Application {
 
   async load(manifest: Manifest) {
     this.manifest = manifest;
-
     const loaderFactory = await LoaderFactory.create(this.container)
+
     await this.lifecycleManager.emitHook('configWillLoad');
     const config = await loaderFactory.loadConfig(manifest);
+    this.config = config;
     await this.lifecycleManager.emitHook('configDidLoad', config);
 
     await loaderFactory.loadManifest(manifest);

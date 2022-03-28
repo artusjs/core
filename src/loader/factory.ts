@@ -31,7 +31,7 @@ export class LoaderFactory {
     let envConfigs = {};
     let defaultConfig = {};
     for (const file of files) {
-      const configFile = manifest.items.find(item => item.path.endsWith(file.path));
+      const configFile = manifest.items.find(item => item.path.endsWith(`${file.path}.ts`));
       if (!configFile) {
         continue
       }

@@ -112,3 +112,6 @@ pnpm-lock.yaml
 .vscode/
 
 lib
+
+# OSX
+.DS_Store
