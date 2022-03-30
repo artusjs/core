@@ -1,12 +1,12 @@
 import { DefaultContext } from 'koa';
 import { Server } from 'http';
 import { Inject } from '@artus/injection';
-import { ArtusApplication, artusContainer } from '../../../src';
-import { ApplicationHook, ApplicationHookClass } from '../../../src/decorator';
+import { ArtusApplication, artusContainer } from '../../../../src';
+import { ApplicationHook, ApplicationHookClass } from '../../../../src/decorator';
 import { Context, Input } from '@artus/pipeline';
 import KoaApplication from './koaApp';
 import TestController from './controllers/test';
-import { ARTUS_TRIGGER_ID } from '../../../src/constraints';
+import { ARTUS_TRIGGER_ID } from '../../../../src/constraints';
 import { HttpTrigger } from './httpTrigger';
 
 export let server: Server;

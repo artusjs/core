@@ -6,11 +6,19 @@ import { getArtusApplication } from '../src';
 describe('test/app.test.ts', () => {
   describe('app koa with ts', () => {
     it('should run app', async () => {
+      // Skip Controller
+      const TestController = await import('./fixtures/app-koa-with-ts/src/controllers/test');
+      assert(TestController);
+      expect(await new TestController.default().index()).toStrictEqual({
+        content: 'Hello Artus',
+        status: 200
+      });
+
       try {
         const {
           main,
           isListening
-        } = await import('./fixtures/app-koa-with-ts/bootstrap');
+        } = await import('./fixtures/app-koa-with-ts/src/bootstrap');
         const app = getArtusApplication();
         await main();
         const testResponse = await axios.get('http://127.0.0.1:3000');

@@ -1,5 +1,5 @@
 import path from 'path';
-import { artusContainer, ArtusApplication, getArtusApplication } from '../../../src';
+import { artusContainer, ArtusApplication, getArtusApplication } from '../../../../src';
 import { HttpTrigger } from './httpTrigger';
 import { server } from './app';
 

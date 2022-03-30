@@ -1,7 +1,7 @@
 import { Injectable, ScopeEnum } from "@artus/injection";
 import { Context, Next } from "@artus/pipeline";
-import { Trigger } from "../../../src";
-import { ARTUS_TRIGGER_ID } from "../../../src/constraints";
+import { Trigger } from "../../../../src";
+import { ARTUS_TRIGGER_ID } from "../../../../src/constraints";
 
 @Injectable({
   id: ARTUS_TRIGGER_ID,
