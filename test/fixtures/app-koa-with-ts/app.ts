@@ -1,22 +1,49 @@
+import { DefaultContext } from 'koa';
 import { Server } from 'http';
-import Koa from 'koa';
-import { getArtusApplication } from '../../../src';
+import { Inject } from '@artus/injection';
+import { ArtusApplication, artusContainer } from '../../../src';
 import { ApplicationHook, ApplicationHookClass } from '../../../src/decorator';
+import { Context, Input } from '@artus/pipeline';
+import KoaApplication from './koaApp';
+import TestController from './controllers/test';
+import { ARTUS_TRIGGER_ID } from '../../../src/constraints';
+import { HttpTrigger } from './httpTrigger';
 
-let server: Server;
-const koaApp = new Koa();
+export let server: Server;
+
+artusContainer.set({ type: KoaApplication });
 
 @ApplicationHookClass()
-export class ApplicationHookExtension {
-  testStr: string = 'Hello Artus';
+export default class ApplicationHookExtension {
+  @Inject(ArtusApplication)
+  // @ts-ignore
+  app: ArtusApplication;
+
+  @Inject(ARTUS_TRIGGER_ID)
+  // @ts-ignore
+  trigger: HttpTrigger;
+
+  @Inject(KoaApplication)
+  // @ts-ignore
+  koaApp: KoaApplication;
+
+  @ApplicationHook()
+  async didLoad() {
+    this.trigger.use(async (ctx: Context) => {
+      const testController = artusContainer.get(TestController);
+      ctx.output.data = await testController.index();
+    });
+  }
 
   @ApplicationHook()
   willReady() {
-    koaApp.use((ctx) => {
-      ctx.status = 200;
-      ctx.body = this.testStr;
+    this.koaApp.use(async (koaCtx: DefaultContext) => {
+      const input = new Input();
+      const { req, res } = koaCtx;
+      input.params = { koaCtx, req, res };
+      await this.trigger.startPipeline(input);
     });
-    server = koaApp.listen(3000);
+    server = this.koaApp.listen(3000);
   }
 
   @ApplicationHook()
@@ -24,19 +51,3 @@ export class ApplicationHookExtension {
     server?.close();
   }
 }
-
-async function main() {
-  const app = getArtusApplication();
-  await app.load({
-    rootDir: __dirname,
-    items: []
-  });
-  await app.run();
-};
-
-const isListening = () => server.listening;
-
-export {
-  main,
-  isListening
-};
