@@ -19,22 +19,29 @@ export class ArtusApplication implements Application {
 
   public manifest?: Manifest;
   private container: Container = artusContainer;
+  public config?: Record<string, any>;
   private lifecycleManager: LifecycleManager;
 
   constructor() {
     this.lifecycleManager = new LifecycleManager(this);
-    
+
     this.registerHook('didLoad', initException);
 
     process.on('SIGINT', () => this.close());
     process.on('SIGTERM', () => this.close());
   }
 
+
   async load(manifest: Manifest) {
     this.manifest = manifest;
-    // TODO: 需要增加 loadConfig及对应的钩子
-    await LoaderFactory.create(this.container)
-      .loadManifest(manifest);
+    const loaderFactory = await LoaderFactory.create(this.container)
+
+    await this.lifecycleManager.emitHook('configWillLoad');
+    const config = await loaderFactory.loadConfig(manifest);
+    this.config = config;
+    await this.lifecycleManager.emitHook('configDidLoad', config);
+
+    await loaderFactory.loadManifest(manifest);
     await this.lifecycleManager.emitHook('didLoad');
     return this;
   }

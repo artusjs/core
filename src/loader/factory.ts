@@ -1,5 +1,7 @@
 import { Container } from '@artus/injection';
-import { DEFAULT_LOADER } from '../constraints';
+import { ARTUS_DEFAULT_CONFIG_ENV, ARTUS_SERVER_ENV, DEFAULT_LOADER } from '../constraints';
+import { loadFile } from '../utils';
+import { mergeConfig } from '../utils/merge';
 import { Manifest, ManifestItem, LoaderConstructor } from './types';
 
 export class LoaderFactory {
@@ -22,6 +24,48 @@ export class LoaderFactory {
     for (const item of manifest.items) {
       await this.loadItem(item);
     }
+  }
+
+  async loadConfig(manifest: Manifest): Promise<Record<string, any>> {
+    const files = this.getTypeFiles();
+    let envConfigs = {};
+    let defaultConfig = {};
+    for (const file of files) {
+      const configFile = manifest.items.find(item => item.path.endsWith(`${file.path}.ts`));
+      if (!configFile) {
+        continue
+      }
+
+      const currentConfig = await loadFile(configFile.path);
+
+      if (file.type === ARTUS_DEFAULT_CONFIG_ENV.DEFAULT) {
+        defaultConfig = mergeConfig(defaultConfig, currentConfig);
+      } else if (file.type === process.env[ARTUS_SERVER_ENV]) {
+        envConfigs = mergeConfig(envConfigs, currentConfig);
+      }
+    }
+
+    return mergeConfig(defaultConfig, envConfigs);
+  }
+
+
+  // TODO:  暂时先忽略插件中的 config
+  getTypeFiles(fileType: string = 'config'): ManifestItem[] {
+    const files = [{
+      path: `${fileType}.${ARTUS_DEFAULT_CONFIG_ENV.DEFAULT}`,
+      type: ARTUS_DEFAULT_CONFIG_ENV.DEFAULT as string,
+      loader: "module",
+    }];
+    const env = process.env[ARTUS_SERVER_ENV]
+    if (env) {
+      files.push({
+        type: env,
+        path: `${fileType}.${env}`,
+        loader: "module",
+      });
+    }
+
+    return files;
   }
 
   async loadItem(item: ManifestItem): Promise<void> {
