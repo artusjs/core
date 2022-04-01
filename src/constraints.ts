@@ -6,3 +6,11 @@ export const ARTUS_TRIGGER_ID = 'artus#trigger';
 export const ARTUS_EXCEPTION_DEFAULT_LOCALE = 'en';
 
 export const HOOK_META_SYMBOL = Symbol('HookMeta');
+
+export const ARTUS_SERVER_ENV = 'ARTUS_SERVER_ENV';
+
+export enum ARTUS_DEFAULT_CONFIG_ENV {
+  DEV = 'development',
+  PROD = 'production',
+  DEFAULT = 'default',
+}

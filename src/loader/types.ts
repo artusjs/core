@@ -25,6 +25,6 @@ export {
   Manifest,
   ManifestItem,
   LoaderConstructor,
-  Loader
+  Loader,
 };
 
