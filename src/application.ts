@@ -1,12 +1,11 @@
 import { Container, Injectable, Inject } from '@artus/injection';
+import { artusContainer } from '.';
 import { ARTUS_TRIGGER_ID } from './constraints';
 import { ArtusStdError, ExceptionHandler, initException } from './exception';
 import { HookFunction, LifecycleManager } from './lifecycle';
 import { LoaderFactory, Manifest } from './loader';
 import { Trigger } from './trigger';
 import { Application } from './types';
-
-const ROOT_CONTAINER_NAME = 'artus-application-root';
 
 @Injectable()
 export class ArtusApplication implements Application {
@@ -19,12 +18,11 @@ export class ArtusApplication implements Application {
   public exceptionHandler: ExceptionHandler;
 
   public manifest?: Manifest;
+  private container: Container = artusContainer;
   public config?: Record<string, any>;
-  private container: Container;
   private lifecycleManager: LifecycleManager;
 
   constructor() {
-    this.container = new Container(ROOT_CONTAINER_NAME);
     this.lifecycleManager = new LifecycleManager(this);
 
     this.registerHook('didLoad', initException);
