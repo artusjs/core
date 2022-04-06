@@ -1,6 +1,5 @@
 import 'reflect-metadata';
 import assert from 'assert';
-import { getArtusApplication } from '../../src';
 
 describe('test/trigger/timer.test.ts', () => {
   it('[trigger with timer] should run succeed', async () => {
@@ -8,8 +7,7 @@ describe('test/trigger/timer.test.ts', () => {
       main,
       getTaskExecution,
     } = await import('../fixtures/trigger-timer/app');
-    const app = getArtusApplication();
-    await main();
+    const app = await main();
     await new Promise(resolve => setTimeout(resolve, 3000));
     const execution = getTaskExecution();
     assert(execution);

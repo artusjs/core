@@ -1,22 +1,23 @@
-import { Inject } from '@artus/injection';
-import { artusContainer, ArtusApplication, getArtusApplication } from '../../../src';
-import { ApplicationHook, ApplicationHookClass } from '../../../src/decorator';
+import { Inject, Injectable } from '@artus/injection';
+import { ArtusApplication } from '../../../src';
+import { ApplicationHook } from '../../../src/decorator';
 import { Context, Input, Next } from '@artus/pipeline';
 import { EventTrigger } from './eventTrigger';
 import { EventEmitter } from 'events';
+import { ARTUS_TRIGGER_ID } from '../../../src/constraints';
+import { ApplicationLifecycle } from '../../../src/types';
 
-artusContainer.set({ type: EventTrigger });
 let event = new EventEmitter();
 
-@ApplicationHookClass()
-export class ApplicationHookExtension {
-  @Inject(ArtusApplication)
+@Injectable()
+export class ApplicationHookExtension implements ApplicationLifecycle {
+  @Inject(ARTUS_TRIGGER_ID)
   // @ts-ignore
-  app: ArtusApplication;
+  trigger: EventTrigger;
 
   @ApplicationHook()
   async didLoad() {
-    this.app.trigger.use(async (ctx: Context, next: Next) => {
+    this.trigger.use(async (ctx: Context, next: Next) => {
       const { input: { params: { type, payload } } } = ctx;
       if (type !== 'e1') {
         return await next();
@@ -26,7 +27,7 @@ export class ApplicationHookExtension {
       data.payload = payload;
     });
 
-    this.app.trigger.use(async (ctx: Context, next: Next) => {
+    this.trigger.use(async (ctx: Context, next: Next) => {
       const { input: { params: { type, payload } } } = ctx;
       if (type !== 'e2') {
         return await next();
@@ -43,14 +44,14 @@ export class ApplicationHookExtension {
       const input = new Input();
       input.params.type = 'e1';
       input.params.payload = payload;
-      await this.app.trigger.startPipeline(input);
+      await this.trigger.startPipeline(input);
     });
 
     event.on('e2', async payload => {
       const input = new Input();
       input.params.type = 'e2';
       input.params.payload = payload;
-      await this.app.trigger.startPipeline(input);
+      await this.trigger.startPipeline(input);
     });
   }
 
@@ -61,12 +62,17 @@ export class ApplicationHookExtension {
 }
 
 async function main() {
-  const app: ArtusApplication = getArtusApplication();
+  const app: ArtusApplication = new ArtusApplication({
+    trigger: EventTrigger,
+    hookClass: ApplicationHookExtension
+  });
   await app.load({
     rootDir: __dirname,
     items: []
   });
   await app.run();
+
+  return app;
 };
 
 function pub(e: 'e1' | 'e2', p: any) {

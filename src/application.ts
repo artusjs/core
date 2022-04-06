@@ -1,31 +1,45 @@
-import { Container, Injectable, Inject } from '@artus/injection';
-import { artusContainer } from '.';
-import { ARTUS_TRIGGER_ID } from './constraints';
+import { Container } from '@artus/injection';
+import { ARTUS_DEFAULT_CONTAINER, ARTUS_TRIGGER_ID } from './constraints';
 import { ArtusStdError, ExceptionHandler, initException } from './exception';
 import { HookFunction, LifecycleManager } from './lifecycle';
 import { LoaderFactory, Manifest } from './loader';
 import { Trigger } from './trigger';
-import { Application } from './types';
+import { Application, ApplicationInitOptions } from './types';
 
-@Injectable()
-export class ArtusApplication implements Application {
-  @Inject(ARTUS_TRIGGER_ID)
-  // @ts-ignore
-  public trigger: Trigger;
+export const ARTUS_APPLICATION_SYMBOL = 'ArtusApplication';
 
-  @Inject(ExceptionHandler)
-  // @ts-ignore
-  public exceptionHandler: ExceptionHandler;
-
+export class ArtusApplication extends Container implements Application {
   public manifest?: Manifest;
-  private container: Container = artusContainer;
   public config?: Record<string, any>;
   private lifecycleManager: LifecycleManager;
 
-  constructor() {
+  constructor(opts?: ApplicationInitOptions) {
+    super(opts?.containerName ?? ARTUS_DEFAULT_CONTAINER);
+
+    this.set({ id: ARTUS_APPLICATION_SYMBOL, value: this });
+    this.set({ id: ARTUS_TRIGGER_ID, type: opts?.trigger ?? Trigger });
+    this.set({ type: ExceptionHandler });
+    this.set({ type: ArtusApplication });
+
+    if (opts?.initClassList) {
+      for (const clazz of opts.initClassList) {
+        this.set({ type: clazz });
+      }
+    }
+
+    if (opts?.hookClass) {
+      this.set({ type: opts?.hookClass });
+    }
+
     this.lifecycleManager = new LifecycleManager(this);
 
+    // Hook Register
     this.registerHook('didLoad', initException);
+
+    // SEEME: 后续插件声明也需要执行下述注册流程
+    if (opts?.hookClass) {
+      this.lifecycleManager.batchRegisterHookByClass(opts.hookClass);
+    }
 
     process.on('SIGINT', () => this.close());
     process.on('SIGTERM', () => this.close());
@@ -34,7 +48,7 @@ export class ArtusApplication implements Application {
 
   async load(manifest: Manifest) {
     this.manifest = manifest;
-    const loaderFactory = await LoaderFactory.create(this.container)
+    const loaderFactory = await LoaderFactory.create(this)
 
     await this.lifecycleManager.emitHook('configWillLoad');
     const config = await loaderFactory.loadConfig(manifest);
@@ -60,11 +74,11 @@ export class ArtusApplication implements Application {
   }
 
   throwException(code: string): void {
-    this.exceptionHandler.throw(code);
+    (this.get(ExceptionHandler) as ExceptionHandler).throw(code);
   }
 
   createException(code: string): ArtusStdError {
-    return this.exceptionHandler.create(code);
+    return (this.get(ExceptionHandler) as ExceptionHandler).create(code);
   }
 }
 

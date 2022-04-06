@@ -13,4 +13,6 @@ export enum ARTUS_DEFAULT_CONFIG_ENV {
   DEV = 'development',
   PROD = 'production',
   DEFAULT = 'default',
-}
+};
+
+export const HOOK_NAME_META_PREFIX = 'hookName:';

@@ -1,12 +1,17 @@
 import path from 'path';
-import { artusContainer, ArtusApplication, getArtusApplication } from '../../../../src';
+import { ArtusApplication } from '../../../../src';
 import { HttpTrigger } from './httpTrigger';
-import { server } from './app';
-
-artusContainer.set({ type: HttpTrigger });
+import { ApplicationHookExtension, server } from './app';
+import KoaApplication from './koaApp';
 
 async function main() {
-  const app: ArtusApplication = getArtusApplication();
+  const app: ArtusApplication = new ArtusApplication({
+    trigger: HttpTrigger,
+    hookClass: ApplicationHookExtension,
+    initClassList: [
+      KoaApplication
+    ]
+  });
   await app.load({
     rootDir: __dirname,
     items: [
@@ -17,6 +22,8 @@ async function main() {
     ]
   });
   await app.run();
+
+  return app;
 };
 
 const isListening = () => server.listening;

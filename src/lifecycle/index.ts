@@ -1,12 +1,12 @@
-import { artusContainer } from '..';
-import { HOOK_META_SYMBOL } from '../constraints';
+import { Constructable } from '@artus/injection';
+import { HOOK_NAME_META_PREFIX } from '../constraints';
 import { Application } from '../types';
 
 export type HookFunction = <T = unknown>(hookProps : {
   app: Application,
   lifecycleManager: LifecycleManager,
   payload?: T
-}) => Promise<void>;
+}) => void|Promise<void>;
 
 export class LifecycleManager {
   hookList: string[] = [
@@ -43,6 +43,22 @@ export class LifecycleManager {
     }
   }
 
+  batchRegisterHookByClass(hookClass: Constructable<any>) {
+    const hookClassInstance = this.app.get(hookClass);
+    const fnMetaKeys = Reflect.getMetadataKeys(hookClass);
+    for (const fnMetaKey of fnMetaKeys) {
+      if (typeof fnMetaKey !== 'string') {
+        continue;
+      }
+      if (!fnMetaKey.startsWith(HOOK_NAME_META_PREFIX)) {
+        continue;
+      }
+      const hookName = Reflect.getMetadata(fnMetaKey, hookClass);
+      const propertyKey = fnMetaKey.slice(HOOK_NAME_META_PREFIX.length);
+      this.registerHook(hookName, hookClassInstance[propertyKey].bind(hookClassInstance));
+    }
+  }
+
   async emitHook<T = unknown>(hookName: string, payload?: T) {
     if (!this.hookFnMap.has(hookName)) {
       return;
@@ -52,15 +68,7 @@ export class LifecycleManager {
       return;
     }
     for (const hookFn of fnList) {
-      let that: any;
-      if (hookFn[HOOK_META_SYMBOL]) {
-        try {
-          that = artusContainer.get(hookFn[HOOK_META_SYMBOL]);
-        } catch (error) {
-          // SEEME: 临时行为，待 injection 的 get 提供参数允许 id 不存在
-        }
-      }
-      await hookFn.call(that, {
+      await hookFn({
         app: this.app,
         lifecycleManager: this,
         payload

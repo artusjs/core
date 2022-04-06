@@ -1,23 +1,24 @@
 import { Server } from 'http';
-import { Inject } from '@artus/injection';
-import { artusContainer, ArtusApplication, getArtusApplication } from '../../../src';
-import { ApplicationHook, ApplicationHookClass } from '../../../src/decorator';
+import { Inject, Injectable } from '@artus/injection';
+import { ArtusApplication } from '../../../src';
+import { ApplicationHook } from '../../../src/decorator';
 import { HttpTrigger } from './httpTrigger';
 import http from 'http';
 import { Context, Input } from '@artus/pipeline';
+import { ARTUS_TRIGGER_ID } from '../../../src/constraints';
+import { ApplicationLifecycle } from '../../../src/types';
 
-artusContainer.set({ type: HttpTrigger });
 let server: Server;
 
-@ApplicationHookClass()
-export class ApplicationHookExtension {
-  @Inject(ArtusApplication)
+@Injectable()
+export class ApplicationHookExtension implements ApplicationLifecycle {
+  @Inject(ARTUS_TRIGGER_ID)
   // @ts-ignore
-  app: ArtusApplication;
+  trigger: HttpTrigger;
 
   @ApplicationHook()
   async didLoad() {
-    this.app.trigger.use(async (ctx: Context) => {
+    this.trigger.use(async (ctx: Context) => {
       const { data } = ctx.output;
       data.content = { title: 'Hello Artus' };
     });
@@ -29,7 +30,7 @@ export class ApplicationHookExtension {
       .createServer(async (req: http.IncomingMessage, res: http.ServerResponse) => {
         const input = new Input();
         input.params = { req, res };
-        await this.app.trigger.startPipeline(input);
+        await this.trigger.startPipeline(input);
       })
       .listen(3001)
   }
@@ -41,12 +42,17 @@ export class ApplicationHookExtension {
 }
 
 async function main() {
-  const app: ArtusApplication = getArtusApplication();
+  const app: ArtusApplication = new ArtusApplication({
+    trigger: HttpTrigger,
+    hookClass: ApplicationHookExtension
+  });
   await app.load({
     rootDir: __dirname,
     items: []
   });
   await app.run();
+
+  return app;
 };
 
 const isListening = () => server.listening;

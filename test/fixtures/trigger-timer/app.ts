@@ -1,10 +1,11 @@
-import { Inject } from '@artus/injection';
-import { artusContainer, ArtusApplication, getArtusApplication } from '../../../src';
-import { ApplicationHook, ApplicationHookClass } from '../../../src/decorator';
+import { Inject, Injectable } from '@artus/injection';
+import { ArtusApplication } from '../../../src';
+import { ApplicationHook } from '../../../src/decorator';
 import { Context, Input } from '@artus/pipeline';
 import { TimerTrigger } from './timerTrigger';
+import { ARTUS_TRIGGER_ID } from '../../../src/constraints';
+import { ApplicationLifecycle } from '../../../src/types';
 
-artusContainer.set({ type: TimerTrigger });
 let timers: any[] = [];
 let execution = {
   task1: {
@@ -17,15 +18,15 @@ let execution = {
   }
 };
 
-@ApplicationHookClass()
-export class ApplicationHookExtension {
-  @Inject(ArtusApplication)
+@Injectable()
+export class ApplicationHookExtension implements ApplicationLifecycle {
+  @Inject(ARTUS_TRIGGER_ID)
   // @ts-ignore
-  app: ArtusApplication;
+  trigger: TimerTrigger;
 
   @ApplicationHook()
   async didLoad() {
-    this.app.trigger.use(async (ctx: Context) => {
+    this.trigger.use(async (ctx: Context) => {
       const { input: { params } } = ctx;
 
       // task 1
@@ -47,13 +48,13 @@ export class ApplicationHookExtension {
     timers.push(setInterval(async () => {
       const input = new Input();
       input.params = { task: '1', execution };
-      await this.app.trigger.startPipeline(input);
+      await this.trigger.startPipeline(input);
     }, 100));
 
     timers.push(setInterval(async () => {
       const input = new Input();
       input.params = { task: '2', execution };
-      await this.app.trigger.startPipeline(input);
+      await this.trigger.startPipeline(input);
     }, 200));
   }
 
@@ -64,12 +65,17 @@ export class ApplicationHookExtension {
 }
 
 async function main() {
-  const app: ArtusApplication = getArtusApplication();
+  const app: ArtusApplication = new ArtusApplication({
+    trigger: TimerTrigger,
+    hookClass: ApplicationHookExtension
+  });
   await app.load({
     rootDir: __dirname,
     items: []
   });
   await app.run();
+
+  return app;
 };
 
 function getTaskExecution() {
