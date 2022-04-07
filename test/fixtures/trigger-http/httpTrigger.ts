@@ -1,13 +1,9 @@
 import { Stream } from 'stream';
-import { Injectable, ScopeEnum } from "@artus/injection";
-import { Context, Next } from "@artus/pipeline";
-import { Trigger } from "../../../src";
-import { ARTUS_TRIGGER_ID } from "../../../src/constraints";
+import { Context, Next } from '@artus/pipeline';
+import { Trigger } from '../../../src';
+import { DefineTrigger } from '../../../src/decorator';
 
-@Injectable({
-  id: ARTUS_TRIGGER_ID,
-  scope: ScopeEnum.SINGLETON
-})
+@DefineTrigger()
 export class HttpTrigger extends Trigger {
   constructor() {
     super();

@@ -19,7 +19,6 @@ export class ArtusApplication extends Container implements Application {
     this.set({ id: ARTUS_APPLICATION_SYMBOL, value: this });
     this.set({ id: ARTUS_TRIGGER_ID, type: opts?.trigger ?? Trigger });
     this.set({ type: ExceptionHandler });
-    this.set({ type: ArtusApplication });
 
     if (opts?.initClassList) {
       for (const clazz of opts.initClassList) {

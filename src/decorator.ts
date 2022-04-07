@@ -1,4 +1,5 @@
-import { HOOK_NAME_META_PREFIX } from './constraints';
+import { Injectable, ScopeEnum } from '@artus/injection';
+import { ARTUS_TRIGGER_ID, HOOK_NAME_META_PREFIX } from './constraints';
 
 export function ApplicationHook(hookName?: string): PropertyDecorator {
   return (target: any, propertyKey: string|symbol) => {
@@ -8,3 +9,10 @@ export function ApplicationHook(hookName?: string): PropertyDecorator {
     Reflect.defineMetadata(`${HOOK_NAME_META_PREFIX}${propertyKey}`, hookName ?? propertyKey, target.constructor);
   };
 };
+
+export function DefineTrigger(): ClassDecorator {
+  return Injectable({
+    id: ARTUS_TRIGGER_ID,
+    scope: ScopeEnum.SINGLETON
+  });
+}
