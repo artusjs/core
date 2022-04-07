@@ -1,12 +1,11 @@
 import { DefaultContext } from 'koa';
 import { Server } from 'http';
 import { Inject, Injectable } from '@artus/injection';
-import { ArtusApplication, ARTUS_APPLICATION_SYMBOL } from '../../../../src';
+import { ArtusApplication, ArtusInjectEnum } from '../../../../src';
 import { ApplicationHook } from '../../../../src/decorator';
 import { Context, Input } from '@artus/pipeline';
 import KoaApplication from './koaApp';
 import TestController from './controllers/test';
-import { ARTUS_TRIGGER_ID } from '../../../../src/constraints';
 import { HttpTrigger } from './httpTrigger';
 import { ApplicationLifecycle } from '../../../../src/types';
 
@@ -14,11 +13,11 @@ export let server: Server;
 
 @Injectable()
 export class ApplicationHookExtension implements ApplicationLifecycle {
-  @Inject(ARTUS_APPLICATION_SYMBOL)
+  @Inject(ArtusInjectEnum.Application)
   // @ts-ignore
   app: ArtusApplication;
 
-  @Inject(ARTUS_TRIGGER_ID)
+  @Inject(ArtusInjectEnum.Trigger)
   // @ts-ignore
   trigger: HttpTrigger;
 

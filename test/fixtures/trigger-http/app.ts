@@ -1,18 +1,17 @@
 import { Server } from 'http';
 import { Inject, Injectable } from '@artus/injection';
-import { ArtusApplication } from '../../../src';
+import { ArtusApplication, ArtusInjectEnum } from '../../../src';
 import { ApplicationHook } from '../../../src/decorator';
 import { HttpTrigger } from './httpTrigger';
 import http from 'http';
 import { Context, Input } from '@artus/pipeline';
-import { ARTUS_TRIGGER_ID } from '../../../src/constraints';
 import { ApplicationLifecycle } from '../../../src/types';
 
 let server: Server;
 
 @Injectable()
 export class ApplicationHookExtension implements ApplicationLifecycle {
-  @Inject(ARTUS_TRIGGER_ID)
+  @Inject(ArtusInjectEnum.Trigger)
   // @ts-ignore
   trigger: HttpTrigger;
 

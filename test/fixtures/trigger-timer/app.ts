@@ -1,9 +1,8 @@
 import { Inject, Injectable } from '@artus/injection';
-import { ArtusApplication } from '../../../src';
+import { ArtusApplication, ArtusInjectEnum } from '../../../src';
 import { ApplicationHook } from '../../../src/decorator';
 import { Context, Input } from '@artus/pipeline';
 import { TimerTrigger } from './timerTrigger';
-import { ARTUS_TRIGGER_ID } from '../../../src/constraints';
 import { ApplicationLifecycle } from '../../../src/types';
 
 let timers: any[] = [];
@@ -20,7 +19,7 @@ let execution = {
 
 @Injectable()
 export class ApplicationHookExtension implements ApplicationLifecycle {
-  @Inject(ARTUS_TRIGGER_ID)
+  @Inject(ArtusInjectEnum.Trigger)
   // @ts-ignore
   trigger: TimerTrigger;
 

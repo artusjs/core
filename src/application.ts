@@ -1,12 +1,10 @@
 import { Container } from '@artus/injection';
-import { ARTUS_DEFAULT_CONTAINER, ARTUS_TRIGGER_ID } from './constraints';
+import { ArtusInjectEnum } from './constraints';
 import { ArtusStdError, ExceptionHandler, initException } from './exception';
 import { HookFunction, LifecycleManager } from './lifecycle';
 import { LoaderFactory, Manifest } from './loader';
 import { Trigger } from './trigger';
 import { Application, ApplicationInitOptions } from './types';
-
-export const ARTUS_APPLICATION_SYMBOL = 'ArtusApplication';
 
 export class ArtusApplication extends Container implements Application {
   public manifest?: Manifest;
@@ -14,10 +12,10 @@ export class ArtusApplication extends Container implements Application {
   private lifecycleManager: LifecycleManager;
 
   constructor(opts?: ApplicationInitOptions) {
-    super(opts?.containerName ?? ARTUS_DEFAULT_CONTAINER);
+    super(opts?.containerName ?? ArtusInjectEnum.DefaultContainerName);
 
-    this.set({ id: ARTUS_APPLICATION_SYMBOL, value: this });
-    this.set({ id: ARTUS_TRIGGER_ID, type: opts?.trigger ?? Trigger });
+    this.set({ id: ArtusInjectEnum.Application, value: this });
+    this.set({ id: ArtusInjectEnum.Trigger, type: opts?.trigger ?? Trigger });
     this.set({ type: ExceptionHandler });
 
     if (opts?.initClassList) {

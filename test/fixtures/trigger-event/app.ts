@@ -1,17 +1,16 @@
 import { Inject, Injectable } from '@artus/injection';
-import { ArtusApplication } from '../../../src';
+import { ArtusApplication, ArtusInjectEnum } from '../../../src';
 import { ApplicationHook } from '../../../src/decorator';
 import { Context, Input, Next } from '@artus/pipeline';
 import { EventTrigger } from './eventTrigger';
 import { EventEmitter } from 'events';
-import { ARTUS_TRIGGER_ID } from '../../../src/constraints';
 import { ApplicationLifecycle } from '../../../src/types';
 
 let event = new EventEmitter();
 
 @Injectable()
 export class ApplicationHookExtension implements ApplicationLifecycle {
-  @Inject(ARTUS_TRIGGER_ID)
+  @Inject(ArtusInjectEnum.Trigger)
   // @ts-ignore
   trigger: EventTrigger;
 

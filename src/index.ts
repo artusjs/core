@@ -3,6 +3,9 @@ export {
   Injectable
 } from '@artus/injection';
 
+export {
+  ArtusInjectEnum
+} from './constraints';
 export * from './loader';
 export * from './lifecycle';
 export * from './exception';
