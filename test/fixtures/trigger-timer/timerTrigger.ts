@@ -3,7 +3,7 @@ import { Trigger } from '../../../src';
 import { DefineTrigger } from '../../../src/decorator';
 
 @DefineTrigger()
-export class TimerTrigger extends Trigger {
+export default class TimerTrigger extends Trigger {
   constructor() {
     super();
     // first of all

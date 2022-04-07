@@ -3,7 +3,7 @@ import { Trigger } from '../../../src';
 import { DefineTrigger } from '../../../src/decorator';
 
 @DefineTrigger()
-export class EventTrigger extends Trigger {
+export default class EventTrigger extends Trigger {
   constructor() {
     super();
     // first of all

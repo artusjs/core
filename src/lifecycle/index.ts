@@ -44,7 +44,6 @@ export class LifecycleManager {
   }
 
   batchRegisterHookByClass(hookClass: Constructable<any>) {
-    const hookClassInstance = this.app.get(hookClass);
     const fnMetaKeys = Reflect.getMetadataKeys(hookClass);
     for (const fnMetaKey of fnMetaKeys) {
       if (typeof fnMetaKey !== 'string') {
@@ -55,7 +54,10 @@ export class LifecycleManager {
       }
       const hookName = Reflect.getMetadata(fnMetaKey, hookClass);
       const propertyKey = fnMetaKey.slice(HOOK_NAME_META_PREFIX.length);
-      this.registerHook(hookName, hookClassInstance[propertyKey].bind(hookClassInstance));
+      this.registerHook(hookName, (...args) => {
+        const hookClassInstance = this.app.get(hookClass);
+        hookClassInstance[propertyKey].call(hookClassInstance, ...args);
+      });
     }
   }
 

@@ -1,8 +1,9 @@
+import path from 'path';
 import { Server } from 'http';
 import { Inject, Injectable } from '@artus/injection';
 import { ArtusApplication, ArtusInjectEnum } from '../../../src';
 import { ApplicationHook } from '../../../src/decorator';
-import { HttpTrigger } from './httpTrigger';
+import HttpTrigger from './httpTrigger';
 import http from 'http';
 import { Context, Input } from '@artus/pipeline';
 import { ApplicationLifecycle } from '../../../src/types';
@@ -42,12 +43,16 @@ export class ApplicationHookExtension implements ApplicationLifecycle {
 
 async function main() {
   const app: ArtusApplication = new ArtusApplication({
-    trigger: HttpTrigger,
     hookClass: ApplicationHookExtension
   });
   await app.load({
     rootDir: __dirname,
-    items: []
+    items: [
+      {
+        loader: 'module',
+        path: path.resolve(__dirname, './httpTrigger')
+      }
+    ]
   });
   await app.run();
 

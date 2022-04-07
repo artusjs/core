@@ -1,12 +1,10 @@
 import path from 'path';
 import { ArtusApplication } from '../../../../src';
-import { HttpTrigger } from './httpTrigger';
 import { ApplicationHookExtension, server } from './app';
 import KoaApplication from './koaApp';
 
 async function main() {
   const app: ArtusApplication = new ArtusApplication({
-    trigger: HttpTrigger,
     hookClass: ApplicationHookExtension,
     initClassList: [
       KoaApplication
@@ -17,7 +15,11 @@ async function main() {
     items: [
       {
         loader: 'module',
-        path: path.resolve(__dirname, './controllers/test.ts')
+        path: path.resolve(__dirname, './httpTrigger')
+      },
+      {
+        loader: 'module',
+        path: path.resolve(__dirname, './controllers/test')
       }
     ]
   });

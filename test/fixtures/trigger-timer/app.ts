@@ -1,8 +1,9 @@
+import path from 'path';
 import { Inject, Injectable } from '@artus/injection';
 import { ArtusApplication, ArtusInjectEnum } from '../../../src';
 import { ApplicationHook } from '../../../src/decorator';
 import { Context, Input } from '@artus/pipeline';
-import { TimerTrigger } from './timerTrigger';
+import TimerTrigger from './timerTrigger';
 import { ApplicationLifecycle } from '../../../src/types';
 
 let timers: any[] = [];
@@ -65,12 +66,16 @@ export class ApplicationHookExtension implements ApplicationLifecycle {
 
 async function main() {
   const app: ArtusApplication = new ArtusApplication({
-    trigger: TimerTrigger,
     hookClass: ApplicationHookExtension
   });
   await app.load({
     rootDir: __dirname,
-    items: []
+    items: [
+      {
+        loader: 'module',
+        path: path.resolve(__dirname, './timerTrigger')
+      }
+    ]
   });
   await app.run();
 

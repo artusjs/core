@@ -11,7 +11,6 @@ describe('test/trigger/timer.test.ts', () => {
     await new Promise(resolve => setTimeout(resolve, 3000));
     const execution = getTaskExecution();
     assert(execution);
-    console.log(execution);
     // task1
     const task1ExecutionCount = execution.task1.count;
     assert(task1ExecutionCount > 10);

@@ -1,6 +1,6 @@
 import { ArtusStdError } from './error';
 
-export class ExceptionHandler {
+export default class ExceptionHandler {
   throw(code: string): void {
     throw new ArtusStdError(code);
   }

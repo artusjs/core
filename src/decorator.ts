@@ -11,8 +11,8 @@ export function ApplicationHook(hookName?: string): PropertyDecorator {
 };
 
 export function DefineTrigger(): ClassDecorator {
-  return Injectable({
+  return (target:any) => Injectable({
     id: ArtusInjectEnum.Trigger,
     scope: ScopeEnum.SINGLETON
-  });
+  })(target);
 }

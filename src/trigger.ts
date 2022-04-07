@@ -2,7 +2,7 @@ import { Input, Context, MiddlewareInput, Pipeline } from '@artus/pipeline';
 import { DefineTrigger } from './decorator';
 
 @DefineTrigger()
-export class Trigger {
+export default class Trigger {
   private pipeline: Pipeline;
 
   constructor() {

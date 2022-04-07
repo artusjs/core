@@ -1,7 +1,6 @@
 import { Constructable, Container } from '@artus/injection';
 import { HookFunction } from './lifecycle';
 import { Manifest } from './loader';
-import { Trigger } from './trigger';
 
 export interface ApplicationLifecycle {
   configWillLoad?: HookFunction;
@@ -14,7 +13,6 @@ export interface ApplicationLifecycle {
 
 export interface ApplicationInitOptions {
   containerName?: string;
-  trigger?: typeof Trigger;
   initClassList?: Constructable<unknown>[];
   hookClass?: Constructable<ApplicationLifecycle>; // TODO: Replace to lifecycle map
 }

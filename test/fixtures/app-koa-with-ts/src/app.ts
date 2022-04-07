@@ -1,13 +1,15 @@
 import { DefaultContext } from 'koa';
 import { Server } from 'http';
 import { Inject, Injectable } from '@artus/injection';
+import { Context, Input } from '@artus/pipeline';
+
 import { ArtusApplication, ArtusInjectEnum } from '../../../../src';
 import { ApplicationHook } from '../../../../src/decorator';
-import { Context, Input } from '@artus/pipeline';
+import { ApplicationLifecycle } from '../../../../src/types';
+
 import KoaApplication from './koaApp';
 import TestController from './controllers/test';
-import { HttpTrigger } from './httpTrigger';
-import { ApplicationLifecycle } from '../../../../src/types';
+import HttpTrigger from './httpTrigger';
 
 export let server: Server;
 

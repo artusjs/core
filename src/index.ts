@@ -1,3 +1,5 @@
+
+
 export {
   Inject,
   Injectable
@@ -10,7 +12,9 @@ export * from './loader';
 export * from './lifecycle';
 export * from './exception';
 export * from './application';
-export * from './trigger';
+
+import Trigger from './trigger';
+export { Trigger };
 
 export type {
   Manifest

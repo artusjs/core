@@ -1,9 +1,10 @@
+import  path from 'path';
+import { EventEmitter } from 'events';
 import { Inject, Injectable } from '@artus/injection';
 import { ArtusApplication, ArtusInjectEnum } from '../../../src';
 import { ApplicationHook } from '../../../src/decorator';
 import { Context, Input, Next } from '@artus/pipeline';
-import { EventTrigger } from './eventTrigger';
-import { EventEmitter } from 'events';
+import EventTrigger from './eventTrigger';
 import { ApplicationLifecycle } from '../../../src/types';
 
 let event = new EventEmitter();
@@ -62,12 +63,16 @@ export class ApplicationHookExtension implements ApplicationLifecycle {
 
 async function main() {
   const app: ArtusApplication = new ArtusApplication({
-    trigger: EventTrigger,
     hookClass: ApplicationHookExtension
   });
   await app.load({
     rootDir: __dirname,
-    items: []
+    items: [
+      {
+        loader: 'module',
+        path: path.resolve(__dirname, './eventTrigger')
+      }
+    ]
   });
   await app.run();
 
