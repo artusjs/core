@@ -1,3 +1,4 @@
+// import path from 'path';
 import { Container } from '@artus/injection';
 import { ArtusInjectEnum } from './constraints';
 import { ArtusStdError, ExceptionHandler, initException } from './exception';
@@ -10,12 +11,15 @@ export class ArtusApplication extends Container implements Application {
   public manifest?: Manifest;
   public config?: Record<string, any>;
   private lifecycleManager: LifecycleManager;
+  private loaderFactory: LoaderFactory;
 
   constructor(opts?: ApplicationInitOptions) {
     super(opts?.containerName ?? ArtusInjectEnum.DefaultContainerName);
+    this.loaderFactory = LoaderFactory.create(this);
+    this.lifecycleManager = new LifecycleManager(this);
 
     this.set({ id: ArtusInjectEnum.Application, value: this });
-    this.set({ id: ArtusInjectEnum.Trigger, type: opts?.trigger ?? Trigger });
+    this.set({ type: opts?.trigger ?? Trigger });
     this.set({ type: ExceptionHandler });
 
     if (opts?.initClassList) {
@@ -27,8 +31,6 @@ export class ArtusApplication extends Container implements Application {
     if (opts?.hookClass) {
       this.set({ type: opts?.hookClass });
     }
-
-    this.lifecycleManager = new LifecycleManager(this);
 
     // Hook Register
     this.registerHook('didLoad', initException);
@@ -45,14 +47,13 @@ export class ArtusApplication extends Container implements Application {
 
   async load(manifest: Manifest) {
     this.manifest = manifest;
-    const loaderFactory = await LoaderFactory.create(this)
 
     await this.lifecycleManager.emitHook('configWillLoad');
-    const config = await loaderFactory.loadConfig(manifest);
+    const config = await this.loaderFactory.loadConfig(manifest);
     this.config = config;
     await this.lifecycleManager.emitHook('configDidLoad', config);
 
-    await loaderFactory.loadManifest(manifest);
+    await this.loaderFactory.loadManifest(manifest);
     await this.lifecycleManager.emitHook('didLoad');
     return this;
   }
