@@ -45,11 +45,6 @@ export class ArtusApplication extends Container implements Application {
         }
       ]
     });
-    if (this.opts.initClassList) {
-      for (const clazz of this.opts.initClassList) {
-        this.set({ type: clazz });
-      }
-    }
 
     if (this.opts.hookClass) {
       this.set({ type: this.opts.hookClass });

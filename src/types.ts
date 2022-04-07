@@ -13,7 +13,6 @@ export interface ApplicationLifecycle {
 
 export interface ApplicationInitOptions {
   containerName?: string;
-  initClassList?: Constructable<unknown>[];
   hookClass?: Constructable<ApplicationLifecycle>; // TODO: Replace to lifecycle map
 }
 
