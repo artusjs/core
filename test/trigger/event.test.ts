@@ -1,8 +1,8 @@
 import 'reflect-metadata';
 import assert from 'assert';
 
-describe('test/trigger/timer.test.ts', () => {
-  it('[trigger with timer] should run succeed', async () => {
+describe('test/trigger/event.test.ts', () => {
+  it('[trigger with event] should run succeed', async () => {
     const {
       main,
       pub

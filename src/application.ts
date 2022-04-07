@@ -1,16 +1,17 @@
 import path from 'path';
-import { Container } from '@artus/injection';
+import { Constructable, Container } from '@artus/injection';
 import { ArtusInjectEnum } from './constraints';
 import { ArtusStdError, ExceptionHandler, initException } from './exception';
 import { HookFunction, LifecycleManager } from './lifecycle';
 import { LoaderFactory, Manifest } from './loader';
-// import { Trigger } from './trigger';
-import { Application, ApplicationInitOptions } from './types';
+import { Application, ApplicationInitOptions, ApplicationLifecycle } from './types';
+import Trigger from './trigger';
+
+export const appExtMap = new Set<Constructable<ApplicationLifecycle>>();
 
 export class ArtusApplication extends Container implements Application {
   public manifest?: Manifest;
   public config?: Record<string, any>;
-  private opts: ApplicationInitOptions;
   private lifecycleManager: LifecycleManager;
   private loaderFactory: LoaderFactory;
   private defaultClazzLoaded: boolean = false;
@@ -19,13 +20,17 @@ export class ArtusApplication extends Container implements Application {
     super(opts?.containerName ?? ArtusInjectEnum.DefaultContainerName);
     this.loaderFactory = LoaderFactory.create(this);
     this.lifecycleManager = new LifecycleManager(this);
-    this.opts = opts ?? {};
 
     // Default Hook Register
     this.registerHook('didLoad', initException);
+    this.initExtension();
 
     process.on('SIGINT', () => this.close());
     process.on('SIGTERM', () => this.close());
+  }
+
+  get trigger(): Trigger {
+    return this.get(ArtusInjectEnum.Trigger);
   }
 
   async loadDefaultClass() {
@@ -46,14 +51,6 @@ export class ArtusApplication extends Container implements Application {
       ]
     });
 
-    if (this.opts.hookClass) {
-      this.set({ type: this.opts.hookClass });
-    }
-
-    // SEEME: 后续插件声明也需要执行下述注册流程
-    if (this.opts.hookClass) {
-      this.lifecycleManager.batchRegisterHookByClass(this.opts.hookClass);
-    }
     this.defaultClazzLoaded = true;
   }
 
@@ -73,6 +70,12 @@ export class ArtusApplication extends Container implements Application {
     await this.loaderFactory.loadManifest(manifest);
     await this.lifecycleManager.emitHook('didLoad');
     return this;
+  }
+
+  async initExtension() {
+    for (const appExtClazz of appExtMap) {
+      this.lifecycleManager.batchRegisterHookByClass(appExtClazz);
+    }
   }
 
   async run() {

@@ -1,24 +1,24 @@
 import path from 'path';
 import { Server } from 'http';
-import { Inject, Injectable } from '@artus/injection';
-import { ArtusApplication, ArtusInjectEnum } from '../../../src';
-import { ApplicationHook } from '../../../src/decorator';
-import HttpTrigger from './httpTrigger';
+import { ArtusApplication } from '../../../src';
+import { ApplicationExtension, ApplicationHook } from '../../../src/decorator';
 import http from 'http';
 import { Context, Input } from '@artus/pipeline';
 import { ApplicationLifecycle } from '../../../src/types';
 
 let server: Server;
 
-@Injectable()
+@ApplicationExtension()
 export class ApplicationHookExtension implements ApplicationLifecycle {
-  @Inject(ArtusInjectEnum.Trigger)
-  // @ts-ignore
-  trigger: HttpTrigger;
+  app: ArtusApplication;
+
+  constructor(app: ArtusApplication) {
+    this.app = app;
+  }
 
   @ApplicationHook()
   async didLoad() {
-    this.trigger.use(async (ctx: Context) => {
+    this.app.trigger.use(async (ctx: Context) => {
       const { data } = ctx.output;
       data.content = { title: 'Hello Artus' };
     });
@@ -30,7 +30,7 @@ export class ApplicationHookExtension implements ApplicationLifecycle {
       .createServer(async (req: http.IncomingMessage, res: http.ServerResponse) => {
         const input = new Input();
         input.params = { req, res };
-        await this.trigger.startPipeline(input);
+        await this.app.trigger.startPipeline(input);
       })
       .listen(3001)
   }
@@ -42,9 +42,7 @@ export class ApplicationHookExtension implements ApplicationLifecycle {
 }
 
 async function main() {
-  const app: ArtusApplication = new ArtusApplication({
-    hookClass: ApplicationHookExtension
-  });
+  const app: ArtusApplication = new ArtusApplication();
   await app.load({
     rootDir: __dirname,
     items: [

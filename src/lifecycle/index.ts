@@ -43,8 +43,8 @@ export class LifecycleManager {
     }
   }
 
-  batchRegisterHookByClass(hookClass: Constructable<any>) {
-    const fnMetaKeys = Reflect.getMetadataKeys(hookClass);
+  batchRegisterHookByClass(hookClazz: Constructable<any>) {
+    const fnMetaKeys = Reflect.getMetadataKeys(hookClazz);
     for (const fnMetaKey of fnMetaKeys) {
       if (typeof fnMetaKey !== 'string') {
         continue;
@@ -52,12 +52,10 @@ export class LifecycleManager {
       if (!fnMetaKey.startsWith(HOOK_NAME_META_PREFIX)) {
         continue;
       }
-      const hookName = Reflect.getMetadata(fnMetaKey, hookClass);
+      const hookClazzInstance = new hookClazz(this.app);
+      const hookName = Reflect.getMetadata(fnMetaKey, hookClazz);
       const propertyKey = fnMetaKey.slice(HOOK_NAME_META_PREFIX.length);
-      this.registerHook(hookName, (...args) => {
-        const hookClassInstance = this.app.get(hookClass);
-        hookClassInstance[propertyKey].call(hookClassInstance, ...args);
-      });
+      this.registerHook(hookName, hookClazzInstance[propertyKey].bind(hookClazzInstance));
     }
   }
 

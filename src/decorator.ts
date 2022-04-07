@@ -1,5 +1,12 @@
 import { Injectable, ScopeEnum } from '@artus/injection';
 import { ArtusInjectEnum, HOOK_NAME_META_PREFIX } from './constraints';
+import { appExtMap } from './application';
+
+export function ApplicationExtension(): ClassDecorator {
+  return (target: any) => {
+    appExtMap.add(target);
+  };
+};
 
 export function ApplicationHook(hookName?: string): PropertyDecorator {
   return (target: any, propertyKey: string|symbol) => {

@@ -1,9 +1,7 @@
 import path from 'path';
-import { Inject, Injectable } from '@artus/injection';
-import { ArtusApplication, ArtusInjectEnum } from '../../../src';
-import { ApplicationHook } from '../../../src/decorator';
+import { ArtusApplication } from '../../../src';
+import { ApplicationExtension, ApplicationHook } from '../../../src/decorator';
 import { Context, Input } from '@artus/pipeline';
-import TimerTrigger from './timerTrigger';
 import { ApplicationLifecycle } from '../../../src/types';
 
 let timers: any[] = [];
@@ -18,15 +16,17 @@ let execution = {
   }
 };
 
-@Injectable()
+@ApplicationExtension()
 export class ApplicationHookExtension implements ApplicationLifecycle {
-  @Inject(ArtusInjectEnum.Trigger)
-  // @ts-ignore
-  trigger: TimerTrigger;
+  app: ArtusApplication;
+
+  constructor(app: ArtusApplication) {
+    this.app = app;
+  }
 
   @ApplicationHook()
   async didLoad() {
-    this.trigger.use(async (ctx: Context) => {
+    this.app.trigger.use(async (ctx: Context) => {
       const { input: { params } } = ctx;
 
       // task 1
@@ -48,13 +48,13 @@ export class ApplicationHookExtension implements ApplicationLifecycle {
     timers.push(setInterval(async () => {
       const input = new Input();
       input.params = { task: '1', execution };
-      await this.trigger.startPipeline(input);
+      await this.app.trigger.startPipeline(input);
     }, 100));
 
     timers.push(setInterval(async () => {
       const input = new Input();
       input.params = { task: '2', execution };
-      await this.trigger.startPipeline(input);
+      await this.app.trigger.startPipeline(input);
     }, 200));
   }
 
@@ -65,9 +65,7 @@ export class ApplicationHookExtension implements ApplicationLifecycle {
 }
 
 async function main() {
-  const app: ArtusApplication = new ArtusApplication({
-    hookClass: ApplicationHookExtension
-  });
+  const app: ArtusApplication = new ArtusApplication();
   await app.load({
     rootDir: __dirname,
     items: [

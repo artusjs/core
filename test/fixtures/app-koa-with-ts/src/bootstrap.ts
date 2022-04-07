@@ -1,11 +1,9 @@
 import path from 'path';
 import { ArtusApplication } from '../../../../src';
-import { ApplicationHookExtension, server } from './app';
+import { server } from './app';
 
 async function main() {
-  const app: ArtusApplication = new ArtusApplication({
-    hookClass: ApplicationHookExtension
-  });
+  const app: ArtusApplication = new ArtusApplication();
   await app.load({
     rootDir: __dirname,
     items: [
