@@ -1,5 +1,6 @@
 import { DefaultContext } from 'koa';
 import { Server } from 'http';
+import { Container } from '@artus/injection';
 import { Context, Input } from '@artus/pipeline';
 
 import { ArtusApplication } from '../../../../src';
@@ -8,7 +9,6 @@ import { ApplicationLifecycle } from '../../../../src/types';
 
 import KoaApplication from './koaApp';
 import TestController from './controllers/test';
-import { Container } from '@artus/injection';
 
 export let server: Server;
 
