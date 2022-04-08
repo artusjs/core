@@ -22,6 +22,10 @@ export class ApplicationHookExtension implements ApplicationLifecycle {
     this.container = container;
   }
 
+  get koaApp(): KoaApplication {
+    return this.container.get(KoaApplication);
+  }
+
   @ApplicationHook()
   async didLoad() {
     this.app.trigger.use(async (ctx: Context) => {
@@ -29,16 +33,19 @@ export class ApplicationHookExtension implements ApplicationLifecycle {
     });
   }
 
-  @ApplicationHook()
-  willReady() {
-    const koaApp: KoaApplication = this.container.get(KoaApplication);
-    koaApp.use(async (koaCtx: DefaultContext) => {
+  @ApplicationHook('willReady')
+  setKoaMiddleware() {
+    this.koaApp.use(async (koaCtx: DefaultContext) => {
       const input = new Input();
       const { req, res } = koaCtx;
       input.params = { koaCtx, req, res };
       await this.app.trigger.startPipeline(input);
     });
-    server = koaApp.listen(3000);
+  }
+
+  @ApplicationHook('willReady')
+  startKoaServer() {
+    server = this.koaApp.listen(3000);
   }
 
   @ApplicationHook()
