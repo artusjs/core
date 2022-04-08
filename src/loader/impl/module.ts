@@ -1,4 +1,4 @@
-import { Container, InjectableOptions } from '@artus/injection';
+import { Container, InjectableDefinition } from '@artus/injection';
 import { DefineLoader } from '../decorator';
 import { ManifestItem, Loader } from '../types';
 
@@ -14,7 +14,7 @@ class ModuleLoader implements Loader {
     try {
       const moduleObj = await import(item.path);
       const moduleClazz = moduleObj?.default ?? moduleObj;
-      const opts: Partial<InjectableOptions> = {
+      const opts: Partial<InjectableDefinition> = {
         path: item.path,
         type: moduleClazz
       };
