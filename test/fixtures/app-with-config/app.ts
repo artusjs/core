@@ -1,16 +1,17 @@
 import path from 'path';
 import { Server } from 'http';
 import Koa from 'koa';
-import { getArtusApplication } from '../../../src';
-import { ApplicationHook, ApplicationHookClass } from '../../../src/decorator';
+import { ArtusApplication } from '../../../src';
+import { ApplicationExtension, ApplicationHook } from '../../../src/decorator';
+import { ApplicationLifecycle } from '../../../src/types';
 
 const rootDir = path.resolve(__dirname, './');
 
 let server: Server;
 const koaApp = new Koa();
 
-@ApplicationHookClass()
-export class ApplicationHookExtension {
+@ApplicationExtension()
+export class ApplicationHookExtension implements ApplicationLifecycle {
   testStr: string = 'Hello Artus';
 
   @ApplicationHook()
@@ -29,7 +30,7 @@ export class ApplicationHookExtension {
 }
 
 async function main() {
-  const app = getArtusApplication();
+  const app = new ArtusApplication();
   await app.load({
     rootDir,
     items: [
@@ -43,6 +44,7 @@ async function main() {
       }
     ]
   });
+  return app;
 };
 
 

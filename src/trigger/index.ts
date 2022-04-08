@@ -1,12 +1,8 @@
-import { Injectable, ScopeEnum } from "@artus/injection";
-import { Input, Context, MiddlewareInput, Pipeline } from "@artus/pipeline";
-import { ARTUS_TRIGGER_ID } from "./constraints";
+import { Input, Context, MiddlewareInput, Pipeline } from '@artus/pipeline';
+import { DefineTrigger } from './decorator';
 
-@Injectable({
-  id: ARTUS_TRIGGER_ID,
-  scope: ScopeEnum.SINGLETON
-})
-export class Trigger {
+@DefineTrigger()
+export default class Trigger {
   private pipeline: Pipeline;
 
   constructor() {

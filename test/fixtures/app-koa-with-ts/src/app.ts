@@ -1,48 +1,50 @@
 import { DefaultContext } from 'koa';
 import { Server } from 'http';
-import { Inject } from '@artus/injection';
-import { ArtusApplication, artusContainer } from '../../../../src';
-import { ApplicationHook, ApplicationHookClass } from '../../../../src/decorator';
+import { Container } from '@artus/injection';
 import { Context, Input } from '@artus/pipeline';
+
+import { ArtusApplication } from '../../../../src';
+import { ApplicationExtension, ApplicationHook, WithApplication, WithContainer } from '../../../../src/decorator';
+import { ApplicationLifecycle } from '../../../../src/types';
+
 import KoaApplication from './koaApp';
 import TestController from './controllers/test';
-import { ARTUS_TRIGGER_ID } from '../../../../src/constraints';
-import { HttpTrigger } from './httpTrigger';
 
 export let server: Server;
 
-artusContainer.set({ type: KoaApplication });
-
-@ApplicationHookClass()
-export default class ApplicationHookExtension {
-  @Inject(ArtusApplication)
-  // @ts-ignore
+@ApplicationExtension()
+export class ApplicationHookExtension implements ApplicationLifecycle {
   app: ArtusApplication;
+  container: Container;
 
-  @Inject(ARTUS_TRIGGER_ID)
-  // @ts-ignore
-  trigger: HttpTrigger;
+  constructor(@WithApplication() app: ArtusApplication, @WithContainer() container: Container) {
+    this.app = app;
+    this.container = container;
+  }
 
-  @Inject(KoaApplication)
-  // @ts-ignore
-  koaApp: KoaApplication;
-
-  @ApplicationHook()
-  async didLoad() {
-    this.trigger.use(async (ctx: Context) => {
-      const testController = artusContainer.get(TestController);
-      ctx.output.data = await testController.index();
-    });
+  get koaApp(): KoaApplication {
+    return this.container.get(KoaApplication);
   }
 
   @ApplicationHook()
-  willReady() {
+  async didLoad() {
+    this.app.trigger.use(async (ctx: Context) => {
+      ctx.output.data = await this.container.get(TestController).index();
+    });
+  }
+
+  @ApplicationHook('willReady')
+  setKoaMiddleware() {
     this.koaApp.use(async (koaCtx: DefaultContext) => {
       const input = new Input();
       const { req, res } = koaCtx;
       input.params = { koaCtx, req, res };
-      await this.trigger.startPipeline(input);
+      await this.app.trigger.startPipeline(input);
     });
+  }
+
+  @ApplicationHook('willReady')
+  startKoaServer() {
     server = this.koaApp.listen(3000);
   }
 

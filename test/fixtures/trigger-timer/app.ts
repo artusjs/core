@@ -1,10 +1,9 @@
-import { Inject } from '@artus/injection';
-import { artusContainer, ArtusApplication, getArtusApplication } from '../../../src';
-import { ApplicationHook, ApplicationHookClass } from '../../../src/decorator';
+import path from 'path';
+import { ArtusApplication } from '../../../src';
+import { ApplicationExtension, ApplicationHook, WithApplication } from '../../../src/decorator';
 import { Context, Input } from '@artus/pipeline';
-import { TimerTrigger } from './timerTrigger';
+import { ApplicationLifecycle } from '../../../src/types';
 
-artusContainer.set({ type: TimerTrigger });
 let timers: any[] = [];
 let execution = {
   task1: {
@@ -17,11 +16,13 @@ let execution = {
   }
 };
 
-@ApplicationHookClass()
-export class ApplicationHookExtension {
-  @Inject(ArtusApplication)
-  // @ts-ignore
+@ApplicationExtension()
+export class ApplicationHookExtension implements ApplicationLifecycle {
   app: ArtusApplication;
+
+  constructor(@WithApplication() app: ArtusApplication) {
+    this.app = app;
+  }
 
   @ApplicationHook()
   async didLoad() {
@@ -64,12 +65,19 @@ export class ApplicationHookExtension {
 }
 
 async function main() {
-  const app: ArtusApplication = getArtusApplication();
+  const app: ArtusApplication = new ArtusApplication();
   await app.load({
     rootDir: __dirname,
-    items: []
+    items: [
+      {
+        loader: 'module',
+        path: path.resolve(__dirname, './timerTrigger')
+      }
+    ]
   });
   await app.run();
+
+  return app;
 };
 
 function getTaskExecution() {

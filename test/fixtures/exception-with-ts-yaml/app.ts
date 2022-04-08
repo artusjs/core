@@ -1,13 +1,14 @@
 import { Server } from 'http';
 import Koa from 'koa';
-import { getArtusApplication } from '../../../src';
-import { ApplicationHook, ApplicationHookClass } from '../../../src/decorator';
+import { ArtusApplication } from '../../../src';
+import { ApplicationExtension, ApplicationHook } from '../../../src/decorator';
+import { ApplicationLifecycle } from '../../../src/types';
 
 let server: Server;
 const koaApp = new Koa();
 
-@ApplicationHookClass()
-export class ApplicationHookExtension {
+@ApplicationExtension()
+export class ApplicationHookExtension implements ApplicationLifecycle {
   testStr: string = 'Hello Artus';
 
   @ApplicationHook()
@@ -26,12 +27,13 @@ export class ApplicationHookExtension {
 }
 
 async function main() {
-  const app = getArtusApplication();
+  const app = new ArtusApplication();
   await app.load({
     rootDir: __dirname,
     items: []
   });
   await app.run();
+  return app;
 };
 
 const isListening = () => server.listening;

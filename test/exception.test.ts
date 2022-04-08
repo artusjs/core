@@ -1,6 +1,5 @@
 import 'reflect-metadata';
 import assert from 'assert';
-import { getArtusApplication } from '../src';
 import { ArtusStdError, ErrorCodeUtils, ExceptionHandler } from '../src/exception';
 import { ExceptionItem } from '../src/exception/types';
 
@@ -67,45 +66,49 @@ describe('test/app.test.ts', () => {
 
   describe('app test for ts and yaml', () => {
     it('should run app', async () => {
-      const {
-        main
-      } = await import('./fixtures/exception-with-ts-yaml/app');
-      const app = getArtusApplication();
-      await main();
-
       try {
-        app.throwException('ARTUS:GLOBAL_TEST');
-      } catch (error) {
+        const {
+          main
+        } = await import('./fixtures/exception-with-ts-yaml/app');
+        const app = await main();
+
+        try {
+          app.throwException('ARTUS:GLOBAL_TEST');
+        } catch (error) {
+          assert(error instanceof ArtusStdError);
+          assert(error.code === 'ARTUS:GLOBAL_TEST');
+          assert(error.desc === '全局测试错误，仅用于单元测试');
+          assert(error.detailUrl === 'https://github.com/artusjs/spec');
+        }
+        try {
+          app.throwException('APP:TEST_ERROR');
+        } catch (error) {
+          assert(error instanceof ArtusStdError);
+          assert(error.code === 'APP:TEST_ERROR');
+          assert(error.desc === '这是一个测试用的错误');
+          assert(error.detailUrl === 'https://github.com/artusjs');
+        }
+        try {
+          process.env.ARTUS_ERROR_LOCALE = 'en';
+          app.throwException('ARTUS:GLOBAL_TEST_I18N');
+        } catch (error) {
+          assert(error instanceof ArtusStdError);
+          assert(error.code === 'ARTUS:GLOBAL_TEST_I18N');
+          assert(error.desc === 'This is a test exception, only valid in unit-test');
+          assert(error.detailUrl === 'https://github.com/artusjs/spec');
+        }
+
+        const error = app.createException('ARTUS:GLOBAL_TEST');
         assert(error instanceof ArtusStdError);
         assert(error.code === 'ARTUS:GLOBAL_TEST');
         assert(error.desc === '全局测试错误，仅用于单元测试');
         assert(error.detailUrl === 'https://github.com/artusjs/spec');
-      }
-      try {
-        app.throwException('APP:TEST_ERROR');
-      } catch (error) {
-        assert(error instanceof ArtusStdError);
-        assert(error.code === 'APP:TEST_ERROR');
-        assert(error.desc === '这是一个测试用的错误');
-        assert(error.detailUrl === 'https://github.com/artusjs');
-      }
-      try {
-        process.env.ARTUS_ERROR_LOCALE = 'en';
-        app.throwException('ARTUS:GLOBAL_TEST_I18N');
-      } catch (error) {
-        assert(error instanceof ArtusStdError);
-        assert(error.code === 'ARTUS:GLOBAL_TEST_I18N');
-        assert(error.desc === 'This is a test exception, only valid in unit-test');
-        assert(error.detailUrl === 'https://github.com/artusjs/spec');
-      }
 
-      const error = app.createException('ARTUS:GLOBAL_TEST');
-      assert(error instanceof ArtusStdError);
-      assert(error.code === 'ARTUS:GLOBAL_TEST');
-      assert(error.desc === '全局测试错误，仅用于单元测试');
-      assert(error.detailUrl === 'https://github.com/artusjs/spec');
-
-      await app.close();
+        await app.close();
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
     });
   });
 });

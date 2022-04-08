@@ -1,4 +1,4 @@
-import { Container } from '@artus/injection';
+import { Container, InjectableDefinition } from '@artus/injection';
 import { DefineLoader } from '../decorator';
 import { ManifestItem, Loader } from '../types';
 
@@ -14,12 +14,14 @@ class ModuleLoader implements Loader {
     try {
       const moduleObj = await import(item.path);
       const moduleClazz = moduleObj?.default ?? moduleObj;
-      this.container.set({
-        // id: moduleClazz,
-        id: item.id,
+      const opts: Partial<InjectableDefinition> = {
         path: item.path,
         type: moduleClazz
-      });
+      };
+      if (item.id) {
+        opts.id = item.id;
+      }
+      this.container.set(opts);
     } catch (error) {
       console.error(error);
     }

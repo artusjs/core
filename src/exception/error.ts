@@ -20,7 +20,7 @@ export class ArtusStdError extends Error {
 
   static registerCode(code: string, exceptionItem: ExceptionItem): void {
     if (this.errorCodeMap.has(code)) {
-      console.warn(`[Artus-Exception] Register error-code failed, code is existed.(${code})`);
+      console.log(`[Artus-Exception] Register error-code failed, code is existed.(${code})`);
       return;
     }
     this.errorCodeMap.set(code, exceptionItem);

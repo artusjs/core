@@ -1,15 +1,14 @@
-// import { Injectable } from '@artus/injection';
-import { artusContainer, getArtusApplication } from '.';
-import { HOOK_META_SYMBOL } from './constraints';
-import { Application } from './types';
+import {
+  HOOK_CONSTRUCTOR_PARAMS,
+  HOOK_CONSTRUCTOR_PARAMS_APP,
+  HOOK_CONSTRUCTOR_PARAMS_CONTAINER,
+  HOOK_NAME_META_PREFIX
+} from './constraints';
+import { appExtMap } from './application';
 
-export function ApplicationHookClass(): ClassDecorator {
+export function ApplicationExtension(): ClassDecorator {
   return (target: any) => {
-    // TODO: 待替换为 injection 提供的属性方法
-    target.constructor.prototype.app = getArtusApplication();
-    artusContainer.set({
-      type: target
-    });
+    appExtMap.add(target);
   };
 };
 
@@ -18,9 +17,25 @@ export function ApplicationHook(hookName?: string): PropertyDecorator {
     if (typeof propertyKey === 'symbol') {
       throw new Error(`hookName is not support symbol [${propertyKey.description}]`);
     }
-    const app: Application = getArtusApplication();
-    const hookFn = target[propertyKey];
-    hookFn[HOOK_META_SYMBOL] = target.constructor;
-    app.registerHook(hookName ?? propertyKey, hookFn);
+    Reflect.defineMetadata(`${HOOK_NAME_META_PREFIX}${propertyKey}`, hookName ?? propertyKey, target.constructor);
   };
 };
+
+const WithApplicationExtensionConstructorParams = (tag: string): ParameterDecorator => {
+  return (target: any, _propertyKey: string|symbol, parameterIndex: number) => {
+    const paramsMd = Reflect.getOwnMetadata(HOOK_CONSTRUCTOR_PARAMS, target) ?? [];
+    paramsMd[parameterIndex] = tag;
+    Reflect.defineMetadata(HOOK_CONSTRUCTOR_PARAMS, paramsMd, target);
+  };
+}
+
+export function WithApplication(): ParameterDecorator {
+  return WithApplicationExtensionConstructorParams(HOOK_CONSTRUCTOR_PARAMS_APP);
+}
+
+export function WithContainer(): ParameterDecorator {
+  return WithApplicationExtensionConstructorParams(HOOK_CONSTRUCTOR_PARAMS_CONTAINER);
+}
+
+export * from './loader/decorator';
+export * from './trigger/decorator';

@@ -1,18 +1,19 @@
-import { Inject } from '@artus/injection';
-import { artusContainer, ArtusApplication, getArtusApplication } from '../../../src';
-import { ApplicationHook, ApplicationHookClass } from '../../../src/decorator';
-import { Context, Input, Next } from '@artus/pipeline';
-import { EventTrigger } from './eventTrigger';
+import  path from 'path';
 import { EventEmitter } from 'events';
+import { ArtusApplication } from '../../../src';
+import { ApplicationExtension, ApplicationHook, WithApplication } from '../../../src/decorator';
+import { Context, Input, Next } from '@artus/pipeline';
+import { ApplicationLifecycle } from '../../../src/types';
 
-artusContainer.set({ type: EventTrigger });
 let event = new EventEmitter();
 
-@ApplicationHookClass()
-export class ApplicationHookExtension {
-  @Inject(ArtusApplication)
-  // @ts-ignore
+@ApplicationExtension()
+export class ApplicationHookExtension implements ApplicationLifecycle {
   app: ArtusApplication;
+
+  constructor(@WithApplication() app: ArtusApplication) {
+    this.app = app;
+  }
 
   @ApplicationHook()
   async didLoad() {
@@ -61,12 +62,19 @@ export class ApplicationHookExtension {
 }
 
 async function main() {
-  const app: ArtusApplication = getArtusApplication();
+  const app: ArtusApplication = new ArtusApplication();
   await app.load({
     rootDir: __dirname,
-    items: []
+    items: [
+      {
+        loader: 'module',
+        path: path.resolve(__dirname, './eventTrigger')
+      }
+    ]
   });
   await app.run();
+
+  return app;
 };
 
 function pub(e: 'e1' | 'e2', p: any) {

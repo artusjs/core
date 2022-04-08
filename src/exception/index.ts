@@ -1,3 +1,8 @@
+import ExceptionHandler from './handler';
+
 export * from './error';
-export * from './handler';
 export * from './appHook';
+
+export {
+  ExceptionHandler
+};

@@ -1,22 +1,29 @@
 import path from 'path';
-import { artusContainer, ArtusApplication, getArtusApplication } from '../../../../src';
-import { HttpTrigger } from './httpTrigger';
+import { ArtusApplication } from '../../../../src';
 import { server } from './app';
 
-artusContainer.set({ type: HttpTrigger });
-
 async function main() {
-  const app: ArtusApplication = getArtusApplication();
+  const app: ArtusApplication = new ArtusApplication();
   await app.load({
     rootDir: __dirname,
     items: [
       {
         loader: 'module',
-        path: path.resolve(__dirname, './controllers/test.ts')
+        path: path.resolve(__dirname, './koaApp')
+      },
+      {
+        loader: 'module',
+        path: path.resolve(__dirname, './httpTrigger')
+      },
+      {
+        loader: 'module',
+        path: path.resolve(__dirname, './controllers/test')
       }
     ]
   });
   await app.run();
+
+  return app;
 };
 
 const isListening = () => server.listening;

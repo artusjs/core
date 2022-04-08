@@ -1,15 +1,27 @@
-import { ExceptionHandler } from '.';
 import { HookFunction } from './lifecycle';
 import { Manifest } from './loader';
-import { Trigger } from './trigger';
+import Trigger from './trigger';
+
+export interface ApplicationLifecycle {
+  configWillLoad?: HookFunction;
+  configDidLoad?: HookFunction;
+  didLoad?: HookFunction;
+  willReady?: HookFunction;
+  didReady?: HookFunction;
+  beforeClose?: HookFunction;
+}
+
+export interface ApplicationInitOptions {
+  containerName?: string;
+}
 
 export interface Application {
-  trigger: Trigger;
-  exceptionHandler: ExceptionHandler;
-
   manifest?: Manifest;
+  config?: Record<string, any>;
 
-  load(manifest: Manifest): Promise<Application>;
+  get trigger(): Trigger;
+
+  load(manifest: Manifest): Promise<this>;
   run(): Promise<void>;
   registerHook(hookName: string, hookFn: HookFunction): void;
 }

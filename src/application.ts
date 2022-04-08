@@ -1,49 +1,83 @@
-import { Container, Injectable, Inject } from '@artus/injection';
-import { artusContainer } from '.';
-import { ARTUS_TRIGGER_ID } from './constraints';
+import path from 'path';
+import { Constructable, Container } from '@artus/injection';
+import { ArtusInjectEnum } from './constraints';
 import { ArtusStdError, ExceptionHandler, initException } from './exception';
 import { HookFunction, LifecycleManager } from './lifecycle';
 import { LoaderFactory, Manifest } from './loader';
-import { Trigger } from './trigger';
-import { Application } from './types';
+import { Application, ApplicationInitOptions, ApplicationLifecycle } from './types';
+import Trigger from './trigger';
 
-@Injectable()
+export const appExtMap = new Set<Constructable<ApplicationLifecycle>>();
+
 export class ArtusApplication implements Application {
-  @Inject(ARTUS_TRIGGER_ID)
-  // @ts-ignore
-  public trigger: Trigger;
-
-  @Inject(ExceptionHandler)
-  // @ts-ignore
-  public exceptionHandler: ExceptionHandler;
-
   public manifest?: Manifest;
-  private container: Container = artusContainer;
   public config?: Record<string, any>;
-  private lifecycleManager: LifecycleManager;
 
-  constructor() {
-    this.lifecycleManager = new LifecycleManager(this);
+  protected container: Container;
+  protected lifecycleManager: LifecycleManager;
+  protected loaderFactory: LoaderFactory;
+  protected defaultClazzLoaded: boolean = false;
 
+  constructor(opts?: ApplicationInitOptions) {
+    this.container = new Container(opts?.containerName ?? ArtusInjectEnum.DefaultContainerName);
+    this.lifecycleManager = new LifecycleManager(this, this.container);
+    this.loaderFactory = LoaderFactory.create(this.container);
+
+    // Default Hook Register
     this.registerHook('didLoad', initException);
+    this.initExtension();
 
     process.on('SIGINT', () => this.close());
     process.on('SIGTERM', () => this.close());
   }
 
+  get trigger(): Trigger {
+    return this.container.get(ArtusInjectEnum.Trigger);
+  }
+
+  async loadDefaultClass() {
+    // load Artus default clazz
+    this.container.set({ id: ArtusInjectEnum.Application, value: this });
+
+    await this.loaderFactory.loadManifest({
+      rootDir: __dirname,
+      items: [
+        {
+          loader: 'module',
+          path: path.resolve(__dirname, './trigger')
+        },
+        {
+          loader: 'module',
+          path: path.resolve(__dirname, './exception/handler')
+        }
+      ]
+    });
+
+    this.defaultClazzLoaded = true;
+  }
 
   async load(manifest: Manifest) {
+    if (!this.defaultClazzLoaded) {
+      await this.loadDefaultClass();
+    }
+
+    // Load user manifest
     this.manifest = manifest;
-    const loaderFactory = await LoaderFactory.create(this.container)
 
     await this.lifecycleManager.emitHook('configWillLoad');
-    const config = await loaderFactory.loadConfig(manifest);
+    const config = await this.loaderFactory.loadConfig(manifest);
     this.config = config;
     await this.lifecycleManager.emitHook('configDidLoad', config);
 
-    await loaderFactory.loadManifest(manifest);
+    await this.loaderFactory.loadManifest(manifest);
     await this.lifecycleManager.emitHook('didLoad');
     return this;
+  }
+
+  async initExtension() {
+    for (const appExtClazz of appExtMap) {
+      this.lifecycleManager.batchRegisterHookByClass(appExtClazz);
+    }
   }
 
   async run() {
@@ -60,11 +94,11 @@ export class ArtusApplication implements Application {
   }
 
   throwException(code: string): void {
-    this.exceptionHandler.throw(code);
+    (this.container.get(ExceptionHandler) as ExceptionHandler).throw(code);
   }
 
   createException(code: string): ArtusStdError {
-    return this.exceptionHandler.create(code);
+    return (this.container.get(ExceptionHandler) as ExceptionHandler).create(code);
   }
 }
 

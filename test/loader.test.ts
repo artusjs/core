@@ -11,7 +11,7 @@ describe('test/loader.test.ts', () => {
       const loaderFactory = LoaderFactory.create(container);
       const manifest = require('./fixtures/module-with-ts/src/index').default;
       await loaderFactory.loadManifest(manifest);
-      assert(container.get('testServiceA').testMethod() === 'Hello Artus');
+      assert((container.get('testServiceA') as any).testMethod() === 'Hello Artus');
     });
   });
   describe('module with js', () => {
@@ -25,7 +25,7 @@ describe('test/loader.test.ts', () => {
           return container.get(properName);
         }
       });
-      assert(container.get('testServiceA').testMethod(appProxy) === 'Hello Artus');
+      assert((container.get('testServiceA') as any).testMethod(appProxy) === 'Hello Artus');
     });
   });
 });

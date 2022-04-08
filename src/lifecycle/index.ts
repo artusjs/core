@@ -1,12 +1,17 @@
-import { artusContainer } from '..';
-import { HOOK_META_SYMBOL } from '../constraints';
+import { Constructable, Container } from '@artus/injection';
 import { Application } from '../types';
+import {
+  HOOK_CONSTRUCTOR_PARAMS,
+  HOOK_CONSTRUCTOR_PARAMS_APP,
+  HOOK_CONSTRUCTOR_PARAMS_CONTAINER,
+  HOOK_NAME_META_PREFIX
+} from '../constraints';
 
 export type HookFunction = <T = unknown>(hookProps : {
   app: Application,
   lifecycleManager: LifecycleManager,
   payload?: T
-}) => Promise<void>;
+}) => void|Promise<void>;
 
 export class LifecycleManager {
   hookList: string[] = [
@@ -19,9 +24,11 @@ export class LifecycleManager {
   ];
   hookFnMap: Map<string, HookFunction[]> = new Map();
   private app: Application;
+  private container: Container;
 
-  constructor(app: Application) {
+  constructor(app: Application, container: Container) {
     this.app = app;
+    this.container = container;
   }
 
   insertHook(existHookName: string, newHookName: string) {
@@ -43,6 +50,24 @@ export class LifecycleManager {
     }
   }
 
+  batchRegisterHookByClass(hookClazz: Constructable<any>) {
+    const fnMetaKeys = Reflect.getMetadataKeys(hookClazz);
+    const constructorParams = Reflect.getMetadata(HOOK_CONSTRUCTOR_PARAMS, hookClazz) ?? [];
+    const paramsMap = {
+      [HOOK_CONSTRUCTOR_PARAMS_APP]: this.app,
+      [HOOK_CONSTRUCTOR_PARAMS_CONTAINER]: this.container
+    };
+    const hookClazzInstance = new hookClazz(...constructorParams.map((param) => paramsMap[param]));
+    for (const fnMetaKey of fnMetaKeys) {
+      if (typeof fnMetaKey !== 'string' || !fnMetaKey.startsWith(HOOK_NAME_META_PREFIX)) {
+        continue;
+      }
+      const hookName = Reflect.getMetadata(fnMetaKey, hookClazz);
+      const propertyKey = fnMetaKey.slice(HOOK_NAME_META_PREFIX.length);
+      this.registerHook(hookName, hookClazzInstance[propertyKey].bind(hookClazzInstance));
+    }
+  }
+
   async emitHook<T = unknown>(hookName: string, payload?: T) {
     if (!this.hookFnMap.has(hookName)) {
       return;
@@ -52,15 +77,7 @@ export class LifecycleManager {
       return;
     }
     for (const hookFn of fnList) {
-      let that: any;
-      if (hookFn[HOOK_META_SYMBOL]) {
-        try {
-          that = artusContainer.get(hookFn[HOOK_META_SYMBOL]);
-        } catch (error) {
-          // SEEME: 临时行为，待 injection 的 get 提供参数允许 id 不存在
-        }
-      }
-      await hookFn.call(that, {
+      await hookFn({
         app: this.app,
         lifecycleManager: this,
         payload
