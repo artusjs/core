@@ -1,5 +1,4 @@
-import { Injectable, ScopeEnum } from '@artus/injection';
-import { ArtusInjectEnum, HOOK_NAME_META_PREFIX } from './constraints';
+import { HOOK_NAME_META_PREFIX } from './constraints';
 import { appExtMap } from './application';
 
 export function ApplicationExtension(): ClassDecorator {
@@ -17,9 +16,5 @@ export function ApplicationHook(hookName?: string): PropertyDecorator {
   };
 };
 
-export function DefineTrigger(): ClassDecorator {
-  return (target:any) => Injectable({
-    id: ArtusInjectEnum.Trigger,
-    scope: ScopeEnum.SINGLETON
-  })(target);
-}
+export * from './loader/decorator';
+export * from './trigger/decorator';
