@@ -17,7 +17,11 @@ async function main() {
       },
       {
         loader: 'module',
-        path: path.resolve(__dirname, './controllers/test')
+        path: path.resolve(__dirname, './controllers/hello')
+      },
+      {
+        loader: 'module',
+        path: path.resolve(__dirname, './services/hello')
       }
     ]
   });

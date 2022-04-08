@@ -8,7 +8,7 @@ import { ApplicationExtension, ApplicationHook, WithApplication, WithContainer }
 import { ApplicationLifecycle } from '../../../../src/types';
 
 import KoaApplication from './koaApp';
-import TestController from './controllers/test';
+import HelloController from './controllers/hello';
 
 export let server: Server;
 
@@ -29,7 +29,11 @@ export class ApplicationHookExtension implements ApplicationLifecycle {
   @ApplicationHook()
   async didLoad() {
     this.app.trigger.use(async (ctx: Context) => {
-      ctx.output.data = await this.container.get(TestController).index();
+      const { koaCtx } = ctx.input.params;
+      // @ts-ignore
+      ctx.container.set({ id: 'headers', value: koaCtx.headers });
+      // @ts-ignore
+      ctx.output.data = await ctx.container.get(HelloController).index();
     });
   }
 

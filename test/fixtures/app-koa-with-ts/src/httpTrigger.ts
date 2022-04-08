@@ -19,5 +19,8 @@ export default class HttpTrigger extends Trigger {
 
     koaCtx.status = data.status || 200;
     koaCtx.body = data.content;
+    for (const [k, v] of Object.entries(data.headers)) {
+      koaCtx.set(k, v);
+    }
   }
 }

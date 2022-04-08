@@ -35,6 +35,11 @@ export class ArtusApplication implements Application {
     return this.container.get(ArtusInjectEnum.Trigger);
   }
 
+  // 兜底方法，不建议对外部使用
+  getContainer(): Container {
+    return this.container;
+  }
+
   async loadDefaultClass() {
     // load Artus default clazz
     this.container.set({ id: ArtusInjectEnum.Application, value: this });
