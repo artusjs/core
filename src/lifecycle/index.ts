@@ -1,6 +1,11 @@
 import { Constructable, Container } from '@artus/injection';
-import { HOOK_NAME_META_PREFIX } from '../constraints';
 import { Application } from '../types';
+import {
+  HOOK_CONSTRUCTOR_PARAMS,
+  HOOK_CONSTRUCTOR_PARAMS_APP,
+  HOOK_CONSTRUCTOR_PARAMS_CONTAINER,
+  HOOK_NAME_META_PREFIX
+} from '../constraints';
 
 export type HookFunction = <T = unknown>(hookProps : {
   app: Application,
@@ -47,14 +52,16 @@ export class LifecycleManager {
 
   batchRegisterHookByClass(hookClazz: Constructable<any>) {
     const fnMetaKeys = Reflect.getMetadataKeys(hookClazz);
+    const constructorParams = Reflect.getMetadata(HOOK_CONSTRUCTOR_PARAMS, hookClazz) ?? [];
+    const paramsMap = {
+      [HOOK_CONSTRUCTOR_PARAMS_APP]: this.app,
+      [HOOK_CONSTRUCTOR_PARAMS_CONTAINER]: this.container
+    };
+    const hookClazzInstance = new hookClazz(...constructorParams.map((param) => paramsMap[param]));
     for (const fnMetaKey of fnMetaKeys) {
-      if (typeof fnMetaKey !== 'string') {
+      if (typeof fnMetaKey !== 'string' || !fnMetaKey.startsWith(HOOK_NAME_META_PREFIX)) {
         continue;
       }
-      if (!fnMetaKey.startsWith(HOOK_NAME_META_PREFIX)) {
-        continue;
-      }
-      const hookClazzInstance = new hookClazz(this.app, this.container);
       const hookName = Reflect.getMetadata(fnMetaKey, hookClazz);
       const propertyKey = fnMetaKey.slice(HOOK_NAME_META_PREFIX.length);
       this.registerHook(hookName, hookClazzInstance[propertyKey].bind(hookClazzInstance));

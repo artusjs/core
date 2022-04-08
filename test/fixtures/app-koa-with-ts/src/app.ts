@@ -3,7 +3,7 @@ import { Server } from 'http';
 import { Context, Input } from '@artus/pipeline';
 
 import { ArtusApplication } from '../../../../src';
-import { ApplicationExtension, ApplicationHook } from '../../../../src/decorator';
+import { ApplicationExtension, ApplicationHook, WithApplication, WithContainer } from '../../../../src/decorator';
 import { ApplicationLifecycle } from '../../../../src/types';
 
 import KoaApplication from './koaApp';
@@ -17,7 +17,7 @@ export class ApplicationHookExtension implements ApplicationLifecycle {
   app: ArtusApplication;
   container: Container;
 
-  constructor(app: ArtusApplication, container: Container) {
+  constructor(@WithApplication() app: ArtusApplication, @WithContainer() container: Container) {
     this.app = app;
     this.container = container;
   }

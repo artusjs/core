@@ -1,4 +1,9 @@
-import { HOOK_NAME_META_PREFIX } from './constraints';
+import {
+  HOOK_CONSTRUCTOR_PARAMS,
+  HOOK_CONSTRUCTOR_PARAMS_APP,
+  HOOK_CONSTRUCTOR_PARAMS_CONTAINER,
+  HOOK_NAME_META_PREFIX
+} from './constraints';
 import { appExtMap } from './application';
 
 export function ApplicationExtension(): ClassDecorator {
@@ -15,6 +20,22 @@ export function ApplicationHook(hookName?: string): PropertyDecorator {
     Reflect.defineMetadata(`${HOOK_NAME_META_PREFIX}${propertyKey}`, hookName ?? propertyKey, target.constructor);
   };
 };
+
+const WithApplicationExtensionConstructorParams = (tag: string): ParameterDecorator => {
+  return (target: any, _propertyKey: string|symbol, parameterIndex: number) => {
+    const paramsMd = Reflect.getOwnMetadata(HOOK_CONSTRUCTOR_PARAMS, target) ?? [];
+    paramsMd[parameterIndex] = tag;
+    Reflect.defineMetadata(HOOK_CONSTRUCTOR_PARAMS, paramsMd, target);
+  };
+}
+
+export function WithApplication(): ParameterDecorator {
+  return WithApplicationExtensionConstructorParams(HOOK_CONSTRUCTOR_PARAMS_APP);
+}
+
+export function WithContainer(): ParameterDecorator {
+  return WithApplicationExtensionConstructorParams(HOOK_CONSTRUCTOR_PARAMS_CONTAINER);
+}
 
 export * from './loader/decorator';
 export * from './trigger/decorator';

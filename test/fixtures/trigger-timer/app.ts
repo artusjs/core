@@ -1,6 +1,6 @@
 import path from 'path';
 import { ArtusApplication } from '../../../src';
-import { ApplicationExtension, ApplicationHook } from '../../../src/decorator';
+import { ApplicationExtension, ApplicationHook, WithApplication } from '../../../src/decorator';
 import { Context, Input } from '@artus/pipeline';
 import { ApplicationLifecycle } from '../../../src/types';
 
@@ -20,7 +20,7 @@ let execution = {
 export class ApplicationHookExtension implements ApplicationLifecycle {
   app: ArtusApplication;
 
-  constructor(app: ArtusApplication) {
+  constructor(@WithApplication() app: ArtusApplication) {
     this.app = app;
   }
 
