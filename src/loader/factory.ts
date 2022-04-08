@@ -16,7 +16,7 @@ export class LoaderFactory {
     this.container = container;
   }
 
-  static create(container): LoaderFactory {
+  static create(container: Container): LoaderFactory {
     return new LoaderFactory(container);
   }
 

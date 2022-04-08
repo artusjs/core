@@ -1,4 +1,4 @@
-import { Constructable } from '@artus/injection';
+import { Constructable, Container } from '@artus/injection';
 import { HOOK_NAME_META_PREFIX } from '../constraints';
 import { Application } from '../types';
 
@@ -19,9 +19,11 @@ export class LifecycleManager {
   ];
   hookFnMap: Map<string, HookFunction[]> = new Map();
   private app: Application;
+  private container: Container;
 
-  constructor(app: Application) {
+  constructor(app: Application, container: Container) {
     this.app = app;
+    this.container = container;
   }
 
   insertHook(existHookName: string, newHookName: string) {
@@ -52,7 +54,7 @@ export class LifecycleManager {
       if (!fnMetaKey.startsWith(HOOK_NAME_META_PREFIX)) {
         continue;
       }
-      const hookClazzInstance = new hookClazz(this.app);
+      const hookClazzInstance = new hookClazz(this.app, this.container);
       const hookName = Reflect.getMetadata(fnMetaKey, hookClazz);
       const propertyKey = fnMetaKey.slice(HOOK_NAME_META_PREFIX.length);
       this.registerHook(hookName, hookClazzInstance[propertyKey].bind(hookClazzInstance));

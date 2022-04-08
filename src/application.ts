@@ -9,17 +9,19 @@ import Trigger from './trigger';
 
 export const appExtMap = new Set<Constructable<ApplicationLifecycle>>();
 
-export class ArtusApplication extends Container implements Application {
+export class ArtusApplication implements Application {
   public manifest?: Manifest;
   public config?: Record<string, any>;
-  private lifecycleManager: LifecycleManager;
-  private loaderFactory: LoaderFactory;
-  private defaultClazzLoaded: boolean = false;
+
+  protected container: Container;
+  protected lifecycleManager: LifecycleManager;
+  protected loaderFactory: LoaderFactory;
+  protected defaultClazzLoaded: boolean = false;
 
   constructor(opts?: ApplicationInitOptions) {
-    super(opts?.containerName ?? ArtusInjectEnum.DefaultContainerName);
-    this.loaderFactory = LoaderFactory.create(this);
-    this.lifecycleManager = new LifecycleManager(this);
+    this.container = new Container(opts?.containerName ?? ArtusInjectEnum.DefaultContainerName);
+    this.lifecycleManager = new LifecycleManager(this, this.container);
+    this.loaderFactory = LoaderFactory.create(this.container);
 
     // Default Hook Register
     this.registerHook('didLoad', initException);
@@ -30,12 +32,12 @@ export class ArtusApplication extends Container implements Application {
   }
 
   get trigger(): Trigger {
-    return this.get(ArtusInjectEnum.Trigger);
+    return this.container.get(ArtusInjectEnum.Trigger);
   }
 
   async loadDefaultClass() {
     // load Artus default clazz
-    this.set({ id: ArtusInjectEnum.Application, value: this });
+    this.container.set({ id: ArtusInjectEnum.Application, value: this });
 
     await this.loaderFactory.loadManifest({
       rootDir: __dirname,
@@ -92,11 +94,11 @@ export class ArtusApplication extends Container implements Application {
   }
 
   throwException(code: string): void {
-    (this.get(ExceptionHandler) as ExceptionHandler).throw(code);
+    (this.container.get(ExceptionHandler) as ExceptionHandler).throw(code);
   }
 
   createException(code: string): ArtusStdError {
-    return (this.get(ExceptionHandler) as ExceptionHandler).create(code);
+    return (this.container.get(ExceptionHandler) as ExceptionHandler).create(code);
   }
 }
 

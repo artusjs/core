@@ -1,4 +1,3 @@
-import { Container } from '@artus/injection';
 import { HookFunction } from './lifecycle';
 import { Manifest } from './loader';
 import Trigger from './trigger';
@@ -16,7 +15,7 @@ export interface ApplicationInitOptions {
   containerName?: string;
 }
 
-export interface Application extends Container {
+export interface Application {
   manifest?: Manifest;
   config?: Record<string, any>;
 
