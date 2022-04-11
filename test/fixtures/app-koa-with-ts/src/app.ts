@@ -30,10 +30,7 @@ export class ApplicationHookExtension implements ApplicationLifecycle {
   async didLoad() {
     this.app.trigger.use(async (ctx: Context) => {
       const { koaCtx } = ctx.input.params;
-      // TODO: Pipeline may need expose container
-      // @ts-ignore
       ctx.container.set({ id: 'headers', value: koaCtx.headers });
-      // @ts-ignore
       ctx.output.data = await ctx.container.get(HelloController).index();
     });
   }
