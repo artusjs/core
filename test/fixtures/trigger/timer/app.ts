@@ -1,8 +1,8 @@
 import path from 'path';
-import { ArtusApplication } from '../../../src';
-import { ApplicationExtension, ApplicationHook, WithApplication } from '../../../src/decorator';
+import { ArtusApplication } from '../../../../src';
+import { ApplicationExtension, ApplicationHook, WithApplication } from '../../../../src/decorator';
 import { Context, Input } from '@artus/pipeline';
-import { ApplicationLifecycle } from '../../../src/types';
+import { ApplicationLifecycle } from '../../../../src/types';
 
 let timers: any[] = [];
 let execution = {

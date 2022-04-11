@@ -1,10 +1,10 @@
 import path from 'path';
 import { Server } from 'http';
-import { ArtusApplication } from '../../../src';
-import { ApplicationExtension, ApplicationHook, WithApplication } from '../../../src/decorator';
+import { ArtusApplication } from '../../../../src';
+import { ApplicationExtension, ApplicationHook, WithApplication } from '../../../../src/decorator';
 import http from 'http';
 import { Context, Input } from '@artus/pipeline';
-import { ApplicationLifecycle } from '../../../src/types';
+import { ApplicationLifecycle } from '../../../../src/types';
 
 let server: Server;
 

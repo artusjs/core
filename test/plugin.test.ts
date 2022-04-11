@@ -2,21 +2,23 @@ import 'reflect-metadata';
 import path from 'path';
 import { ArtusPlugin, PluginFactory } from '../src';
 
+const pluginPrefix = 'fixtures/plugins';
+
 describe('test/app.test.ts', () => {
   describe('app with config', () => {
     it('should load plugin with dep order', async () => {
       const mockPluginConfig = {
         'plugin-a': {
           enable: true,
-          path: path.resolve(__dirname, './fixtures/plugin-a'),
+          path: path.resolve(__dirname, `${pluginPrefix}/plugin-a`),
         },
         'plugin-b': {
           enable: true,
-          path: path.resolve(__dirname, './fixtures/plugin-b'),
+          path: path.resolve(__dirname, `${pluginPrefix}/plugin-b`),
         },
         'plugin-c': {
           enable: true,
-          path: path.resolve(__dirname, './fixtures/plugin-c'),
+          path: path.resolve(__dirname, `${pluginPrefix}/plugin-c`),
         }
       }
       const pluginList = await PluginFactory.createFromConfig(mockPluginConfig);
@@ -27,28 +29,28 @@ describe('test/app.test.ts', () => {
       });
       expect(pluginList.map((plugin) => plugin.name)).toStrictEqual(['plugin-c', 'plugin-b', 'plugin-a']);
     });
-  
+
     it('should not load plugin with wrong order', async () => {
       const mockPluginConfig = {
         'plugin-a': {
           enable: true,
-          path: path.resolve(__dirname, './fixtures/plugin-a'),
+          path: path.resolve(__dirname, `${pluginPrefix}/plugin-a`),
         },
         'plugin-b': {
           enable: true,
-          path: path.resolve(__dirname, './fixtures/plugin-b'),
+          path: path.resolve(__dirname, `${pluginPrefix}/plugin-b`),
         },
         'plugin-c': {
           enable: true,
-          path: path.resolve(__dirname, './fixtures/plugin-c'),
+          path: path.resolve(__dirname, `${pluginPrefix}/plugin-c`),
         },
         'plugin-wrong-a': {
           enable: true,
-          path: path.resolve(__dirname, './fixtures/plugin-wrong-a'),
+          path: path.resolve(__dirname, `${pluginPrefix}/plugin-wrong-a`),
         },
         'plugin-wrong-b': {
           enable: true,
-          path: path.resolve(__dirname, './fixtures/plugin-wrong-b'),
+          path: path.resolve(__dirname, `${pluginPrefix}/plugin-wrong-b`),
         }
       }
       expect(async () => {
