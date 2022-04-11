@@ -11,6 +11,7 @@ export {
 export * from './loader';
 export * from './lifecycle';
 export * from './exception';
+export * from './plugin';
 export * from './application';
 
 import Trigger from './trigger';
