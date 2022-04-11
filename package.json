@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "build": "tsc",
-    "test": "jest",
+    "test": "jest --detectOpenHandles",
     "ci": "npm run test"
   },
   "repository": {
@@ -32,7 +32,7 @@
   },
   "dependencies": {
     "@artus/injection": "^0.1.1",
-    "@artus/pipeline": "^0.1.2",
+    "@artus/pipeline": "^0.1.6",
     "deepmerge": "^4.2.2",
     "js-yaml": "^4.1.0"
   },

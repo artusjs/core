@@ -6,11 +6,12 @@ describe('test/app.test.ts', () => {
   describe('app koa with ts', () => {
     it('should run app', async () => {
       // Skip Controller
-      const TestController = await import('./fixtures/app-koa-with-ts/src/controllers/test');
-      assert(TestController);
-      expect(await new TestController.default().index()).toStrictEqual({
+      const HelloController = await import('./fixtures/app-koa-with-ts/src/controllers/hello');
+      assert(HelloController);
+      expect(await new HelloController.default().index()).toStrictEqual({
         content: 'Hello Artus',
-        status: 200
+        status: 200,
+        headers: {}
       });
 
       try {
@@ -19,11 +20,16 @@ describe('test/app.test.ts', () => {
           isListening
         } = await import('./fixtures/app-koa-with-ts/src/bootstrap');
         const app = await main();
-        const testResponse = await axios.get('http://127.0.0.1:3000');
-        assert(testResponse.status === 200);
-        assert(testResponse.data === 'Hello Artus');
+        const testResponse = await axios.get('http://127.0.0.1:3000', {
+          headers: {
+            'x-hello-artus': 'true'
+          }
+        });
+        expect(testResponse.status).toBe(200);
+        expect(testResponse.data).toBe('Hello Artus');
+        expect(testResponse.headers?.['x-hello-artus']).toBe('true');
         await app.close();
-        assert(!isListening());
+        expect(isListening()).toBeFalsy();
       } catch (error) {
         throw error;
       }
