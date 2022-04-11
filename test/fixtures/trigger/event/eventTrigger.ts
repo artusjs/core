@@ -1,6 +1,6 @@
 import { Context, Next } from '@artus/pipeline';
-import { Trigger } from '../../../src';
-import { DefineTrigger } from '../../../src/decorator';
+import { Trigger } from '../../../../src';
+import { DefineTrigger } from '../../../../src/decorator';
 
 @DefineTrigger()
 export default class EventTrigger extends Trigger {

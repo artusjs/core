@@ -1,9 +1,9 @@
 import  path from 'path';
 import { EventEmitter } from 'events';
-import { ArtusApplication } from '../../../src';
-import { ApplicationExtension, ApplicationHook, WithApplication } from '../../../src/decorator';
+import { ArtusApplication } from '../../../../src';
+import { ApplicationExtension, ApplicationHook, WithApplication } from '../../../../src/decorator';
 import { Context, Input, Next } from '@artus/pipeline';
-import { ApplicationLifecycle } from '../../../src/types';
+import { ApplicationLifecycle } from '../../../../src/types';
 
 let event = new EventEmitter();
 
