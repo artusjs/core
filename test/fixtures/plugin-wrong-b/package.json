@@ -1,0 +1,7 @@
+{
+  "name": "@artus/test-plugin-wrong-b",
+  "artusjsPlugin": {
+    "name": "plugin-wrong-b",
+    "dependencies": [ "plugin-wrong-a" ]
+  }
+}

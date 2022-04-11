@@ -29,5 +29,10 @@ export function topologicalSort(pluginInstanceMap: Map<string, Plugin>, pluginDe
       }
     }
   }
+
+  if (res.length !== pluginInstanceMap.size) {
+    const diffPlugin = [...pluginInstanceMap.keys()].filter((name) => !res.includes(name));
+    throw new Error(`There is a cycle in the dependencies, wrong plugin is ${diffPlugin.join(',')}.`);
+  }
   return res;
 }
