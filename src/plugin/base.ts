@@ -1,6 +1,6 @@
 import { Plugin, PluginConfigItem, PluginMetadata } from "./types";
 
-export class BasePlugin implements Plugin {
+export abstract class BasePlugin implements Plugin {
   public name: string;
   public enable: boolean;
   public importPath: string;
@@ -16,7 +16,7 @@ export class BasePlugin implements Plugin {
     this.enable = configItem.enable ?? false;
   }
 
-  async init() {}
+  abstract init(): Promise<void>;
 
   checkDepExisted(map: Map<string, BasePlugin>): void {
     const depPluginNames = [

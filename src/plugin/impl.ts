@@ -9,7 +9,8 @@ export class ArtusPlugin extends BasePlugin {
     try {
       pkgJson = await import(this.importPath + '/package.json');
     } catch (error) {
-      throw new Error(`${this.name} is not have a package.json file`);
+      // compatible with custom plugins in projects without package.json
+      return;
     }
     if (!pkgJson?.artusjsPlugin) {
       throw new Error(`${this.name} is not an Artus plugin`);
