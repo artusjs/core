@@ -22,7 +22,8 @@ export class BasePlugin implements Plugin {
 
   checkPluginStatus(allPlugins: PluginMap, checks: string[], optional: boolean) {
     for (const pluginName of checks) {
-      if (!allPlugins.has(pluginName)) {
+      const instance = allPlugins.get(pluginName);
+      if (!instance || !instance.enable) {
         if (optional) {
           // TODO: use artus logger instead
           console.warn(`Plugin ${this.name} need have optional dependence: ${pluginName}.`)
