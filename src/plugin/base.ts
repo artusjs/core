@@ -1,5 +1,7 @@
 import { Plugin, PluginConfigItem, PluginMetadata } from "./types";
 
+type PluginMap = Map<string, BasePlugin>;
+
 export class BasePlugin implements Plugin {
   public name: string;
   public enable: boolean;
@@ -16,18 +18,24 @@ export class BasePlugin implements Plugin {
     this.enable = configItem.enable ?? false;
   }
 
-  async init() {}
+  async init() { }
 
-  checkDepExisted(map: Map<string, BasePlugin>): void {
-    const depPluginNames = [
-      ...(this.metadata.dependencies ?? []),
-      ...(this.metadata.optionalDependencies ?? []),
-    ];
-    for (const pluginName of depPluginNames) {
-      if (!map.has(pluginName)) {
-        throw new Error(`Plugin ${this.name} need have plugin ${pluginName} dependencies.`);
+  checkPluginStatus(allPlugins: PluginMap, checks: string[], optional: boolean) {
+    for (const pluginName of checks) {
+      if (!allPlugins.has(pluginName)) {
+        if (optional) {
+          // TODO: use artus logger instead
+          console.warn(`Plugin ${this.name} need have optional dependence: ${pluginName}.`)
+        } else {
+          throw new Error(`Plugin ${this.name} need have dependence: ${pluginName}.`);
+        }
       }
     }
+  }
+
+  checkDepExisted(map: PluginMap): void {
+    this.checkPluginStatus(map, this.metadata.dependencies ?? [], false);
+    this.checkPluginStatus(map, this.metadata.optionalDependencies ?? [], true);
   }
 
   getDepEdgeList(): [string, string][] {
