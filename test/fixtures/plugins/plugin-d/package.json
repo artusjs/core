@@ -1,0 +1,9 @@
+{
+  "name": "@artus/test-plugin-d",
+  "artusjsPlugin": {
+    "name": "plugin-d",
+    "optionalDependencies": [
+      "plugin-e"
+    ]
+  }
+}
