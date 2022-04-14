@@ -20,3 +20,19 @@ export const HOOK_CONSTRUCTOR_PARAMS = 'appHook:constructorParams';
 export const HOOK_CONSTRUCTOR_PARAMS_APP = 'appHook:constructorParams:app';
 export const HOOK_CONSTRUCTOR_PARAMS_CONTAINER = 'appHook:constructorParams:container';
 export const HOOK_NAME_META_PREFIX = 'hookName:';
+
+export const DEFAULT_EXCLUDES = [
+  'test',
+  'node_modules',
+  '.*',
+  'tsconfig*.json',
+  '*.d.ts',
+  'jest.config.*',
+  'package.json',
+  'meta.*',
+  'LICENSE'
+];
+export const PLUGIN_CONFIG_PATTERN = 'plugin.*';
+export const CONFIG_PATTERN = 'config.*';
+export const PLUGIN_META = 'meta';
+export const PACKAGE_JSON = 'package.json';
