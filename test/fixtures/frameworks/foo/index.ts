@@ -15,7 +15,11 @@ export class FrameworkFoo extends ArtusApplication {
       items: [
         {
           loader: 'module',
-          path: path.resolve(__dirname, './httpTrigger')
+          path: path.resolve(__dirname, './src/trigger/http')
+        },
+        {
+          loader: 'module',
+          path: path.resolve(__dirname, './src/controller/hello')
         }
       ]
     });

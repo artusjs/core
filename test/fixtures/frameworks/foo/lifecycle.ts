@@ -2,8 +2,9 @@ import { Server } from 'http';
 import http from 'http';
 import { ApplicationExtension, ApplicationHook, WithApplication } from '../../../../src/decorator';
 import { ApplicationLifecycle } from '../../../../src/types';
-import { Context, Input } from '@artus/pipeline';
+import { Input } from '@artus/pipeline';
 import { ArtusApplication } from '../../../../src';
+import HttpTrigger, { registerController } from './src/trigger/http';
 
 export let server: Server;
 
@@ -17,10 +18,8 @@ export class ApplicationHookExtension implements ApplicationLifecycle {
 
   @ApplicationHook()
   async didLoad() {
-    this.app.trigger.use(async (ctx: Context) => {
-      const { data } = ctx.output;
-      data.content = { title: 'Hello Artus' };
-    });
+    // register controller
+    registerController(this.app.trigger as HttpTrigger);
   }
 
   @ApplicationHook()

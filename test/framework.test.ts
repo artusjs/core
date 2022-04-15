@@ -9,7 +9,7 @@ describe('test/trigger/http.test.ts', () => {
     } = await import('./fixtures/artus-application/app');
     const app = await main();
     assert(app.isListening());
-    const testResponse = await axios.get('http://127.0.0.1:3001');
+    const testResponse = await axios.get('http://127.0.0.1:3001/home');
     assert(testResponse.status === 200);
     assert(testResponse.data.title === 'Hello Artus');
     await app.close();
