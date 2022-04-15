@@ -1,5 +1,6 @@
 import { Context } from '@artus/pipeline';
 import { HttpController, HttpMethod, HTTPMethodEnum } from '../../../frameworks/foo/src/trigger/http';
+import { WithContext } from '../../../../../src/decorator';
 
 @HttpController()
 export default class Hello {
@@ -7,7 +8,7 @@ export default class Hello {
     method: HTTPMethodEnum.GET,
     path: '/home'
   })
-  async index(ctx: Context) {
+  async index(@WithContext() ctx: Context) {
     const { params: { config } } = ctx.input;
     const { data } = ctx.output;
     data.content = { title: `Hello Artus ${config.name}` };

@@ -4,6 +4,7 @@ import { Context, Next } from '@artus/pipeline';
 import { Trigger } from '../../../../../../src';
 import { DefineTrigger } from '../../../../../../src/decorator';
 import { Constructable } from '@artus/injection';
+import { HOOK_CONSTRUCTOR_PARAMS, HOOK_PARAMS_CONTEXT } from '../../../../../../src/constraints';
 
 export const enum HTTPMethodEnum {
   GET = 'GET',
@@ -80,7 +81,6 @@ export function registerController(trigger: HttpTrigger) {
   for (const controller of controllerMap) {
     const { prefix, clazz } = controller;
     const fnMetaKeys = Reflect.getMetadataKeys(clazz);
-    const instance: any = new clazz();
 
     for (let key of fnMetaKeys) {
       if (!key.startsWith(HOOK_HTTP_META_PREFIX)) {
@@ -90,13 +90,18 @@ export function registerController(trigger: HttpTrigger) {
       // register controller
       const { method, path } = Reflect.getMetadata(key, clazz);
       key = key.replace(HOOK_HTTP_META_PREFIX, '');
-      const target = instance[key];
 
       // match router
       trigger.use(async (ctx: Context, next: Next) => {
         const { input: { params: { req } } } = ctx;
         if (req.url === `${prefix}${path}` && req.method === method) {
-          await target(ctx);
+          const instance: any = new clazz();
+          const target = instance[key];
+          const params = Reflect.getMetadata(HOOK_CONSTRUCTOR_PARAMS, target) ?? [];
+          const paramsMap = {
+            [HOOK_PARAMS_CONTEXT]: ctx
+          };
+          await target(...params.map((param) => paramsMap[param]));
           return;
         }
         await next();
