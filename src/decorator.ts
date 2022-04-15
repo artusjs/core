@@ -4,11 +4,10 @@ import {
   HOOK_CONSTRUCTOR_PARAMS_CONTAINER,
   HOOK_NAME_META_PREFIX
 } from './constraints';
-import { appExtMap } from './application';
 
 export function ApplicationExtension(): ClassDecorator {
-  return (target: any) => {
-    appExtMap.add(target);
+  return (_target: any) => {
+    // Ready to remove?
   };
 };
 

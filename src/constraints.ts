@@ -3,6 +3,8 @@ export const DEFAULT_LOADER = 'module';
 export const enum ArtusInjectEnum {
   Application = 'artus#application',
   Trigger = 'artus#trigger',
+  LifecycleManager = 'artus#lifecycle-manager',
+  Config = 'artus#config',
   DefaultContainerName = 'artus#default_container',
 }
 

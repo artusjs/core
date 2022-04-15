@@ -1,11 +1,10 @@
-import path from 'path';
 import { ArtusApplication } from '../../../../src';
 import { ApplicationExtension, ApplicationHook, WithApplication } from '../../../../src/decorator';
 import { Context, Input } from '@artus/pipeline';
 import { ApplicationLifecycle } from '../../../../src/types';
 
 let timers: any[] = [];
-let execution = {
+export let execution = {
   task1: {
     count: 0,
     cost: 0,
@@ -17,7 +16,7 @@ let execution = {
 };
 
 @ApplicationExtension()
-export class ApplicationHookExtension implements ApplicationLifecycle {
+export default class ApplicationHookExtension implements ApplicationLifecycle {
   app: ArtusApplication;
 
   constructor(@WithApplication() app: ArtusApplication) {
@@ -63,28 +62,3 @@ export class ApplicationHookExtension implements ApplicationLifecycle {
     timers.forEach(clearInterval);
   }
 }
-
-async function main() {
-  const app: ArtusApplication = new ArtusApplication();
-  await app.load({
-    rootDir: __dirname,
-    items: [
-      {
-        loader: 'module',
-        path: path.resolve(__dirname, './timerTrigger')
-      }
-    ]
-  });
-  await app.run();
-
-  return app;
-};
-
-function getTaskExecution() {
-  return execution;
-}
-
-export {
-  main,
-  getTaskExecution
-};

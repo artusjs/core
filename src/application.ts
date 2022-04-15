@@ -1,17 +1,14 @@
-import path from 'path';
-import { Constructable, Container } from '@artus/injection';
+import { Container } from '@artus/injection';
 import { ArtusInjectEnum } from './constraints';
-import { ArtusStdError, ExceptionHandler, initException } from './exception';
+import { ArtusStdError, ExceptionHandler } from './exception';
 import { HookFunction, LifecycleManager } from './lifecycle';
 import { LoaderFactory, Manifest } from './loader';
-import { Application, ApplicationInitOptions, ApplicationLifecycle } from './types';
+import { Application, ApplicationInitOptions } from './types';
 import Trigger from './trigger';
-
-export const appExtMap = new Set<Constructable<ApplicationLifecycle>>();
+import ConfigurationHandler from './configuration';
 
 export class ArtusApplication implements Application {
   public manifest?: Manifest;
-  public config?: Record<string, any>;
 
   protected container: Container;
   protected lifecycleManager: LifecycleManager;
@@ -23,16 +20,24 @@ export class ArtusApplication implements Application {
     this.lifecycleManager = new LifecycleManager(this, this.container);
     this.loaderFactory = LoaderFactory.create(this.container);
 
-    // Default Hook Register
-    this.registerHook('didLoad', initException);
-    this.initExtension();
-
     process.on('SIGINT', () => this.close());
     process.on('SIGTERM', () => this.close());
   }
 
+  get config(): Record<string, any> {
+    return this.container.get(ArtusInjectEnum.Config);
+  }
+
   get trigger(): Trigger {
     return this.container.get(ArtusInjectEnum.Trigger);
+  }
+
+  get exceptionHandler(): ExceptionHandler {
+    return this.container.get(ExceptionHandler);
+  }
+
+  get configurationHandler(): ConfigurationHandler {
+    return this.container.get(ConfigurationHandler);
   }
 
   // 兜底方法，不建议对外部使用
@@ -43,20 +48,12 @@ export class ArtusApplication implements Application {
   async loadDefaultClass() {
     // load Artus default clazz
     this.container.set({ id: ArtusInjectEnum.Application, value: this });
+    this.container.set({ id: ArtusInjectEnum.LifecycleManager, value: this.lifecycleManager });
 
-    await this.loaderFactory.loadManifest({
-      rootDir: __dirname,
-      items: [
-        {
-          loader: 'module',
-          path: path.resolve(__dirname, './trigger')
-        },
-        {
-          loader: 'module',
-          path: path.resolve(__dirname, './exception/handler')
-        }
-      ]
-    });
+    // SEEME: 暂时使用 set 进行注入，后续考虑更改为 Loader
+    this.container.set({ type: ConfigurationHandler });
+    this.container.set({ type: Trigger });
+    this.container.set({ type: ExceptionHandler });
 
     this.defaultClazzLoaded = true;
   }
@@ -69,20 +66,11 @@ export class ArtusApplication implements Application {
     // Load user manifest
     this.manifest = manifest;
 
-    await this.lifecycleManager.emitHook('configWillLoad');
-    const config = await this.loaderFactory.loadConfig(manifest);
-    this.config = config;
-    await this.lifecycleManager.emitHook('configDidLoad', config);
-
     await this.loaderFactory.loadManifest(manifest);
-    await this.lifecycleManager.emitHook('didLoad');
-    return this;
-  }
 
-  async initExtension() {
-    for (const appExtClazz of appExtMap) {
-      this.lifecycleManager.batchRegisterHookByClass(appExtClazz);
-    }
+    await this.lifecycleManager.emitHook('didLoad');
+
+    return this;
   }
 
   async run() {
@@ -99,11 +87,11 @@ export class ArtusApplication implements Application {
   }
 
   throwException(code: string): void {
-    (this.container.get(ExceptionHandler) as ExceptionHandler).throw(code);
+    this.exceptionHandler.throw(code);
   }
 
   createException(code: string): ArtusStdError {
-    return (this.container.get(ExceptionHandler) as ExceptionHandler).create(code);
+    return this.exceptionHandler.create(code);
   }
 }
 

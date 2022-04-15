@@ -13,7 +13,7 @@ import HelloController from './controllers/hello';
 export let server: Server;
 
 @ApplicationExtension()
-export class ApplicationHookExtension implements ApplicationLifecycle {
+export default class ApplicationHookExtension implements ApplicationLifecycle {
   app: ArtusApplication;
   container: Container;
 

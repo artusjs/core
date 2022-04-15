@@ -6,7 +6,7 @@ describe('test/trigger/timer.test.ts', () => {
     const {
       main,
       getTaskExecution,
-    } = await import('../fixtures/trigger/timer/app');
+    } = await import('../fixtures/trigger/timer/bootstrap');
     const app = await main();
     await new Promise(resolve => setTimeout(resolve, 3000));
     const execution = getTaskExecution();

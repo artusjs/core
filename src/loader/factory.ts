@@ -1,8 +1,9 @@
 import { Container } from '@artus/injection';
-import { ARTUS_DEFAULT_CONFIG_ENV, ARTUS_SERVER_ENV, DEFAULT_LOADER } from '../constraints';
-import { loadFile } from '../utils';
-import { mergeConfig } from '../utils/merge';
+import { ArtusInjectEnum, DEFAULT_LOADER } from '../constraints';
+import { PluginFactory } from '../plugin';
 import { Manifest, ManifestItem, LoaderConstructor } from './types';
+import ConfigurationHandler from '../configuration';
+import { LifecycleManager } from '../lifecycle';
 
 export class LoaderFactory {
   private container: Container;
@@ -21,57 +22,64 @@ export class LoaderFactory {
   }
 
   async loadManifest(manifest: Manifest): Promise<void> {
-    for (const item of manifest.items) {
-      await this.loadItem(item);
-    }
-  }
+    const lifecycleManager: LifecycleManager = this.container.get(ArtusInjectEnum.LifecycleManager);
 
-  async loadConfig(manifest: Manifest): Promise<Record<string, any>> {
-    const files = this.getTypeFiles();
-    let envConfigs = {};
-    let defaultConfig = {};
-    for (const file of files) {
-      const configFile = manifest.items.find(item => item.path.endsWith(`${file.path}.ts`));
-      if (!configFile) {
-        continue
+    // 0. Load Plugin Config
+    if (manifest.app.pluginConfig) {
+      await this.loadItemList(manifest.app.pluginConfig);
+    }
+
+    // 1. Calculate Plugin Load Order
+    const configHandler = this.container.get(ConfigurationHandler);
+    const { plugin: pluginConfig } = await configHandler.getMergedConfig();
+    const pluginSortedList = await PluginFactory.createFromConfig(pluginConfig || {});
+
+    const loadUnitList = [
+      'extension', // 2. Load Extension
+      'config', // 3. Load Config
+      'exception', // 4. Load Exception Definition
+      ['items', 'module']// 5. Load Other Items
+    ];
+    for (const loadUnit of loadUnitList) {
+      let manifestKey: string;
+      let loaderName: string;
+      if (Array.isArray(loadUnit)) {
+        [manifestKey, loaderName] = loadUnit;
+      } else {
+        manifestKey = loadUnit;
+        loaderName = loadUnit;
       }
-
-      const currentConfig = await loadFile(configFile.path);
-
-      if (file.type === ARTUS_DEFAULT_CONFIG_ENV.DEFAULT) {
-        defaultConfig = mergeConfig(defaultConfig, currentConfig);
-      } else if (file.type === process.env[ARTUS_SERVER_ENV]) {
-        envConfigs = mergeConfig(envConfigs, currentConfig);
+      if (manifestKey === 'config') {
+        await lifecycleManager.emitHook('configWillLoad');
+      }
+      // load unit from plugins
+      for (const plugin of pluginSortedList) {
+        const pluginManifest = manifest.plugins?.[plugin.name] ?? {};
+        await this.loadItemList(pluginManifest[manifestKey], loaderName);
+      }
+      // load unit from app
+      await this.loadItemList(manifest.app[manifestKey], loaderName);
+      if (manifestKey === 'config') {
+        this.container.set({
+          id: ArtusInjectEnum.Config,
+          value: await configHandler.getMergedConfig()
+        });
+        await lifecycleManager.emitHook('configDidLoad');
       }
     }
-
-    return mergeConfig(defaultConfig, envConfigs);
   }
 
-
-  // TODO:  暂时先忽略插件中的 config
-  getTypeFiles(fileType: string = 'config'): ManifestItem[] {
-    const files = [{
-      path: `${fileType}.${ARTUS_DEFAULT_CONFIG_ENV.DEFAULT}`,
-      type: ARTUS_DEFAULT_CONFIG_ENV.DEFAULT as string,
-      loader: "module",
-    }];
-    const env = process.env[ARTUS_SERVER_ENV]
-    if (env) {
-      files.push({
-        type: env,
-        path: `${fileType}.${env}`,
-        loader: "module",
-      });
+  async loadItemList(itemList: ManifestItem[] = [], loaderName?: string): Promise<void> {
+    for (const item of itemList) {
+      await this.loadItem(item, loaderName);
     }
-
-    return files;
   }
 
-  async loadItem(item: ManifestItem): Promise<void> {
-    const LoaderClazz = LoaderFactory.loaderClazzMap.get(item.loader || DEFAULT_LOADER);
+  async loadItem(item: ManifestItem, loaderName?: string): Promise<void> {
+    loaderName = loaderName || item.loader || DEFAULT_LOADER;
+    const LoaderClazz = LoaderFactory.loaderClazzMap.get(loaderName);
     if (!LoaderClazz) {
-      throw new Error(`Cannot find loader '${item.loader}'`);
+      throw new Error(`Cannot find loader '${loaderName}'`);
     }
     const loader = new LoaderClazz(this.container);
     await loader.load(item);

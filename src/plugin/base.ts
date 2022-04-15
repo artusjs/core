@@ -26,9 +26,9 @@ export class BasePlugin implements Plugin {
       if (!instance || !instance.enable) {
         if (optional) {
           // TODO: use artus logger instead
-          console.warn(`Plugin ${this.name} need have optional dependence: ${pluginName}.`)
+          console.warn(`Plugin ${this.name} need have optional dependencies: ${pluginName}.`)
         } else {
-          throw new Error(`Plugin ${this.name} need have dependence: ${pluginName}.`);
+          throw new Error(`Plugin ${this.name} need have dependencies: ${pluginName}.`);
         }
       }
     }

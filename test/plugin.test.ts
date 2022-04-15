@@ -58,7 +58,7 @@ describe('test/app.test.ts', () => {
       }).rejects.toThrowError(new Error(`There is a cycle in the dependencies, wrong plugin is plugin-wrong-a,plugin-wrong-b.`));
     });
 
-    it('should throw if dependence missing', async () => {
+    it('should throw if dependencies missing', async () => {
       const mockPluginConfig = {
         'plugin-a': {
           enable: true,
@@ -67,10 +67,10 @@ describe('test/app.test.ts', () => {
       }
       expect(async () => {
         await PluginFactory.createFromConfig(mockPluginConfig)
-      }).rejects.toThrowError(new Error(`Plugin plugin-a need have dependence: plugin-b.`));
+      }).rejects.toThrowError(new Error(`Plugin plugin-a need have dependencies: plugin-b.`));
     });
 
-    it('should throw if dependence disabled', async () => {
+    it('should throw if dependencies disabled', async () => {
       const mockPluginConfig = {
         'plugin-a': {
           enable: true,
@@ -87,30 +87,28 @@ describe('test/app.test.ts', () => {
       }
       expect(async () => {
         await PluginFactory.createFromConfig(mockPluginConfig)
-      }).rejects.toThrowError(new Error(`Plugin plugin-a need have dependence: plugin-b.`));
+      }).rejects.toThrowError(new Error(`Plugin plugin-a need have dependencies: plugin-b.`));
     });
 
-    it('should not throw if optional dependence missing', async () => {
+    it('should not throw if optional dependencies missing', async () => {
       const mockPluginConfig = {
         'plugin-d': {
           enable: true,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin-d`),
         }
       }
-      let warnMessage = '';
 
       // mock warn
       const originWarn = console.warn;
-      console.warn = function (msg) {
-        warnMessage = msg;
-      }
+      const mockWarnFn = jest.fn();
+      console.warn = mockWarnFn;
       const pluginList = await PluginFactory.createFromConfig(mockPluginConfig);
       expect(pluginList.length).toEqual(1);
       pluginList.forEach(plugin => {
         expect(plugin).toBeInstanceOf(ArtusPlugin);
         expect(plugin.enable).toBeTruthy();
       });
-      expect(warnMessage === 'Plugin plugin-d need have optional dependence: plugin-e.').toBeTruthy();
+      expect(mockWarnFn).toBeCalledWith(`Plugin plugin-d need have optional dependencies: plugin-e.`);
 
       // restore warn
       console.warn = originWarn;

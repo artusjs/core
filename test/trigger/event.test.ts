@@ -6,7 +6,7 @@ describe('test/trigger/event.test.ts', () => {
     const {
       main,
       pub
-    } = await import('../fixtures/trigger/event/app');
+    } = await import('../fixtures/trigger/event/bootstrap');
     const app = await main();
     let e1Result, e2Result;
     pub('e1', {

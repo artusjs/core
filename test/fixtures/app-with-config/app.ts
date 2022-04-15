@@ -1,17 +1,13 @@
-import path from 'path';
 import { Server } from 'http';
 import Koa from 'koa';
-import { ArtusApplication } from '../../../src';
 import { ApplicationExtension, ApplicationHook } from '../../../src/decorator';
 import { ApplicationLifecycle } from '../../../src/types';
-
-const rootDir = path.resolve(__dirname, './');
 
 let server: Server;
 const koaApp = new Koa();
 
 @ApplicationExtension()
-export class ApplicationHookExtension implements ApplicationLifecycle {
+export default class ApplicationHookExtension implements ApplicationLifecycle {
   testStr: string = 'Hello Artus';
 
   @ApplicationHook()
@@ -28,26 +24,3 @@ export class ApplicationHookExtension implements ApplicationLifecycle {
     server?.close();
   }
 }
-
-async function main() {
-  const app = new ArtusApplication();
-  await app.load({
-    rootDir,
-    items: [
-      {
-        loader: 'module',
-        path: path.resolve(rootDir, './config/config.default.ts')
-      },
-      {
-        loader: 'module',
-        path: path.resolve(rootDir, './config/config.production.ts')
-      }
-    ]
-  });
-  return app;
-};
-
-
-export {
-  main,
-};

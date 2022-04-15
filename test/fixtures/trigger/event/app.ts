@@ -1,14 +1,13 @@
-import  path from 'path';
 import { EventEmitter } from 'events';
 import { ArtusApplication } from '../../../../src';
 import { ApplicationExtension, ApplicationHook, WithApplication } from '../../../../src/decorator';
 import { Context, Input, Next } from '@artus/pipeline';
 import { ApplicationLifecycle } from '../../../../src/types';
 
-let event = new EventEmitter();
+export let event = new EventEmitter();
 
 @ApplicationExtension()
-export class ApplicationHookExtension implements ApplicationLifecycle {
+export default class ApplicationHookExtension implements ApplicationLifecycle {
   app: ArtusApplication;
 
   constructor(@WithApplication() app: ArtusApplication) {
@@ -60,28 +59,3 @@ export class ApplicationHookExtension implements ApplicationLifecycle {
     event.removeAllListeners();
   }
 }
-
-async function main() {
-  const app: ArtusApplication = new ArtusApplication();
-  await app.load({
-    rootDir: __dirname,
-    items: [
-      {
-        loader: 'module',
-        path: path.resolve(__dirname, './eventTrigger')
-      }
-    ]
-  });
-  await app.run();
-
-  return app;
-};
-
-function pub(e: 'e1' | 'e2', p: any) {
-  event.emit(e, p);
-}
-
-export {
-  main,
-  pub
-};
