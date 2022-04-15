@@ -1,4 +1,4 @@
-import { LoaderFactory, configSet } from './factory';
+import { LoaderFactory } from './factory';
 import { Manifest, ManifestItem, Loader, LoaderConstructor } from './types';
 import { DefineLoader } from './decorator';
 

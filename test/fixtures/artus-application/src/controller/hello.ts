@@ -10,7 +10,6 @@ export default class Hello {
   })
   async index(@WithContext() ctx: Context) {
     const { params: { config } } = ctx.input;
-    const { data } = ctx.output;
-    data.content = { title: `Hello Artus ${config.name}` };
+    return { title: `Hello Artus ${config.name}` };
   }
 };

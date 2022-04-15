@@ -5,6 +5,7 @@ import { Trigger } from '../../../../../../src';
 import { DefineTrigger } from '../../../../../../src/decorator';
 import { Constructable } from '@artus/injection';
 import { HOOK_CONSTRUCTOR_PARAMS, HOOK_PARAMS_CONTEXT } from '../../../../../../src/constraints';
+import { Injectable, ScopeEnum } from '@artus/injection';
 
 export const enum HTTPMethodEnum {
   GET = 'GET',
@@ -74,6 +75,7 @@ export function HttpMethod(options: HttpParams): PropertyDecorator {
       throw new Error(`http hookName is not support symbol [${propertyKey.description}]`);
     }
     Reflect.defineMetadata(`${HOOK_HTTP_META_PREFIX}${propertyKey}`, options, target.constructor);
+    Injectable({ scope: ScopeEnum.EXECUTION })(target);
   };
 }
 
@@ -95,14 +97,13 @@ export function registerController(trigger: HttpTrigger) {
       trigger.use(async (ctx: Context, next: Next) => {
         const { input: { params: { req } } } = ctx;
         if (req.url === `${prefix}${path}` && req.method === method) {
-          const instance: any = new clazz();
+          const instance: any = ctx.container.get(clazz);
           const target = instance[key];
-          const params = Reflect.getMetadata(HOOK_CONSTRUCTOR_PARAMS, target) ?? [];
+          const params: any = Reflect.getMetadata(HOOK_CONSTRUCTOR_PARAMS, target) ?? [];
           const paramsMap = {
             [HOOK_PARAMS_CONTEXT]: ctx
           };
-          await target(...params.map((param) => paramsMap[param]));
-          return;
+          ctx.output.data.content = await target(...params.map((param) => paramsMap[param]));
         }
         await next();
       });
