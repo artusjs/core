@@ -1,5 +1,5 @@
-import { DefineFramework } from '../../../../src';
-import { FrameworkFoo as Foo } from '../foo';
+import { DefineFramework } from '../../../../../src';
+import { FrameworkFoo as Foo } from '../../foo/src';
 import path from 'path';
 
 @DefineFramework({

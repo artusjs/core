@@ -6,7 +6,7 @@ describe('test/trigger/http.test.ts', () => {
   it('should run succeed', async () => {
     const {
       main,
-    } = await import('./fixtures/artus-application/app');
+    } = await import('./fixtures/artus-application/src/app');
     const app = await main();
     assert(app.isListening());
     const port = app.config?.port;

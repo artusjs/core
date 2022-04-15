@@ -1,6 +1,6 @@
 import path from 'path';
-import { DefineFramework } from '../../../../src';
-import { ArtusApplication } from '../../../../src';
+import { DefineFramework } from '../../../../../src';
+import { ArtusApplication } from '../../../../../src';
 import { server } from './lifecycle';
 
 type Mod = {
@@ -31,7 +31,7 @@ export class FrameworkFoo extends ArtusApplication {
       items: [
         {
           loader: 'module',
-          path: path.resolve(__dirname, './src/trigger/http')
+          path: path.resolve(__dirname, './trigger/http')
         },
         ...this.mods
       ]

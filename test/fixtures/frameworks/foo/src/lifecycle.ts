@@ -1,10 +1,10 @@
 import { Server } from 'http';
 import http from 'http';
-import { ApplicationExtension, ApplicationHook, WithApplication } from '../../../../src/decorator';
-import { ApplicationLifecycle } from '../../../../src/types';
+import { ApplicationExtension, ApplicationHook, WithApplication } from '../../../../../src/decorator';
+import { ApplicationLifecycle } from '../../../../../src/types';
 import { Input } from '@artus/pipeline';
-import { ArtusApplication } from '../../../../src';
-import HttpTrigger, { registerController } from './src/trigger/http';
+import { ArtusApplication } from '../../../../../src';
+import HttpTrigger, { registerController } from './trigger/http';
 
 export let server: Server;
 

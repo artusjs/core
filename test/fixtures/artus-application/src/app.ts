@@ -1,4 +1,4 @@
-import { FrameworkBar } from '../frameworks/bar';
+import { FrameworkBar } from '../../frameworks/bar/src';
 import { readdir } from 'fs/promises';
 import path from 'path';
 
@@ -11,7 +11,7 @@ class MyArtusApplication extends FrameworkBar {
   }
 
   async loadFile() {
-    const controller = path.join(__dirname, './src/controller');
+    const controller = path.join(__dirname, 'controller');
     await this.scanDir(controller);
 
     const config = path.join(__dirname, 'config');
