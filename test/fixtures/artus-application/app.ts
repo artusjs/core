@@ -1,6 +1,6 @@
-import { FrameworkFoo } from '../frameworks/foo';
+import { FrameworkBar } from '../frameworks/bar';
 
-class MyArtusApplication extends FrameworkFoo {
+class MyArtusApplication extends FrameworkBar {
 
 }
 
