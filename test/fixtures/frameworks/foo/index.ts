@@ -10,7 +10,7 @@ type Mod = {
 
 
 @DefineFramework({
-  path: __dirname
+  configDir: path.join(__dirname, 'config')
 })
 export class FrameworkFoo extends ArtusApplication {
   private mods: Mod[];

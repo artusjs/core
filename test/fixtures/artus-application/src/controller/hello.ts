@@ -8,7 +8,8 @@ export default class Hello {
     path: '/home'
   })
   async index(ctx: Context) {
+    const { params: { config } } = ctx.input;
     const { data } = ctx.output;
-    data.content = { title: 'Hello Artus' };
+    data.content = { title: `Hello Artus ${config.name}` };
   }
 };

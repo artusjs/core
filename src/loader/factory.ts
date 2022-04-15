@@ -4,6 +4,11 @@ import { Manifest, ManifestItem, LoaderConstructor, LoaderHookUnit } from './typ
 import ConfigurationHandler from '../configuration';
 import { LifecycleManager } from '../lifecycle';
 
+export const configSet = {
+  framework: new Set<string>(),
+  plugin: new Set<string>(),
+};
+
 export class LoaderFactory {
   private container: Container;
   private static loaderClazzMap: Map<string, LoaderConstructor> = new Map();
@@ -12,7 +17,7 @@ export class LoaderFactory {
     this.loaderClazzMap.set(loaderName, clazz);
   }
 
-  constructor (container: Container) {
+  constructor(container: Container) {
     this.container = container;
   }
 

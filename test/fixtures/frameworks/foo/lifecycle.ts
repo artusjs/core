@@ -24,13 +24,15 @@ export class ApplicationHookExtension implements ApplicationLifecycle {
 
   @ApplicationHook()
   willReady() {
+    const config = this.app.config ?? {};
+    const port = config.port;
     server = http
       .createServer(async (req: http.IncomingMessage, res: http.ServerResponse) => {
         const input = new Input();
-        input.params = { req, res };
+        input.params = { req, res, config };
         await this.app.trigger.startPipeline(input);
       })
-      .listen(3001)
+      .listen(port);
   }
 
   @ApplicationHook()
