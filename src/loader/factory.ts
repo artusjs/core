@@ -26,7 +26,10 @@ export class LoaderFactory {
 
     // 0. Load Plugin Config
     if (manifest.app.pluginConfig) {
-      await this.loadItemList(manifest.app.pluginConfig);
+      await this.loadItemList(manifest.app.pluginConfig.map(item => ({
+        ...item,
+        manifest: manifest.plugins?.[item.id]
+      })), 'config');
     }
 
     // 1. Calculate Plugin Load Order

@@ -1,5 +1,5 @@
 import { LoaderFactory } from './factory';
-import { Manifest, ManifestItem, Loader, LoaderConstructor } from './types';
+import { Manifest, ManifestItem, ManifestAppUnit, ManifestPluginUnit, Loader, LoaderConstructor } from './types';
 import { DefineLoader } from './decorator';
 
 // Import inner impls
@@ -16,5 +16,7 @@ export {
   Loader,
   LoaderConstructor,
   Manifest,
-  ManifestItem
+  ManifestItem,
+  ManifestAppUnit,
+  ManifestPluginUnit,
 };

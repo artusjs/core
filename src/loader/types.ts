@@ -37,6 +37,8 @@ interface Loader {
 
 export {
   Manifest,
+  ManifestAppUnit,
+  ManifestPluginUnit,
   ManifestItem,
   LoaderConstructor,
   Loader,

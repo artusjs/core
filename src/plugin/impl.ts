@@ -1,3 +1,4 @@
+import compatibleRequire from '../loader/utils/compatible-require';
 import { BasePlugin } from './base';
 
 export class ArtusPlugin extends BasePlugin {
@@ -5,16 +6,15 @@ export class ArtusPlugin extends BasePlugin {
     if (!this.enable) {
       return;
     }
-    let pkgJson: Record<string, any>;
     try {
-      pkgJson = await import(this.importPath + '/package.json');
+      const metaPath = this.manifest.pluginMeta?.path ?? '';
+      if (!metaPath) {
+        throw new Error('Plugin metadata file is not defined at manifest');
+      }
+      this.metadata = await compatibleRequire(metaPath);
     } catch (error) {
-      throw new Error(`${this.name} is not have a package.json file`);
+      throw new Error(`${this.name} is not have a metadata file`);
     }
-    if (!pkgJson?.artusjsPlugin) {
-      throw new Error(`${this.name} is not an Artus plugin`);
-    }
-    this.metadata = pkgJson.artusjsPlugin;
     if (this.metadata.name !== this.name) {
       throw new Error(`${this.name} metadata invalid, name is ${this.metadata.name}`);
     }

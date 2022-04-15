@@ -11,14 +11,35 @@ describe('test/app.test.ts', () => {
         'plugin-a': {
           enable: true,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin-a`),
+          manifest: {
+            pluginMeta: {
+              path: path.resolve(__dirname, `${pluginPrefix}/plugin-a/meta.js`),
+              extname: '.js',
+              filename: 'meta.js',
+            }
+          }
         },
         'plugin-b': {
           enable: true,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin-b`),
+          manifest: {
+            pluginMeta: {
+              path: path.resolve(__dirname, `${pluginPrefix}/plugin-b/meta.js`),
+              extname: '.js',
+              filename: 'meta.js',
+            }
+          }
         },
         'plugin-c': {
           enable: true,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin-c`),
+          manifest: {
+            pluginMeta: {
+              path: path.resolve(__dirname, `${pluginPrefix}/plugin-c/meta.js`),
+              extname: '.js',
+              filename: 'meta.js',
+            }
+          }
         }
       }
       const pluginList = await PluginFactory.createFromConfig(mockPluginConfig);
@@ -35,22 +56,57 @@ describe('test/app.test.ts', () => {
         'plugin-a': {
           enable: true,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin-a`),
+          manifest: {
+            pluginMeta: {
+              path: path.resolve(__dirname, `${pluginPrefix}/plugin-a/meta.js`),
+              extname: '.js',
+              filename: 'meta.js',
+            }
+          }
         },
         'plugin-b': {
           enable: true,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin-b`),
+          manifest: {
+            pluginMeta: {
+              path: path.resolve(__dirname, `${pluginPrefix}/plugin-b/meta.js`),
+              extname: '.js',
+              filename: 'meta.js',
+            }
+          }
         },
         'plugin-c': {
           enable: true,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin-c`),
+          manifest: {
+            pluginMeta: {
+              path: path.resolve(__dirname, `${pluginPrefix}/plugin-c/meta.js`),
+              extname: '.js',
+              filename: 'meta.js',
+            }
+          }
         },
         'plugin-wrong-a': {
           enable: true,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin-wrong-a`),
+          manifest: {
+            pluginMeta: {
+              path: path.resolve(__dirname, `${pluginPrefix}/plugin-wrong-a/meta.js`),
+              extname: '.js',
+              filename: 'meta.js',
+            }
+          }
         },
         'plugin-wrong-b': {
           enable: true,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin-wrong-b`),
+          manifest: {
+            pluginMeta: {
+              path: path.resolve(__dirname, `${pluginPrefix}/plugin-wrong-b/meta.js`),
+              extname: '.js',
+              filename: 'meta.js',
+            }
+          }
         }
       }
       expect(async () => {
@@ -63,6 +119,13 @@ describe('test/app.test.ts', () => {
         'plugin-a': {
           enable: true,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin-a`),
+          manifest: {
+            pluginMeta: {
+              path: path.resolve(__dirname, `${pluginPrefix}/plugin-a/meta.js`),
+              extname: '.js',
+              filename: 'meta.js',
+            }
+          }
         }
       }
       expect(async () => {
@@ -75,14 +138,35 @@ describe('test/app.test.ts', () => {
         'plugin-a': {
           enable: true,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin-a`),
+          manifest: {
+            pluginMeta: {
+              path: path.resolve(__dirname, `${pluginPrefix}/plugin-a/meta.js`),
+              extname: '.js',
+              filename: 'meta.js',
+            }
+          }
         },
         'plugin-b': {
           enable: false,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin-b`),
+          manifest: {
+            pluginMeta: {
+              path: path.resolve(__dirname, `${pluginPrefix}/plugin-b/meta.js`),
+              extname: '.js',
+              filename: 'meta.js',
+            }
+          }
         },
         'plugin-c': {
           enable: true,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin-c`),
+          manifest: {
+            pluginMeta: {
+              path: path.resolve(__dirname, `${pluginPrefix}/plugin-c/meta.js`),
+              extname: '.js',
+              filename: 'meta.js',
+            }
+          }
         }
       }
       expect(async () => {
@@ -95,6 +179,13 @@ describe('test/app.test.ts', () => {
         'plugin-d': {
           enable: true,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin-d`),
+          manifest: {
+            pluginMeta: {
+              path: path.resolve(__dirname, `${pluginPrefix}/plugin-d/meta.js`),
+              extname: '.js',
+              filename: 'meta.js',
+            }
+          }
         }
       }
 

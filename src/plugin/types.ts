@@ -1,3 +1,5 @@
+import { ManifestPluginUnit } from "../loader";
+
 export const enum PluginType {
   simple = 'simple',
   module = 'module',
@@ -14,6 +16,7 @@ export interface PluginConfigItem {
   enable: boolean;
   path?: string;
   package?: string;
+  manifest?: Partial<ManifestPluginUnit>;
 }
 
 export interface Plugin {
@@ -21,6 +24,7 @@ export interface Plugin {
   enable: boolean;
   importPath: string;
   metadata: Partial<PluginMetadata>;
+  manifest: Partial<ManifestPluginUnit>;
 
   init(): Promise<void>;
   checkDepExisted(map: Map<string, Plugin>): void;
