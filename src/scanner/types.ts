@@ -1,5 +1,4 @@
 
-import { ManifestItem } from "../loader";
 
 export interface ScannerOptions {
     appName: string;
@@ -7,20 +6,22 @@ export interface ScannerOptions {
     needWriteFile: boolean;
     excluded?: string[];
 }
-
-export interface ScannerItem extends ManifestItem {
+export interface ScannerItem {
+    path: string;
+    extname: string;
     filename: string;
-    filenameWithoutExt: string;
+}
+export interface ScannerUnit {
+    items: ScannerItem[];
+    packageJson?: ScannerItem;
+    pluginMeta?: ScannerItem;
+    config: ScannerItem[];
+    pluginConfig: ScannerItem[];
+    extension: ScannerItem[];
+    exception: ScannerItem[];
+
 }
 
-
 export interface ScannerManifest {
-    [index: string]: {
-        items: ScannerItem[];
-        packageJson?: string;
-        pluginMeta?: string;
-        config?: ScannerItem[];
-        pluginConfig?: ScannerItem[];
-
-    }
+    [name: string]: Partial<ScannerUnit>;
 }

@@ -3,40 +3,62 @@ import { existsSync } from 'fs';
 import * as path from 'path';
 import { getDefaultExtensions, isMatch } from '../utils';
 import compatibleRequire from '../utils/compatible-require';
-import { CONFIG_PATTERN, DEFAULT_EXCLUDES, PLUGIN_CONFIG_PATTERN, PLUGIN_META, PACKAGE_JSON } from '../constraints';
-import { ScannerOptions, ScannerItem, ScannerManifest } from './types';
+import {
+    CONFIG_PATTERN,
+    DEFAULT_EXCLUDES,
+    PLUGIN_CONFIG_PATTERN,
+    PLUGIN_META,
+    PACKAGE_JSON,
+    EXCEPTION_FILE,
+    EXTENSION_PATTERN
+} from '../constraints';
+import {
+    ScannerOptions,
+    ScannerItem,
+    ScannerUnit,
+    ScannerManifest
+} from './types';
 
 export class Scanner {
     private options: ScannerOptions;
     private moduleExtensions: string[];
     constructor(options: Partial<ScannerOptions> = {}) {
+        this.moduleExtensions = getDefaultExtensions();
         this.options = {
             appName: 'app',
             needWriteFile: true,
             ...options,
             excluded: DEFAULT_EXCLUDES.concat(options.excluded ?? []),
-            extensions: getDefaultExtensions().concat(options.extensions ?? []),
+            extensions: this.moduleExtensions.concat(options.extensions ?? [], ['.yaml']),
         };
-        this.moduleExtensions = getDefaultExtensions();
     }
 
     public async scan(root: string) {
         const manifest: ScannerManifest = {};
-        await this.scanApp(this.options.appName!, root, manifest);
+        await this.scanUnit(this.options.appName!, root, manifest);
+        const { [this.options.appName]: app, ...others } = manifest;
+        const result = { app, plugins: {} };
+        Object.keys(others).forEach(name => {
+            result.plugins[name] = others[name];
+        });
         if (this.options.needWriteFile) {
-            this.writeFile('manifest.json', JSON.stringify(manifest, null, 2));
+            this.writeFile('manifest.json', JSON.stringify(result, null, 2));
         }
-        return manifest;
+        return result;
     }
 
-    private async scanApp(appName: string, root: string, manifest: ScannerManifest) {
+    private async scanUnit(appName: string, root: string, manifest: ScannerManifest) {
         const result = await this.walk(root);
+        const packageJson = this.getPackageJson(root);
+        const pluginMeta = this.getPluginMeta(root);
         manifest[appName] = {
-            items: result.items,
-            packageJson: this.getPackageJson(root),
-            pluginMeta: this.getPluginMeta(root),
-            config: result.config.length ? result.config : undefined,
-            pluginConfig: result.pluginConfig.length ? result.pluginConfig : undefined,
+            packageJson: packageJson ? { path: packageJson, extname: '.json', filename: PACKAGE_JSON } : undefined,
+            pluginMeta: pluginMeta ? { ...pluginMeta, filename: `${PLUGIN_META}${pluginMeta.extname}` } : undefined,
+            items: this.filterArray(result.items),
+            config: this.filterArray(result.config),
+            pluginConfig: this.filterArray(result.pluginConfig),
+            exception: this.filterArray(result.exception),
+            extension: this.filterArray(result.extension),
         };
 
         for (const pluginItem of result.pluginConfig) {
@@ -50,17 +72,19 @@ export class Scanner {
                     if (plugin.package) {
                         pluginPath = require.resolve(plugin.package);
                     }
-                    await this.scanApp(plugin.name, pluginPath, manifest);
+                    await this.scanUnit(plugin.name, pluginPath, manifest);
                 }
             }
         }
     }
 
     private async walk(root: string) {
-        const result: { items: ScannerItem[], config: ScannerItem[], pluginConfig: ScannerItem[] } = {
+        const result: ScannerUnit = {
             items: [],
             config: [],
-            pluginConfig: []
+            pluginConfig: [],
+            exception: [],
+            extension: [],
         };
         if (!existsSync(root)) {
             return result;
@@ -80,8 +104,8 @@ export class Scanner {
             }
             const itemStat = await fs.stat(realPath);
             if (itemStat.isDirectory()) {
-                // ignore plugin config
-                // TODO:  怎么判断是否是插件配置文件
+                // ignore plugin dir
+                // TODO:  怎么判断是否是插件文件夹
                 if (this.exist(realPath, PLUGIN_META)) {
                     continue;
                 }
@@ -89,26 +113,35 @@ export class Scanner {
                 result.items = result.items.concat(subDir.items);
                 result.config = result.config.concat(subDir.config);
                 result.pluginConfig = result.pluginConfig.concat(subDir.pluginConfig);
+                result.exception = result.exception.concat(subDir.exception);
+                result.extension = result.extension.concat(subDir.extension);
                 continue;
             }
 
             if (itemStat.isFile()) {
                 const filename = path.basename(realPath);
                 const filenameWithoutExt = path.basename(realPath, extname);
-                const item = {
-                    path: path.resolve(root, filenameWithoutExt),
+                const item: ScannerItem = {
+                    path: this.moduleExtensions.includes(extname) ? path.resolve(root, filenameWithoutExt) : realPath,
                     extname,
                     filename,
-                    filenameWithoutExt,
-                    loader: this.moduleExtensions.includes(extname) ? 'module' : 'file'
                 };
 
-                if (this.isConfig(filename)) {
-                    result.config.push(item)
-                } else if (this.isPluginConfig(filename)) {
-                    result.pluginConfig.push(item);
-                } else {
-                    result.items.push(item);
+                // TODO: 后面考虑重构通过参数传递匹配规则
+                switch (true) {
+                    case this.isConfig(filename):
+                        result.config.push(item)
+                        break;
+                    case this.isPluginConfig(filename):
+                        result.pluginConfig.push(item);
+                        break;
+                    case this.isException(filename):
+                        result.exception.push(item);
+                        break;
+                    case this.isExtension(filename):
+                        result.extension.push(item);
+                        break;
+                    default: result.items.push(item);
                 }
             }
         }
@@ -144,6 +177,16 @@ export class Scanner {
         return isMatch(filename, PLUGIN_CONFIG_PATTERN);
     }
 
+    // TODO:
+    private isException(filename: string): boolean {
+        return isMatch(filename, EXCEPTION_FILE);
+    }
+
+    // TODO:
+    private isExtension(filename: string,): boolean {
+        return isMatch(filename, EXTENSION_PATTERN);
+    }
+
     private getPackageJson(dir: string) {
         if (existsSync(path.resolve(dir, PACKAGE_JSON))) {
             return path.resolve(dir, PACKAGE_JSON);
@@ -152,13 +195,20 @@ export class Scanner {
     }
 
     private getPluginMeta(dir: string) {
-        if (this.exist(dir, PLUGIN_META)) {
-            return path.resolve(dir, PLUGIN_META);
-        }
-        return undefined;
+        const extname = this.options.extensions.find(ext => {
+            return existsSync(path.resolve(dir, `${PLUGIN_META}${ext}`));
+        });
+        return extname ? { path: path.resolve(dir, PLUGIN_META), extname } : undefined;
     }
 
-    private exist(dir: string, filename: string) {
+    private filterArray<T = any>(arr: T[]) {
+        if (!Array.isArray(arr) || !arr.length) {
+            return undefined;
+        }
+        return arr;
+    }
+
+    private exist(dir: string, filename: string): boolean {
         return this.options.extensions.some(ext => {
             return existsSync(path.resolve(dir, `${filename}${ext}`));
         });

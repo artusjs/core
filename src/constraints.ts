@@ -32,7 +32,10 @@ export const DEFAULT_EXCLUDES = [
   'meta.*',
   'LICENSE'
 ];
+
 export const PLUGIN_CONFIG_PATTERN = 'plugin.*';
 export const CONFIG_PATTERN = 'config.*';
+export const EXTENSION_PATTERN = 'app.*';
 export const PLUGIN_META = 'meta';
 export const PACKAGE_JSON = 'package.json';
+export const EXCEPTION_FILE = 'artus-exception.yaml';
