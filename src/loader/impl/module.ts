@@ -12,19 +12,15 @@ class ModuleLoader implements Loader {
   }
 
   async load(item: ManifestItem) {
-    try {
-      const moduleClazz = await compatibleRequire(item.path);
-      const opts: Partial<InjectableDefinition> = {
-        path: item.path,
-        type: moduleClazz
-      };
-      if (item.id) {
-        opts.id = item.id;
-      }
-      this.container.set(opts);
-    } catch (error) {
-      console.error(error);
+    const moduleClazz = await compatibleRequire(item.path);
+    const opts: Partial<InjectableDefinition> = {
+      path: item.path,
+      type: moduleClazz
+    };
+    if (item.id) {
+      opts.id = item.id;
     }
+    this.container.set(opts);
   }
 }
 

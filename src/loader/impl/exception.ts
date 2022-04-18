@@ -26,32 +26,28 @@ class ExceptionLoader implements Loader {
   }
 
   async load(item: ManifestItem) {
+    const exceptionHandler = this.container.get(ExceptionHandler);
+    let parserFunc: ParserFunction;
+    if (item.extname === '.yaml' || item.extname === '.yml') {
+      parserFunc = YamlParser;
+    } else if (item.extname === '.json') {
+      parserFunc = JsonParser;
+    } else {
+      throw new Error(`[Artus-Exception] Unsupported file extension: ${item.extname}`);
+    }
     try {
-      const exceptionHandler = this.container.get(ExceptionHandler);
-      let parserFunc: ParserFunction;
-      if (item.extname === '.yaml' || item.extname === '.yml') {
-        parserFunc = YamlParser;
-      } else if (item.extname === '.json') {
-        parserFunc = JsonParser;
-      } else {
-        throw new Error(`[Artus-Exception] Unsupported file extension: ${item.extname}`);
+      const content = await readFile(item.path, {
+        encoding: 'utf-8'
+      });
+      if (!content) {
+        throw new Error('File content is empty.');
       }
-      try {
-        const content = await readFile(item.path, {
-          encoding: 'utf-8'
-        });
-        if (!content) {
-          throw new Error('File content is empty.');
-        }
-        const codeMap = parserFunc(content);
-        for (const [errCode, exceptionItem] of Object.entries(codeMap)) {
-          exceptionHandler.registerCode(errCode, exceptionItem);
-        }
-      } catch (error) {
-        console.warn(`[Artus-Exception] Parse CodeMap ${item.path} failed: ${error.message}`);
+      const codeMap = parserFunc(content);
+      for (const [errCode, exceptionItem] of Object.entries(codeMap)) {
+        exceptionHandler.registerCode(errCode, exceptionItem);
       }
     } catch (error) {
-      console.error(error);
+      console.warn(`[Artus-Exception] Parse CodeMap ${item.path} failed: ${error.message}`);
     }
   }
 }

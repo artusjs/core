@@ -15,13 +15,9 @@ class ExtensionLoader implements Loader {
   }
 
   async load(item: ManifestItem) {
-    try {
-      const extClazz: Constructable<ApplicationLifecycle> = await compatibleRequire(item.path);
-      const lifecycleManager: LifecycleManager = this.container.get(ArtusInjectEnum.LifecycleManager);
-      lifecycleManager.registerExtension(extClazz);
-    } catch (error) {
-      console.error(error);
-    }
+    const extClazz: Constructable<ApplicationLifecycle> = await compatibleRequire(item.path);
+    const lifecycleManager: LifecycleManager = this.container.get(ArtusInjectEnum.LifecycleManager);
+    lifecycleManager.registerExtension(extClazz);
   }
 }
 

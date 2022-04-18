@@ -14,28 +14,24 @@ class ConfigLoader implements Loader {
   }
 
   async load(item: ManifestItem) {
-    try {
-      const originConfigObj = await compatibleRequire(item.path);
-      let [namespace, env, extname] = item.filename.split('.');
-      if (!extname) {
-        // No env flag, set to Default
-        env = ARTUS_DEFAULT_CONFIG_ENV.DEFAULT;
-      }
-      let configObj = originConfigObj;
-      if(typeof originConfigObj === 'function') {
-        const app = this.container.get(ArtusInjectEnum.Application);
-        configObj = originConfigObj(app);
-      }
-      if (namespace !== 'config') {
-        configObj = {
-          [namespace]: configObj
-        };
-      }
-      const configHandler = this.container.get(ConfigurationHandler);
-      configHandler.setConfig(env, configObj);
-    } catch (error) {
-      console.error(error);
+    const originConfigObj = await compatibleRequire(item.path);
+    let [namespace, env, extname] = item.filename.split('.');
+    if (!extname) {
+      // No env flag, set to Default
+      env = ARTUS_DEFAULT_CONFIG_ENV.DEFAULT;
     }
+    let configObj = originConfigObj;
+    if(typeof originConfigObj === 'function') {
+      const app = this.container.get(ArtusInjectEnum.Application);
+      configObj = originConfigObj(app);
+    }
+    if (namespace !== 'config') {
+      configObj = {
+        [namespace]: configObj
+      };
+    }
+    const configHandler = this.container.get(ConfigurationHandler);
+    configHandler.setConfig(env, configObj);
   }
 }
 
