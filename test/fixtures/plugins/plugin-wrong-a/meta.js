@@ -1,4 +1,8 @@
 module.exports = {
   "name": "plugin-wrong-a",
-  "dependencies": [ "plugin-wrong-b" ]
+  "dependencies": [
+    {
+      name: "plugin-wrong-b"
+    }
+  ]
 }

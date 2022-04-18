@@ -7,9 +7,13 @@ export const enum PluginType {
 
 export interface PluginMetadata {
   name: string;
-  dependencies?: string[];
-  optionalDependencies?: string[];
+  dependencies?: PluginDependencyItem[];
   type?: PluginType;
+}
+
+export interface PluginDependencyItem {
+  name: string;
+  optional?: boolean;
 }
 
 export interface PluginConfigItem {

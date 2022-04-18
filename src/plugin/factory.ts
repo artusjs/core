@@ -23,6 +23,11 @@ export class PluginFactory {
       pluginDepEdgeList = pluginDepEdgeList.concat(pluginInstance.getDepEdgeList());
     }
     const pluginSortResult: string[] = topologicalSort(pluginInstanceMap, pluginDepEdgeList);
+
+    if (pluginSortResult.length !== pluginInstanceMap.size) {
+      const diffPlugin = [...pluginInstanceMap.keys()].filter((name) => !pluginSortResult.includes(name));
+      throw new Error(`There is a cycle in the dependencies, wrong plugin is ${diffPlugin.join(',')}.`);
+    }
     return pluginSortResult.map((name) => pluginInstanceMap.get(name)!);
   }
 }

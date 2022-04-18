@@ -23,9 +23,9 @@ export class BasePlugin implements Plugin {
 
   async init() { }
 
-  checkPluginStatus(allPlugins: PluginMap, checks: string[], optional: boolean) {
-    for (const pluginName of checks) {
-      const instance = allPlugins.get(pluginName);
+  checkDepExisted(pluginMap: PluginMap): void {
+    for (const { name: pluginName, optional } of this.metadata.dependencies ?? []) {
+      const instance = pluginMap.get(pluginName);
       if (!instance || !instance.enable) {
         if (optional) {
           // TODO: use artus logger instead
@@ -37,12 +37,9 @@ export class BasePlugin implements Plugin {
     }
   }
 
-  checkDepExisted(map: PluginMap): void {
-    this.checkPluginStatus(map, this.metadata.dependencies ?? [], false);
-    this.checkPluginStatus(map, this.metadata.optionalDependencies ?? [], true);
-  }
-
   getDepEdgeList(): [string, string][] {
-    return this.metadata.dependencies?.map((depPluginName) => [this.name, depPluginName]) ?? [];
+    return this.metadata.dependencies
+      ?.filter(({ optional }) => !optional)
+      ?.map(({ name: depPluginName }) => [this.name, depPluginName]) ?? [];
   }
 }

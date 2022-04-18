@@ -1,5 +1,12 @@
 module.exports = {
   "name": "plugin-a",
-  "dependencies": [ "plugin-b" ],
-  "optionalDependencies": [ "plugin-c" ]
+  "dependencies": [
+    {
+      "name": "plugin-b"
+    },
+    {
+      "name": "plugin-c",
+      "optional": true
+    }
+  ]
 }
