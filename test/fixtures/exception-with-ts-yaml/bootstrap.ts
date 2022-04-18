@@ -5,27 +5,29 @@ import { server } from './app';
 async function main() {
   const app = new ArtusApplication();
   await app.load({
-    app: {
-      extension: [
-        {
-          path: path.resolve(__dirname, './app'),
-          extname: '.ts',
-          filename: 'app.ts',
-        }
-      ],
-      exception: [
-        {
-          path: path.resolve(__dirname, '../../../artus-exception.yaml'),
-          extname: '.yaml',
-          filename: 'artus-exception.yaml',
-        },
-        {
-          path: path.resolve(__dirname, './artus-exception.yaml'),
-          extname: '.yaml',
-          filename: 'artus-exception.yaml',
-        }
-      ]
-    }
+    items: [
+      {
+        path: path.resolve(__dirname, './app'),
+        extname: '.ts',
+        filename: 'app.ts',
+        loader: 'extension',
+        source: 'app'
+      },
+      {
+        path: path.resolve(__dirname, '../../../artus-exception.yaml'),
+        extname: '.yaml',
+        filename: 'artus-exception.yaml',
+        loader: 'exception',
+        source: 'app'
+      },
+      {
+        path: path.resolve(__dirname, './artus-exception.yaml'),
+        extname: '.yaml',
+        filename: 'artus-exception.yaml',
+        loader: 'exception',
+        source: 'app'
+      }
+    ]
   });
   await app.run();
   return app;

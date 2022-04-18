@@ -1,7 +1,6 @@
 import { Container } from '@artus/injection';
 import { ArtusInjectEnum, DEFAULT_LOADER } from '../constraints';
-import { PluginFactory } from '../plugin';
-import { Manifest, ManifestItem, LoaderConstructor } from './types';
+import { Manifest, ManifestItem, LoaderConstructor, LoaderHookUnit } from './types';
 import ConfigurationHandler from '../configuration';
 import { LifecycleManager } from '../lifecycle';
 
@@ -23,63 +22,42 @@ export class LoaderFactory {
 
   async loadManifest(manifest: Manifest): Promise<void> {
     const lifecycleManager: LifecycleManager = this.container.get(ArtusInjectEnum.LifecycleManager);
+    const configurationHandler: ConfigurationHandler = this.container.get(ConfigurationHandler);
 
-    // 0. Load Plugin Config
-    if (manifest.app.pluginConfig) {
-      await this.loadItemList(manifest.app.pluginConfig.map(item => ({
-        ...item,
-        manifest: manifest.plugins?.[item.id]
-      })), 'config');
-    }
-
-    // 1. Calculate Plugin Load Order
-    const configHandler = this.container.get(ConfigurationHandler);
-    const { plugin: pluginConfig } = await configHandler.getMergedConfig();
-    const pluginSortedList = await PluginFactory.createFromConfig(pluginConfig || {});
-
-    const loadUnitList = [
-      'extension', // 2. Load Extension
-      'config', // 3. Load Config
-      'exception', // 4. Load Exception Definition
-      ['items', 'module']// 5. Load Other Items
-    ];
-    for (const loadUnit of loadUnitList) {
-      let manifestKey: string;
-      let loaderName: string;
-      if (Array.isArray(loadUnit)) {
-        [manifestKey, loaderName] = loadUnit;
-      } else {
-        manifestKey = loadUnit;
-        loaderName = loadUnit;
+    await this.loadItemList(manifest.items, {
+      config: {
+        before: () => lifecycleManager.emitHook('configWillLoad'),
+        after: () => {
+          this.container.set({
+            id: ArtusInjectEnum.Config,
+            value: configurationHandler.getMergedConfig()
+          });
+          lifecycleManager.emitHook('configDidLoad');
+        }
       }
-      if (manifestKey === 'config') {
-        await lifecycleManager.emitHook('configWillLoad');
-      }
-      // load unit from plugins
-      for (const plugin of pluginSortedList) {
-        const pluginManifest = manifest.plugins?.[plugin.name] ?? {};
-        await this.loadItemList(pluginManifest[manifestKey], loaderName);
-      }
-      // load unit from app
-      await this.loadItemList(manifest.app[manifestKey], loaderName);
-      if (manifestKey === 'config') {
-        this.container.set({
-          id: ArtusInjectEnum.Config,
-          value: await configHandler.getMergedConfig()
-        });
-        await lifecycleManager.emitHook('configDidLoad');
-      }
-    }
+    });
   }
 
-  async loadItemList(itemList: ManifestItem[] = [], loaderName?: string): Promise<void> {
+  async loadItemList(itemList: ManifestItem[] = [], hookMap?: Record<string, LoaderHookUnit>): Promise<void> {
+    let prevLoader: string = '';
     for (const item of itemList) {
-      await this.loadItem(item, loaderName);
+      const curLoader = item.loader ?? DEFAULT_LOADER;
+      if (item.loader !== prevLoader) {
+        if (prevLoader) {
+          await hookMap?.[prevLoader]?.after?.();
+        }
+        await hookMap?.[curLoader]?.before?.();
+        prevLoader = curLoader;
+      }
+      await this.loadItem(item);
+    }
+    if (prevLoader) {
+      await hookMap?.[prevLoader]?.after?.();
     }
   }
 
-  async loadItem(item: ManifestItem, loaderName?: string): Promise<void> {
-    loaderName = loaderName || item.loader || DEFAULT_LOADER;
+  async loadItem(item: ManifestItem): Promise<void> {
+    const loaderName = item.loader || DEFAULT_LOADER;
     const LoaderClazz = LoaderFactory.loaderClazzMap.get(loaderName);
     if (!LoaderClazz) {
       throw new Error(`Cannot find loader '${loaderName}'`);

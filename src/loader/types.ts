@@ -1,24 +1,7 @@
 import { Container } from '@artus/injection';
 
 interface Manifest {
-  app: Partial<ManifestAppUnit>;
-  plugins?: Record<string, Partial<ManifestPluginUnit>>;
-}
-
-interface ManifestUnit {
   items: ManifestItem[];
-  extension: ManifestItem[];
-  exception: ManifestItem[];
-  config: ManifestItem[];
-  packageJson: ManifestItem;
-}
-
-interface ManifestAppUnit extends ManifestUnit {
-  pluginConfig: ManifestItem[];
-}
-
-interface ManifestPluginUnit extends ManifestUnit {
-  pluginMeta: ManifestItem;
 }
 
 interface ManifestItem extends Record<string, any> {
@@ -26,7 +9,13 @@ interface ManifestItem extends Record<string, any> {
   extname: string;
   filename: string;
   loader?: string;
+  source?: string;
 }
+
+interface LoaderHookUnit {
+  before?: Function,
+  after?: Function,
+};
 
 interface LoaderConstructor {
   new(container: Container): Loader;
@@ -37,9 +26,8 @@ interface Loader {
 
 export {
   Manifest,
-  ManifestAppUnit,
-  ManifestPluginUnit,
   ManifestItem,
+  LoaderHookUnit,
   LoaderConstructor,
   Loader,
 };

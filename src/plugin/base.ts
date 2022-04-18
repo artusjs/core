@@ -1,4 +1,3 @@
-import { ManifestPluginUnit } from "../loader";
 import { Plugin, PluginConfigItem, PluginMetadata } from "./types";
 
 type PluginMap = Map<string, BasePlugin>;
@@ -8,17 +7,19 @@ export class BasePlugin implements Plugin {
   public enable: boolean;
   public importPath: string;
   public metadata: Partial<PluginMetadata> = {};
-  public manifest: Partial<ManifestPluginUnit>;
+  public metaFilePath: string = '';
 
   constructor(name: string, configItem: PluginConfigItem) {
     this.name = name;
-    const importPath = configItem.path ?? configItem.package;
+    let importPath = configItem.path ?? '';
+    if (configItem.package) {
+      importPath = require.resolve(configItem.package);
+    }
     if (!importPath) {
       throw new Error(`Plugin ${name} need have path or package field`);
     }
     this.importPath = importPath;
     this.enable = configItem.enable ?? false;
-    this.manifest = configItem.manifest ?? {};
   }
 
   async init() { }

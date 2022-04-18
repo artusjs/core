@@ -1,8 +1,0 @@
-module.exports = {
-  "name": "plugin-wrong-a",
-  "dependencies": [
-    {
-      name: "plugin-wrong-b"
-    }
-  ]
-}

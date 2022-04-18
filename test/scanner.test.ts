@@ -7,18 +7,17 @@ describe('test/scanner.test.ts', () => {
         const scanner = new Scanner({ needWriteFile: false, extensions: ['.ts', '.js', '.json'] });
         const manifest = await scanner.scan(path.resolve(__dirname, './fixtures/app-koa-with-ts'));
         expect(manifest).toBeDefined();
-        const appManifest = manifest.app;
-        expect(appManifest.items).toBeDefined();
-        expect(appManifest.packageJson).toBeDefined();
-        expect(appManifest.config!.length).toBe(1);
-        expect(appManifest.pluginConfig!.length).toBe(1);
-        expect(appManifest.pluginConfig!.length).toBe(1);
-        expect(appManifest.exception!.length).toBe(1);
-        expect(appManifest.extension!.length).toBe(1);
+        expect(manifest.items).toBeDefined();
+        expect(manifest.items.length).toBe(11);
 
-        expect(manifest.plugins).toBeDefined();
-        const pluginManifest = manifest.plugins['redis'];
-        expect(pluginManifest.pluginMeta).toBeDefined();
-        expect(pluginManifest.extension!.length).toBe(1);
-    })
+        expect(manifest.items.filter(item => item.loader === 'plugin-config').length).toBe(1);
+        expect(manifest.items.filter(item => item.loader === 'plugin-meta').length).toBe(1);
+        expect(manifest.items.filter(item => item.loader === 'exception').length).toBe(1);
+        expect(manifest.items.filter(item => item.loader === 'extension').length).toBe(2);
+        expect(manifest.items.filter(item => item.loader === 'config').length).toBe(1);
+        expect(manifest.items.filter(item => item.loader === 'module').length).toBe(5);
+
+        expect(manifest.items.filter(item => item.source === 'redis').length).toBe(2);
+        expect(manifest.items.filter(item => item.source === 'app').length).toBe(9);
+    });
 });

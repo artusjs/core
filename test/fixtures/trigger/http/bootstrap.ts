@@ -5,22 +5,22 @@ import { server } from './app';
 async function main() {
   const app: ArtusApplication = new ArtusApplication();
   await app.load({
-    app: {
-      extension: [
-        {
-          path: path.resolve(__dirname, './app'),
-          extname: '.ts',
-          filename: 'app.ts',
-        },
-      ],
-      items: [
-        {
-          path: path.resolve(__dirname, './httpTrigger'),
-          extname: '.ts',
-          filename: 'httpTrigger.ts',
-        }
-      ]
-    }
+    items: [
+      {
+        path: path.resolve(__dirname, './app'),
+        extname: '.ts',
+        filename: 'app.ts',
+        loader: 'extension',
+        source: 'app'
+      },
+      {
+        path: path.resolve(__dirname, './httpTrigger'),
+        extname: '.ts',
+        filename: 'httpTrigger.ts',
+        loader: 'module',
+        source: 'app'
+      }
+    ]
   });
   await app.run();
 

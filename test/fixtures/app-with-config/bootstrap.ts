@@ -6,27 +6,29 @@ const rootDir = path.resolve(__dirname, './');
 async function main() {
   const app = new ArtusApplication();
   await app.load({
-    app: {
-      extension: [
-        {
-          path: path.resolve(__dirname, './app'),
-          extname: '.ts',
-          filename: 'app.ts',
-        }
-      ],
-      config: [
-        {
-          path: path.resolve(rootDir, './config/config.default.ts'),
-          extname: '.ts',
-          filename: 'config.default.ts',
-        },
-        {
-          path: path.resolve(rootDir, './config/config.production.ts'),
-          extname: '.ts',
-          filename: 'config.production.ts',
-        }
-      ]
-    }
+    items: [
+      {
+        path: path.resolve(__dirname, './app'),
+        extname: '.ts',
+        filename: 'app.ts',
+        loader: 'extension',
+        source: 'app'
+      },
+      {
+        path: path.resolve(rootDir, './config/config.default'),
+        extname: '.ts',
+        filename: 'config.default.ts',
+        loader: 'config',
+        source: 'app'
+      },
+      {
+        path: path.resolve(rootDir, './config/config.production'),
+        extname: '.ts',
+        filename: 'config.production.ts',
+        loader: 'config',
+        source: 'app'
+      },
+    ]
   });
   return app;
 };
