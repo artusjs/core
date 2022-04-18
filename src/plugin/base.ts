@@ -7,10 +7,14 @@ export class BasePlugin implements Plugin {
   public enable: boolean;
   public importPath: string;
   public metadata: Partial<PluginMetadata> = {};
+  public metaFilePath: string = '';
 
   constructor(name: string, configItem: PluginConfigItem) {
     this.name = name;
-    const importPath = configItem.path ?? configItem.package;
+    let importPath = configItem.path ?? '';
+    if (configItem.package) {
+      importPath = require.resolve(configItem.package);
+    }
     if (!importPath) {
       throw new Error(`Plugin ${name} need have path or package field`);
     }
@@ -20,9 +24,9 @@ export class BasePlugin implements Plugin {
 
   async init() { }
 
-  checkPluginStatus(allPlugins: PluginMap, checks: string[], optional: boolean) {
-    for (const pluginName of checks) {
-      const instance = allPlugins.get(pluginName);
+  checkDepExisted(pluginMap: PluginMap): void {
+    for (const { name: pluginName, optional } of this.metadata.dependencies ?? []) {
+      const instance = pluginMap.get(pluginName);
       if (!instance || !instance.enable) {
         if (optional) {
           // TODO: use artus logger instead
@@ -34,12 +38,9 @@ export class BasePlugin implements Plugin {
     }
   }
 
-  checkDepExisted(map: PluginMap): void {
-    this.checkPluginStatus(map, this.metadata.dependencies ?? [], false);
-    this.checkPluginStatus(map, this.metadata.optionalDependencies ?? [], true);
-  }
-
   getDepEdgeList(): [string, string][] {
-    return this.metadata.dependencies?.map((depPluginName) => [this.name, depPluginName]) ?? [];
+    return this.metadata.dependencies
+      ?.filter(({ optional }) => !optional)
+      ?.map(({ name: depPluginName }) => [this.name, depPluginName]) ?? [];
   }
 }

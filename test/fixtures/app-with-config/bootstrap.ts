@@ -1,0 +1,39 @@
+import path from 'path';
+import { ArtusApplication } from '../../../src';
+
+const rootDir = path.resolve(__dirname, './');
+
+async function main() {
+  const app = new ArtusApplication();
+  await app.load({
+    items: [
+      {
+        path: path.resolve(__dirname, './app'),
+        extname: '.ts',
+        filename: 'app.ts',
+        loader: 'extension',
+        source: 'app'
+      },
+      {
+        path: path.resolve(rootDir, './config/config.default'),
+        extname: '.ts',
+        filename: 'config.default.ts',
+        loader: 'config',
+        source: 'app'
+      },
+      {
+        path: path.resolve(rootDir, './config/config.production'),
+        extname: '.ts',
+        filename: 'config.production.ts',
+        loader: 'config',
+        source: 'app'
+      },
+    ]
+  });
+  return app;
+};
+
+
+export {
+  main,
+};

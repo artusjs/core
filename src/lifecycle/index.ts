@@ -50,21 +50,21 @@ export class LifecycleManager {
     }
   }
 
-  batchRegisterHookByClass(hookClazz: Constructable<any>) {
-    const fnMetaKeys = Reflect.getMetadataKeys(hookClazz);
-    const constructorParams = Reflect.getMetadata(HOOK_CONSTRUCTOR_PARAMS, hookClazz) ?? [];
+  registerExtension(extClazz: Constructable<any>) {
+    const fnMetaKeys = Reflect.getMetadataKeys(extClazz);
+    const constructorParams = Reflect.getMetadata(HOOK_CONSTRUCTOR_PARAMS, extClazz) ?? [];
     const paramsMap = {
       [HOOK_CONSTRUCTOR_PARAMS_APP]: this.app,
       [HOOK_CONSTRUCTOR_PARAMS_CONTAINER]: this.container
     };
-    const hookClazzInstance = new hookClazz(...constructorParams.map((param) => paramsMap[param]));
+    const extClazzInstance = new extClazz(...constructorParams.map((param) => paramsMap[param]));
     for (const fnMetaKey of fnMetaKeys) {
       if (typeof fnMetaKey !== 'string' || !fnMetaKey.startsWith(HOOK_NAME_META_PREFIX)) {
         continue;
       }
-      const hookName = Reflect.getMetadata(fnMetaKey, hookClazz);
+      const hookName = Reflect.getMetadata(fnMetaKey, extClazz);
       const propertyKey = fnMetaKey.slice(HOOK_NAME_META_PREFIX.length);
-      this.registerHook(hookName, hookClazzInstance[propertyKey].bind(hookClazzInstance));
+      this.registerHook(hookName, extClazzInstance[propertyKey].bind(extClazzInstance));
     }
   }
 

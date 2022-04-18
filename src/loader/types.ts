@@ -1,17 +1,21 @@
 import { Container } from '@artus/injection';
 
-type LoaderType = 'module' | 'file' | string;
-
 interface Manifest {
-  rootDir: string;
   items: ManifestItem[];
 }
 
 interface ManifestItem extends Record<string, any> {
-  loader: LoaderType;
   path: string;
-  type?: string;
+  extname: string;
+  filename: string;
+  loader?: string;
+  source?: string;
 }
+
+interface LoaderHookUnit {
+  before?: Function,
+  after?: Function,
+};
 
 interface LoaderConstructor {
   new(container: Container): Loader;
@@ -21,9 +25,9 @@ interface Loader {
 };
 
 export {
-  LoaderType,
   Manifest,
   ManifestItem,
+  LoaderHookUnit,
   LoaderConstructor,
   Loader,
 };

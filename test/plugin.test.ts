@@ -11,14 +11,35 @@ describe('test/app.test.ts', () => {
         'plugin-a': {
           enable: true,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin-a`),
+          manifest: {
+            pluginMeta: {
+              path: path.resolve(__dirname, `${pluginPrefix}/plugin-a/meta.js`),
+              extname: '.js',
+              filename: 'meta.js',
+            }
+          }
         },
         'plugin-b': {
           enable: true,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin-b`),
+          manifest: {
+            pluginMeta: {
+              path: path.resolve(__dirname, `${pluginPrefix}/plugin-b/meta.js`),
+              extname: '.js',
+              filename: 'meta.js',
+            }
+          }
         },
         'plugin-c': {
           enable: true,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin-c`),
+          manifest: {
+            pluginMeta: {
+              path: path.resolve(__dirname, `${pluginPrefix}/plugin-c/meta.js`),
+              extname: '.js',
+              filename: 'meta.js',
+            }
+          }
         }
       }
       const pluginList = await PluginFactory.createFromConfig(mockPluginConfig);
@@ -35,22 +56,57 @@ describe('test/app.test.ts', () => {
         'plugin-a': {
           enable: true,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin-a`),
+          manifest: {
+            pluginMeta: {
+              path: path.resolve(__dirname, `${pluginPrefix}/plugin-a/meta.js`),
+              extname: '.js',
+              filename: 'meta.js',
+            }
+          }
         },
         'plugin-b': {
           enable: true,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin-b`),
+          manifest: {
+            pluginMeta: {
+              path: path.resolve(__dirname, `${pluginPrefix}/plugin-b/meta.js`),
+              extname: '.js',
+              filename: 'meta.js',
+            }
+          }
         },
         'plugin-c': {
           enable: true,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin-c`),
+          manifest: {
+            pluginMeta: {
+              path: path.resolve(__dirname, `${pluginPrefix}/plugin-c/meta.js`),
+              extname: '.js',
+              filename: 'meta.js',
+            }
+          }
         },
         'plugin-wrong-a': {
           enable: true,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin-wrong-a`),
+          manifest: {
+            pluginMeta: {
+              path: path.resolve(__dirname, `${pluginPrefix}/plugin-wrong-a/meta.js`),
+              extname: '.js',
+              filename: 'meta.js',
+            }
+          }
         },
         'plugin-wrong-b': {
           enable: true,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin-wrong-b`),
+          manifest: {
+            pluginMeta: {
+              path: path.resolve(__dirname, `${pluginPrefix}/plugin-wrong-b/meta.js`),
+              extname: '.js',
+              filename: 'meta.js',
+            }
+          }
         }
       }
       expect(async () => {
@@ -58,11 +114,18 @@ describe('test/app.test.ts', () => {
       }).rejects.toThrowError(new Error(`There is a cycle in the dependencies, wrong plugin is plugin-wrong-a,plugin-wrong-b.`));
     });
 
-    it('should throw if dependence missing', async () => {
+    it('should throw if dependencies missing', async () => {
       const mockPluginConfig = {
         'plugin-a': {
           enable: true,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin-a`),
+          manifest: {
+            pluginMeta: {
+              path: path.resolve(__dirname, `${pluginPrefix}/plugin-a/meta.js`),
+              extname: '.js',
+              filename: 'meta.js',
+            }
+          }
         }
       }
       expect(async () => {
@@ -75,14 +138,35 @@ describe('test/app.test.ts', () => {
         'plugin-a': {
           enable: true,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin-a`),
+          manifest: {
+            pluginMeta: {
+              path: path.resolve(__dirname, `${pluginPrefix}/plugin-a/meta.js`),
+              extname: '.js',
+              filename: 'meta.js',
+            }
+          }
         },
         'plugin-b': {
           enable: false,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin-b`),
+          manifest: {
+            pluginMeta: {
+              path: path.resolve(__dirname, `${pluginPrefix}/plugin-b/meta.js`),
+              extname: '.js',
+              filename: 'meta.js',
+            }
+          }
         },
         'plugin-c': {
           enable: true,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin-c`),
+          manifest: {
+            pluginMeta: {
+              path: path.resolve(__dirname, `${pluginPrefix}/plugin-c/meta.js`),
+              extname: '.js',
+              filename: 'meta.js',
+            }
+          }
         }
       }
       expect(async () => {
@@ -95,22 +179,27 @@ describe('test/app.test.ts', () => {
         'plugin-d': {
           enable: true,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin-d`),
+          manifest: {
+            pluginMeta: {
+              path: path.resolve(__dirname, `${pluginPrefix}/plugin-d/meta.js`),
+              extname: '.js',
+              filename: 'meta.js',
+            }
+          }
         }
       }
-      let warnMessage = '';
 
       // mock warn
       const originWarn = console.warn;
-      console.warn = function (msg) {
-        warnMessage = msg;
-      }
+      const mockWarnFn = jest.fn();
+      console.warn = mockWarnFn;
       const pluginList = await PluginFactory.createFromConfig(mockPluginConfig);
       expect(pluginList.length).toEqual(1);
       pluginList.forEach(plugin => {
         expect(plugin).toBeInstanceOf(ArtusPlugin);
         expect(plugin.enable).toBeTruthy();
       });
-      expect(warnMessage === 'Plugin plugin-d need have optional dependence: plugin-e.').toBeTruthy();
+      expect(mockWarnFn).toBeCalledWith(`Plugin plugin-d need have optional dependence: plugin-e.`);
 
       // restore warn
       console.warn = originWarn;

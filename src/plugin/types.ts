@@ -5,9 +5,13 @@ export const enum PluginType {
 
 export interface PluginMetadata {
   name: string;
-  dependencies?: string[];
-  optionalDependencies?: string[];
+  dependencies?: PluginDependencyItem[];
   type?: PluginType;
+}
+
+export interface PluginDependencyItem {
+  name: string;
+  optional?: boolean;
 }
 
 export interface PluginConfigItem {
@@ -21,6 +25,7 @@ export interface Plugin {
   enable: boolean;
   importPath: string;
   metadata: Partial<PluginMetadata>;
+  metaFilePath: string;
 
   init(): Promise<void>;
   checkDepExisted(map: Map<string, Plugin>): void;

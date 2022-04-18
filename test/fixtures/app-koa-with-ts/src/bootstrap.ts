@@ -5,23 +5,41 @@ import { server } from './app';
 async function main() {
   const app: ArtusApplication = new ArtusApplication();
   await app.load({
-    rootDir: __dirname,
     items: [
       {
-        loader: 'module',
-        path: path.resolve(__dirname, './koaApp')
+        path: path.resolve(__dirname, './app'),
+        extname: '.ts',
+        filename: 'app.ts',
+        loader: 'extension',
+        source: 'app'
       },
       {
+        path: path.resolve(__dirname, './koaApp'),
+        extname: '.ts',
+        filename: 'koaApp.ts',
         loader: 'module',
-        path: path.resolve(__dirname, './httpTrigger')
+        source: 'app'
       },
       {
+        path: path.resolve(__dirname, './httpTrigger'),
+        extname: '.ts',
+        filename: 'httpTrigger.ts',
         loader: 'module',
-        path: path.resolve(__dirname, './controllers/hello')
+        source: 'app'
       },
       {
+        path: path.resolve(__dirname, './controllers/hello'),
+        extname: '.ts',
+        filename: 'hello.ts',
         loader: 'module',
-        path: path.resolve(__dirname, './services/hello')
+        source: 'app'
+      },
+      {
+        path: path.resolve(__dirname, './services/hello'),
+        extname: '.ts',
+        filename: 'hello.ts',
+        loader: 'module',
+        source: 'app'
       }
     ]
   });

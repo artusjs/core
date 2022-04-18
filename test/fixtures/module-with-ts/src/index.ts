@@ -1,17 +1,19 @@
 import path from 'path';
+import { Manifest } from '../../../../src';
 
 const rootDir = path.resolve(__dirname, './');
 
 export default ({
-  rootDir,
   items: [
     {
-      loader: 'module',
-      path: path.resolve(rootDir, './testServiceA.ts')
+      path: path.resolve(rootDir, './testServiceA.ts'),
+      extname: '.ts',
+      filename: 'testServiceA.ts',
     },
     {
-      loader: 'module',
-      path: path.resolve(rootDir, './testServiceB.ts')
+      path: path.resolve(rootDir, './testServiceB.ts'),
+      extname: '.ts',
+      filename: 'testServiceB.ts',
     }
   ]
-});
+}) as Manifest;

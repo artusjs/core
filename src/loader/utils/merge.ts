@@ -1,5 +1,5 @@
 import deepmerge from 'deepmerge';
-import { isPlainObject } from './is';
+import { isPlainObject } from '../../utils/is';
 
 export function mergeConfig(...args) {
   /* istanbul ignore next */

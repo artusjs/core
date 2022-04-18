@@ -3,6 +3,8 @@ export const DEFAULT_LOADER = 'module';
 export const enum ArtusInjectEnum {
   Application = 'artus#application',
   Trigger = 'artus#trigger',
+  LifecycleManager = 'artus#lifecycle-manager',
+  Config = 'artus#config',
   DefaultContainerName = 'artus#default_container',
 }
 
@@ -36,6 +38,15 @@ export const DEFAULT_EXCLUDES = [
 export const PLUGIN_CONFIG_PATTERN = 'plugin.*';
 export const CONFIG_PATTERN = 'config.*';
 export const EXTENSION_PATTERN = 'app.*';
-export const PLUGIN_META = 'meta';
+export const PLUGIN_META = ['meta.json', 'meta.yaml', 'meta.yml'];
 export const PACKAGE_JSON = 'package.json';
 export const EXCEPTION_FILE = 'artus-exception.yaml';
+
+export const DEFAULT_LOADER_LIST_WITH_ORDER = [
+  'exception',
+  'plugin-config',
+  'extension',
+  'config',
+  'plugin-meta',
+  'module'
+];

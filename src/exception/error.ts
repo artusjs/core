@@ -2,9 +2,9 @@ import { ARTUS_EXCEPTION_DEFAULT_LOCALE } from '../constraints';
 import { ExceptionItem } from './types';
 
 export const ErrorCodeUtils = {
-  getI18NDesc (code: string, locale?: string) {
+  getI18NDesc (codeMap: Map<string, ExceptionItem>, code: string, locale?: string) {
     const currentLocale = locale || process.env.ARTUS_ERROR_LOCALE || ARTUS_EXCEPTION_DEFAULT_LOCALE;
-    const exceptionItem = ArtusStdError.errorCodeMap.get(code);
+    const exceptionItem = codeMap.get(code);
     if (!exceptionItem) {
       return 'Unknown Error';
     }
@@ -16,22 +16,14 @@ export const ErrorCodeUtils = {
 };
 
 export class ArtusStdError extends Error {
-  static errorCodeMap: Map<string, ExceptionItem> = new Map();
-
-  static registerCode(code: string, exceptionItem: ExceptionItem): void {
-    if (this.errorCodeMap.has(code)) {
-      console.log(`[Artus-Exception] Register error-code failed, code is existed.(${code})`);
-      return;
-    }
-    this.errorCodeMap.set(code, exceptionItem);
-  }
-
   name: string = 'ArtusStdError';
   private _code: string;
+  private _codeMap: Map<string, ExceptionItem>;
   
-  constructor (code: string) {
+  constructor (code: string, codeMap: Map<string, ExceptionItem>) {
       super(`[${code}] This is Artus standard error, Please check on https://github.com/artusjs/error-code`);
       this._code = code;
+      this._codeMap = codeMap
   }
   
   get code(): string {
@@ -40,10 +32,10 @@ export class ArtusStdError extends Error {
   
   get desc(): string {
     // TODO: 待支持从 Config 获取 I18N 的 Locale
-    return ErrorCodeUtils.getI18NDesc(this._code);
+    return ErrorCodeUtils.getI18NDesc(this._codeMap, this._code);
   }
   
   get detailUrl(): string|undefined {
-    return ArtusStdError.errorCodeMap.get(this._code)?.detailUrl;
+    return this._codeMap.get(this._code)?.detailUrl;
   }
 }
