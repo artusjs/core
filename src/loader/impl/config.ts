@@ -3,7 +3,7 @@ import ConfigurationHandler from '../../configuration';
 import { ArtusInjectEnum, ARTUS_DEFAULT_CONFIG_ENV } from '../../constraints';
 import { DefineLoader } from '../decorator';
 import { ManifestItem, Loader } from '../types';
-import compatibleRequire from '../utils/compatible-require';
+import compatibleRequire from '../../utils/compatible-require';
 
 @DefineLoader('config')
 class ConfigLoader implements Loader {

@@ -1,5 +1,3 @@
-
-
 export default {
-    name: 'artus'
-}
+  name: 'artus'
+};

@@ -1,7 +1,7 @@
 import { Container, InjectableDefinition } from '@artus/injection';
 import { DefineLoader } from '../decorator';
 import { ManifestItem, Loader } from '../types';
-import compatibleRequire from '../utils/compatible-require';
+import compatibleRequire from '../../utils/compatible-require';
 
 @DefineLoader('module')
 class ModuleLoader implements Loader {

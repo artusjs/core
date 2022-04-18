@@ -1,4 +1,4 @@
-import compatibleRequire from '../loader/utils/compatible-require';
+import compatibleRequire from '../utils/compatible-require';
 import { BasePlugin } from './base';
 
 export class ArtusPlugin extends BasePlugin {

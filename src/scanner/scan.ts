@@ -62,7 +62,7 @@ export class Scanner {
         };
 
         for (const pluginItem of result.pluginConfig) {
-            const pluginConfig = compatibleRequire(pluginItem.path);
+            const pluginConfig = await compatibleRequire(pluginItem.path);
             if (!Array.isArray(pluginConfig)) {
                 continue;
             }

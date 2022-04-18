@@ -4,7 +4,7 @@ import { LifecycleManager } from '../../lifecycle';
 import { ApplicationLifecycle } from '../../types';
 import { DefineLoader } from '../decorator';
 import { ManifestItem, Loader } from '../types';
-import compatibleRequire from '../utils/compatible-require';
+import compatibleRequire from '../../utils/compatible-require';
 
 @DefineLoader('extension')
 class ExtensionLoader implements Loader {
