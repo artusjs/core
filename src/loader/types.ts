@@ -1,6 +1,6 @@
 import { Container } from '@artus/injection';
 
-type LoaderType = 'module'|'file'|string;
+type LoaderType = 'module' | 'file' | string;
 
 interface Manifest {
   rootDir: string;

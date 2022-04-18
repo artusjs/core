@@ -1,8 +1,7 @@
 import path from 'path';
 import fs from 'fs';
 import compatibleRequire from './compatible-require';
-
-
+import minimatch from 'minimatch';
 
 export const loadFile = async (filepath: string) => {
   try {
@@ -16,4 +15,13 @@ export const loadFile = async (filepath: string) => {
   }
 }
 
+export function getDefaultExtensions() {
+  return Object.keys(require.extensions)
+}
 
+export function isMatch(filename: string, patterns: string | string[]) {
+  if (!Array.isArray(patterns)) {
+    patterns = [patterns];
+  }
+  return patterns.some(pattern => minimatch(filename, pattern));
+}

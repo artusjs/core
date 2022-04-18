@@ -13,6 +13,7 @@ export * from './lifecycle';
 export * from './exception';
 export * from './plugin';
 export * from './application';
+export * from './scanner';
 
 import Trigger from './trigger';
 export { Trigger };
