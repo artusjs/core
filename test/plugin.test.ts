@@ -130,10 +130,10 @@ describe('test/app.test.ts', () => {
       }
       expect(async () => {
         await PluginFactory.createFromConfig(mockPluginConfig)
-      }).rejects.toThrowError(new Error(`Plugin plugin-a need have dependencies: plugin-b.`));
+      }).rejects.toThrowError(new Error(`Plugin plugin-a need have dependence: plugin-b.`));
     });
 
-    it('should throw if dependencies disabled', async () => {
+    it('should throw if dependence disabled', async () => {
       const mockPluginConfig = {
         'plugin-a': {
           enable: true,
@@ -171,10 +171,10 @@ describe('test/app.test.ts', () => {
       }
       expect(async () => {
         await PluginFactory.createFromConfig(mockPluginConfig)
-      }).rejects.toThrowError(new Error(`Plugin plugin-a need have dependencies: plugin-b.`));
+      }).rejects.toThrowError(new Error(`Plugin plugin-a need have dependence: plugin-b.`));
     });
 
-    it('should not throw if optional dependencies missing', async () => {
+    it('should not throw if optional dependence missing', async () => {
       const mockPluginConfig = {
         'plugin-d': {
           enable: true,
@@ -199,7 +199,7 @@ describe('test/app.test.ts', () => {
         expect(plugin).toBeInstanceOf(ArtusPlugin);
         expect(plugin.enable).toBeTruthy();
       });
-      expect(mockWarnFn).toBeCalledWith(`Plugin plugin-d need have optional dependencies: plugin-e.`);
+      expect(mockWarnFn).toBeCalledWith(`Plugin plugin-d need have optional dependence: plugin-e.`);
 
       // restore warn
       console.warn = originWarn;
