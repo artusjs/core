@@ -18,6 +18,7 @@ import {
     ScannerUnit,
     ScannerManifest
 } from './types';
+import { PluginConfigItem } from '../plugin/types';
 
 export class Scanner {
     private options: ScannerOptions;
@@ -62,17 +63,17 @@ export class Scanner {
         };
 
         for (const pluginItem of result.pluginConfig) {
-            const pluginConfig = await compatibleRequire(pluginItem.path);
-            if (!Array.isArray(pluginConfig)) {
+            const pluginConfig: Record<string, PluginConfigItem> = await compatibleRequire(pluginItem.path);
+            if (!pluginConfig) {
                 continue;
             }
-            for (const plugin of pluginConfig) {
-                if (!manifest[plugin.name]) {
-                    let pluginPath = plugin.path;
+            for (const [name, plugin] of Object.entries(pluginConfig)) {
+                if (!manifest[name]) {
+                    let pluginPath = plugin.path ?? '';
                     if (plugin.package) {
                         pluginPath = require.resolve(plugin.package);
                     }
-                    await this.scanUnit(plugin.name, pluginPath, manifest);
+                    await this.scanUnit(name, pluginPath, manifest);
                 }
             }
         }
