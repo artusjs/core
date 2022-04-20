@@ -1,7 +1,7 @@
 import path from 'path';
 import { ManifestItem } from "../types";
 
-interface FrameworkConfig {
+export interface FrameworkConfig {
   path?: string,
   package?: string
 }

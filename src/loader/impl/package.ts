@@ -5,7 +5,7 @@ import { DefineLoader } from '../decorator';
 import { ManifestItem, Loader } from '../types';
 import compatibleRequire from '../../utils/compatible-require';
 
-@DefineLoader('framework')
+@DefineLoader('package-json')
 class ConfigLoader implements Loader {
   private container: Container;
 
@@ -16,7 +16,7 @@ class ConfigLoader implements Loader {
   async load(item: ManifestItem) {
     const originConfigObj = await compatibleRequire(item.path);
     const configHandler = this.container.get(ConfigurationHandler);
-    configHandler.setConfig(ARTUS_DEFAULT_CONFIG_ENV.DEFAULT, { frameworks: [originConfigObj] });
+    configHandler.setConfig(ARTUS_DEFAULT_CONFIG_ENV.DEFAULT, { packages: [originConfigObj] });
   }
 }
 

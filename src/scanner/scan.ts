@@ -84,7 +84,7 @@ export class Scanner {
             }
             frameworkMap.set(frame, true);
             const frameworkConfig = await compatibleRequire(frame);
-            frameworkConfig.package = frameworkConfig.package ?? frameworkConfig.framework;
+            frameworkConfig.framework && (frameworkConfig.package = frameworkConfig.framework);
             const baseFrameworkPath = await FrameworkHandler.handle(frameworkBaseDir, frameworkConfig);
             baseFrameworkPath && (frameworkBaseDir = baseFrameworkPath) && await this.walk(baseFrameworkPath, 'framework');
             frameworks.push(...serialize(this.itemMap.get('framework') ?? []));
