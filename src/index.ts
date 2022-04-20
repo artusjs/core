@@ -14,7 +14,6 @@ export * from './exception';
 export * from './plugin';
 export * from './application';
 export * from './scanner';
-export * from './framework';
 
 import Trigger from './trigger';
 export { Trigger };

@@ -12,6 +12,7 @@ import {
     EXCEPTION_FILE,
     EXTENSION_PATTERN,
     FRAMEWORK_PATTERN,
+    PACKAGE_JSON,
     DEFAULT_LOADER_LIST_WITH_ORDER,
     DEFAULT_LOADER
 } from '../constraints';
@@ -64,10 +65,13 @@ export class Scanner {
             extname: path.extname(plugin.metaFilePath),
             filename: path.basename(plugin.metaFilePath),
             loader: 'plugin-meta',
-            source: plugin.name
+            source: 'plugin'
           });
-          await this.walk(plugin.importPath, plugin.name);
+          await this.walk(plugin.importPath, 'plugin');
         }
+
+        // 2. Scan frameworks
+
         const result: Manifest = {
             items: this.getItemsFromMap(),
         };
@@ -143,6 +147,8 @@ export class Scanner {
             return 'extension';
         } else if(this.isFramework(filename)) {
             return 'framework';
+        } else if (this.isPakcageJson(filename)) {
+            return 'package-json';
         } else {
             return 'module';
         }
@@ -190,6 +196,10 @@ export class Scanner {
     // TODO:
     private isFramework(filename: string): boolean {
         return isMatch(filename, FRAMEWORK_PATTERN);
+    }
+
+    private isPakcageJson(filename: string): boolean {
+        return isMatch(filename, PACKAGE_JSON);
     }
 
     private exist(dir: string, filenames: string[]): boolean {

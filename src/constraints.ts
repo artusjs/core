@@ -51,4 +51,5 @@ export const DEFAULT_LOADER_LIST_WITH_ORDER = [
   'plugin-meta',
   'module',
   'framework',
+  'package-json',
 ];

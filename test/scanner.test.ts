@@ -8,7 +8,7 @@ describe('test/scanner.test.ts', () => {
         const manifest = await scanner.scan(path.resolve(__dirname, './fixtures/app-koa-with-ts'));
         expect(manifest).toBeDefined();
         expect(manifest.items).toBeDefined();
-        expect(manifest.items.length).toBe(11);
+        expect(manifest.items.length).toBe(12);
 
         expect(manifest.items.filter(item => item.loader === 'plugin-config').length).toBe(1);
         expect(manifest.items.filter(item => item.loader === 'plugin-meta').length).toBe(1);
@@ -19,6 +19,6 @@ describe('test/scanner.test.ts', () => {
 
         expect(manifest.items.filter(item => item.source === 'redis').length).toBe(2);
         expect(manifest.items.filter(item => item.source === 'mysql').length).toBe(0);
-        expect(manifest.items.filter(item => item.source === 'app').length).toBe(9);
+        expect(manifest.items.filter(item => item.source === 'app').length).toBe(10);
     });
 });
