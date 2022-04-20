@@ -2,12 +2,12 @@ import 'reflect-metadata';
 import { Scanner } from '../src/scanner';
 import path from 'path';
 
-describe('test/trigger/http.test.ts', () => {
+describe('test/framework.test.ts', () => {
   it('should run succeed', async () => {
     try {
       const scanner = new Scanner({ needWriteFile: false, extensions: ['.ts', '.js', '.json'] });
       const manifest = await scanner.scan(path.resolve(__dirname, './fixtures/artus-application'));
-      console.log(1233, manifest);
+      console.log('manifest', manifest);
       // const {
       //   main,
       // } = await import('./fixtures/artus-application/src/app');

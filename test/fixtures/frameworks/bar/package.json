@@ -1,3 +1,4 @@
 {
-  "name": "bar"
+  "name": "bar",
+  "framework": "foo"
 }

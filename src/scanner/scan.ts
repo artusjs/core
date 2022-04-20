@@ -22,6 +22,7 @@ import {
 import { Manifest, ManifestItem } from '../loader';
 import ConfigurationHandler from '../configuration';
 import { PluginFactory } from '../plugin';
+import { FrameworkHandler } from '../framework';
 
 export class Scanner {
     private options: ScannerOptions;
@@ -42,35 +43,53 @@ export class Scanner {
 
     public async scan(root: string) {
         // 0. Scan Application
-        await this.walk(root);
-    
+        await this.walk(root, 'app');
+
         // 1. Calculate Plugin Load Order
         const pluginConfigHandler = new ConfigurationHandler();
         for (const pluginConfigFile of this.itemMap.get('plugin-config') ?? []) {
-          const pluginConfig = await compatibleRequire(pluginConfigFile.path);
-          if (pluginConfig) {
-            let [_, env, extname] = pluginConfigFile.filename.split('.');
-            if (!extname) {
-              env = 'default';
+            const pluginConfig = await compatibleRequire(pluginConfigFile.path);
+            if (pluginConfig) {
+                let [_, env, extname] = pluginConfigFile.filename.split('.');
+                if (!extname) {
+                    env = 'default';
+                }
+                pluginConfigHandler.setConfig(env, pluginConfig);
             }
-            pluginConfigHandler.setConfig(env, pluginConfig);
-          }
         }
         const mergedConfig = await pluginConfigHandler.getMergedConfig();
         const pluginSortedList = await PluginFactory.createFromConfig(mergedConfig || {});
         for (const plugin of pluginSortedList.reverse()) {
-          const metaList = this.itemMap.get('plugin-meta') ?? [];
-          metaList.push({
-            path: plugin.metaFilePath,
-            extname: path.extname(plugin.metaFilePath),
-            filename: path.basename(plugin.metaFilePath),
-            loader: 'plugin-meta',
-            source: 'plugin'
-          });
-          await this.walk(plugin.importPath, 'plugin');
+            const metaList = this.itemMap.get('plugin-meta') ?? [];
+            metaList.push({
+                path: plugin.metaFilePath,
+                extname: path.extname(plugin.metaFilePath),
+                filename: path.basename(plugin.metaFilePath),
+                loader: 'plugin-meta',
+                source: 'plugin'
+            });
+            await this.walk(plugin.importPath, 'plugin');
         }
 
-        // 2. Scan frameworks
+        // 2. Scan Frameworks
+        const serialize = FrameworkHandler.serialize;
+        const frameworkMap = new Map<string, boolean>();
+        const frameworks: string[] = [];
+        frameworks.push(...serialize(this.itemMap.get('framework') ?? []));
+        frameworks.push(...serialize(this.itemMap.get('package-json') ?? []));
+        let frameworkBaseDir = root;
+        for (const frame of frameworks) {
+            if (frameworkMap.get(frame)) {
+                continue;
+            }
+            frameworkMap.set(frame, true);
+            const frameworkConfig = await compatibleRequire(frame);
+            frameworkConfig.package = frameworkConfig.package ?? frameworkConfig.framework;
+            const baseFrameworkPath = await FrameworkHandler.handle(frameworkBaseDir, frameworkConfig);
+            baseFrameworkPath && (frameworkBaseDir = baseFrameworkPath) && await this.walk(baseFrameworkPath, 'framework');
+            frameworks.push(...serialize(this.itemMap.get('framework') ?? []));
+            frameworks.push(...serialize(this.itemMap.get('package-json') ?? []));
+        }
 
         const result: Manifest = {
             items: this.getItemsFromMap(),
@@ -81,7 +100,7 @@ export class Scanner {
         return result;
     }
 
-    private async walk(root: string, unitName: string = this.options.appName!) {
+    private async walk(root: string, unitName: string) {
         if (!existsSync(root)) {
             return;
         }
@@ -105,7 +124,7 @@ export class Scanner {
                 if (this.exist(realPath, PLUGIN_META)) {
                     continue;
                 }
-                await this.walk(realPath);
+                await this.walk(realPath, unitName);
                 continue;
             }
 
@@ -145,7 +164,7 @@ export class Scanner {
             return 'exception';
         } else if (this.isExtension(filename)) {
             return 'extension';
-        } else if(this.isFramework(filename)) {
+        } else if (this.isFramework(filename)) {
             return 'framework';
         } else if (this.isPakcageJson(filename)) {
             return 'package-json';

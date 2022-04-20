@@ -1,7 +1,3 @@
 {
-  "name": "artus-application",
-  "framework": "foo",
-  "dependencies": {
-    "foo": "../frameworks/foo"
-  }
+  "name": "artus-application"
 }
