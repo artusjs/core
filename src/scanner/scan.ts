@@ -11,6 +11,7 @@ import {
     PLUGIN_META,
     EXCEPTION_FILE,
     EXTENSION_PATTERN,
+    FRAMEWORK_PATTERN,
     DEFAULT_LOADER_LIST_WITH_ORDER,
     DEFAULT_LOADER
 } from '../constraints';
@@ -140,6 +141,8 @@ export class Scanner {
             return 'exception';
         } else if (this.isExtension(filename)) {
             return 'extension';
+        } else if(this.isFramework(filename)) {
+            return 'framework';
         } else {
             return 'module';
         }
@@ -180,8 +183,13 @@ export class Scanner {
     }
 
     // TODO:
-    private isExtension(filename: string,): boolean {
+    private isExtension(filename: string): boolean {
         return isMatch(filename, EXTENSION_PATTERN);
+    }
+
+    // TODO:
+    private isFramework(filename: string): boolean {
+        return isMatch(filename, FRAMEWORK_PATTERN);
     }
 
     private exist(dir: string, filenames: string[]): boolean {

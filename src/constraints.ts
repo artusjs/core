@@ -31,11 +31,11 @@ export const DEFAULT_EXCLUDES = [
   'tsconfig*.json',
   '*.d.ts',
   'jest.config.*',
-  'package.json',
   'meta.*',
   'LICENSE'
 ];
 
+export const FRAMEWORK_PATTERN = 'framework.*';
 export const PLUGIN_CONFIG_PATTERN = 'plugin.*';
 export const CONFIG_PATTERN = 'config.*';
 export const EXTENSION_PATTERN = 'app.*';
@@ -49,5 +49,6 @@ export const DEFAULT_LOADER_LIST_WITH_ORDER = [
   'extension',
   'config',
   'plugin-meta',
-  'module'
+  'module',
+  'framework',
 ];
