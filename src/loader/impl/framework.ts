@@ -6,7 +6,7 @@ import { ManifestItem, Loader } from '../types';
 import compatibleRequire from '../../utils/compatible-require';
 
 @DefineLoader('framework')
-class ConfigLoader implements Loader {
+class FrameworkLoader implements Loader {
   private container: Container;
 
   constructor(container) {
@@ -20,4 +20,4 @@ class ConfigLoader implements Loader {
   }
 }
 
-export default ConfigLoader;
+export default FrameworkLoader;

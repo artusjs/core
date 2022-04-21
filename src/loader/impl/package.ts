@@ -6,7 +6,7 @@ import { ManifestItem, Loader } from '../types';
 import compatibleRequire from '../../utils/compatible-require';
 
 @DefineLoader('package-json')
-class ConfigLoader implements Loader {
+class PackageJsonLoader implements Loader {
   private container: Container;
 
   constructor(container) {
@@ -20,4 +20,4 @@ class ConfigLoader implements Loader {
   }
 }
 
-export default ConfigLoader;
+export default PackageJsonLoader;
