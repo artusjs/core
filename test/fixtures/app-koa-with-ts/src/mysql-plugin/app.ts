@@ -4,6 +4,6 @@ import { ApplicationExtension, ApplicationHook } from '../../../../../src/decora
 export default class Hook {
   @ApplicationHook()
   async willReady() {
-    console.log('Redis Plugin will ready');
+    console.log('MySQL Plugin will ready');
   }
 }
