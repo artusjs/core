@@ -66,9 +66,10 @@ export class Scanner {
                 extname: path.extname(plugin.metaFilePath),
                 filename: path.basename(plugin.metaFilePath),
                 loader: 'plugin-meta',
-                source: 'plugin'
+                source: 'plugin',
+                unitName: plugin.name,
             });
-            await this.walk(plugin.importPath, 'plugin');
+            await this.walk(plugin.importPath, 'plugin', plugin.name);
         }
 
         // 2. Scan Frameworks
@@ -100,7 +101,7 @@ export class Scanner {
         return result;
     }
 
-    private async walk(root: string, unitName: string) {
+    private async walk(root: string, source: string, unitName: string = '') {
         if (!existsSync(root)) {
             return;
         }
@@ -124,7 +125,7 @@ export class Scanner {
                 if (this.exist(realPath, PLUGIN_META)) {
                     continue;
                 }
-                await this.walk(realPath, unitName);
+                await this.walk(realPath, source, unitName);
                 continue;
             }
 
@@ -136,8 +137,9 @@ export class Scanner {
                     extname,
                     filename,
                     loader: await this.getLoaderName(root, filename),
-                    source: unitName
+                    source
                 };
+                unitName && (item.unitName = unitName);
                 const itemList = this.itemMap.get(item.loader ?? DEFAULT_LOADER);
                 if (Array.isArray(itemList)) {
                     itemList.unshift(item);
