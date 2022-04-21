@@ -1,6 +1,5 @@
 import { Container } from '@artus/injection';
 import ConfigurationHandler from '../../configuration';
-import { ARTUS_DEFAULT_CONFIG_ENV } from '../../constraints';
 import { DefineLoader } from '../decorator';
 import { ManifestItem, Loader } from '../types';
 import compatibleRequire from '../../utils/compatible-require';
@@ -16,7 +15,7 @@ class FrameworkLoader implements Loader {
   async load(item: ManifestItem) {
     const originConfigObj = await compatibleRequire(item.path);
     const configHandler = this.container.get(ConfigurationHandler);
-    configHandler.setConfig(ARTUS_DEFAULT_CONFIG_ENV.DEFAULT, { frameworks: [originConfigObj] });
+    configHandler.addFramework(item.source || 'app', originConfigObj);
   }
 }
 

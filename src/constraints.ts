@@ -5,6 +5,8 @@ export const enum ArtusInjectEnum {
   Trigger = 'artus#trigger',
   LifecycleManager = 'artus#lifecycle-manager',
   Config = 'artus#config',
+  Frameworks = 'artus#frameworks',
+  Packages = 'artus#packages',
   DefaultContainerName = 'artus#default_container',
 }
 

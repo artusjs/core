@@ -39,6 +39,18 @@ export class LoaderFactory {
           });
           lifecycleManager.emitHook('configDidLoad');
         }
+      },
+      framework: {
+        after: () => this.container.set({
+          id: ArtusInjectEnum.Frameworks,
+          value: configurationHandler.getFrameworks()
+        })
+      },
+      'package-json': {
+        after: () => this.container.set({
+          id: ArtusInjectEnum.Packages,
+          value: configurationHandler.getPackages()
+        })
       }
     });
   }

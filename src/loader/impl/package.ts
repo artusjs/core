@@ -1,12 +1,11 @@
 import { Container } from '@artus/injection';
 import ConfigurationHandler from '../../configuration';
-import { ARTUS_DEFAULT_CONFIG_ENV } from '../../constraints';
 import { DefineLoader } from '../decorator';
 import { ManifestItem, Loader } from '../types';
 import compatibleRequire from '../../utils/compatible-require';
 
 @DefineLoader('package-json')
-class PackageJsonLoader implements Loader {
+class PackageLoader implements Loader {
   private container: Container;
 
   constructor(container) {
@@ -16,8 +15,8 @@ class PackageJsonLoader implements Loader {
   async load(item: ManifestItem) {
     const originConfigObj = await compatibleRequire(item.path);
     const configHandler = this.container.get(ConfigurationHandler);
-    configHandler.setConfig(ARTUS_DEFAULT_CONFIG_ENV.DEFAULT, { packages: [originConfigObj] });
+    configHandler.addPackage(item.source || 'app', originConfigObj);
   }
 }
 
-export default PackageJsonLoader;
+export default PackageLoader;

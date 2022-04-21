@@ -11,6 +11,10 @@ describe('test/framework.test.ts', () => {
     // console.log('manifest', manifest);
     const { main } = await import('./fixtures/artus-application/src');
     const app = await main(manifest);
+    assert(app.frameworks.get('app').length === 1);
+    assert(app.frameworks.get('framework').length === 1);
+    assert(app.packages.get('app').length === 1);
+    assert(app.packages.get('framework').length === 2);
     assert(app.isListening());
     const port = app.config?.port;
     assert(port === 3003);
