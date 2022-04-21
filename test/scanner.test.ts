@@ -17,8 +17,8 @@ describe('test/scanner.test.ts', () => {
         expect(manifest.items.filter(item => item.loader === 'config').length).toBe(1);
         expect(manifest.items.filter(item => item.loader === 'module').length).toBe(5);
 
-        expect(manifest.items.filter(item => item.source === 'redis').length).toBe(2);
-        expect(manifest.items.filter(item => item.source === 'mysql').length).toBe(0);
+        expect(manifest.items.filter(item => item.unitName === 'redis').length).toBe(2);
+        expect(manifest.items.filter(item => item.unitName === 'mysql').length).toBe(0);
         expect(manifest.items.filter(item => item.source === 'app').length).toBe(10);
     });
 });
