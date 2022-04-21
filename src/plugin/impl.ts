@@ -4,9 +4,6 @@ import { loadMetaFile } from '../utils/load-meta-file';
 
 export class ArtusPlugin extends BasePlugin {
   async init() {
-    if (!this.enable) {
-      return;
-    }
     await this.checkAndLoadMetadata();
     if (!this.metadata) {
       throw new Error(`${this.name} is not have metadata.`);

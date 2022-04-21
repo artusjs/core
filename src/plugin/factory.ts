@@ -14,7 +14,9 @@ export class PluginFactory {
     const pluginInstanceMap: Map<string, BasePlugin> = new Map();
     for (const [name, item] of Object.entries(config)) {
       const pluginInstance = await PluginFactory.create(name, item);
-      pluginInstanceMap.set(name, pluginInstance);
+      if (pluginInstance.enable) {
+        pluginInstanceMap.set(name, pluginInstance);
+      }
     }
     let pluginDepEdgeList: [string, string][] = [];
     // Topological sort plugins
