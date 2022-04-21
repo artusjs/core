@@ -1,5 +1,5 @@
 import { ArtusApplication } from '../../../../../src';
-import { server } from './app';
+import { server } from './lifecycle';
 
 export class FrameworkFoo extends ArtusApplication {
   isListening() {

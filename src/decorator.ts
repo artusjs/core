@@ -3,12 +3,14 @@ import {
   HOOK_CONSTRUCTOR_PARAMS_APP,
   HOOK_CONSTRUCTOR_PARAMS_CONTAINER,
   HOOK_NAME_META_PREFIX,
-  HOOK_PARAMS_CONTEXT
+  HOOK_PARAMS_CONTEXT,
+  HOOK_FILE_LOADER,
 } from './constraints';
 
 export function ApplicationExtension(): ClassDecorator {
-  return (_target: any) => {
+  return (target: any) => {
     // Ready to remove?
+    Reflect.defineMetadata(HOOK_FILE_LOADER, { loader: 'extension' }, target);
   };
 };
 

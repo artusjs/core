@@ -10,11 +10,11 @@ import {
     PLUGIN_CONFIG_PATTERN,
     PLUGIN_META,
     EXCEPTION_FILE,
-    EXTENSION_PATTERN,
     FRAMEWORK_PATTERN,
     PACKAGE_JSON,
     DEFAULT_LOADER_LIST_WITH_ORDER,
-    DEFAULT_LOADER
+    DEFAULT_LOADER,
+    HOOK_FILE_LOADER,
 } from '../constraints';
 import {
     ScannerOptions,
@@ -135,7 +135,7 @@ export class Scanner {
                     path: this.moduleExtensions.includes(extname) ? path.resolve(root, filenameWithoutExt) : realPath,
                     extname,
                     filename,
-                    loader: this.getLoaderName(filename),
+                    loader: await this.getLoaderName(root, filename),
                     source: unitName
                 };
                 const itemList = this.itemMap.get(item.loader ?? DEFAULT_LOADER);
@@ -154,20 +154,31 @@ export class Scanner {
         return items;
     }
 
-    private getLoaderName(filename: string): string {
-        // TODO: 后面考虑重构通过参数传递匹配规则
+    private async getLoaderName(root: string, filename: string): Promise<string> {
+        // package.json
+        if (this.isPakcageJson(filename)) {
+            return 'package-json';
+        }
+
+        // artus-exception.yaml
+        if (this.isException(filename)) {
+            return 'exception';
+        }
+
+        // get loader from reflect metadata
+        const target = await compatibleRequire(path.join(root, filename));
+        const metadata = Reflect.getMetadata(HOOK_FILE_LOADER, target);
+        if (metadata?.loader) {
+            return metadata.loader;
+        }
+
+        // TODO: wait for refactor
         if (this.isConfig(filename)) {
             return 'config';
         } else if (this.isPluginConfig(filename)) {
             return 'plugin-config';
-        } else if (this.isException(filename)) {
-            return 'exception';
-        } else if (this.isExtension(filename)) {
-            return 'extension';
         } else if (this.isFramework(filename)) {
             return 'framework';
-        } else if (this.isPakcageJson(filename)) {
-            return 'package-json';
         } else {
             return 'module';
         }
@@ -205,11 +216,6 @@ export class Scanner {
     // TODO:
     private isException(filename: string): boolean {
         return isMatch(filename, EXCEPTION_FILE);
-    }
-
-    // TODO:
-    private isExtension(filename: string): boolean {
-        return isMatch(filename, EXTENSION_PATTERN);
     }
 
     // TODO:
