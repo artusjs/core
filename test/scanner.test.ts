@@ -8,6 +8,7 @@ describe('test/scanner.test.ts', () => {
         const manifest = await scanner.scan(path.resolve(__dirname, './fixtures/app-koa-with-ts'));
         expect(manifest).toBeDefined();
         expect(manifest.items).toBeDefined();
+        // console.log('manifest', manifest);
         expect(manifest.items.length).toBe(12);
 
         expect(manifest.items.filter(item => item.loader === 'plugin-config').length).toBe(1);

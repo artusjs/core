@@ -55,3 +55,5 @@ export const DEFAULT_LOADER_LIST_WITH_ORDER = [
   'framework',
   'package-json',
 ];
+
+export const DEFAULT_CONFIG_DIR = 'src/config';
