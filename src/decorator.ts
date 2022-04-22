@@ -2,17 +2,20 @@ import {
   HOOK_CONSTRUCTOR_PARAMS,
   HOOK_CONSTRUCTOR_PARAMS_APP,
   HOOK_CONSTRUCTOR_PARAMS_CONTAINER,
-  HOOK_NAME_META_PREFIX
+  HOOK_NAME_META_PREFIX,
+  HOOK_PARAMS_CONTEXT,
+  HOOK_FILE_LOADER,
 } from './constraints';
 
 export function ApplicationExtension(): ClassDecorator {
-  return (_target: any) => {
+  return (target: any) => {
     // Ready to remove?
+    Reflect.defineMetadata(HOOK_FILE_LOADER, { loader: 'extension' }, target);
   };
 };
 
 export function ApplicationHook(hookName?: string): PropertyDecorator {
-  return (target: any, propertyKey: string|symbol) => {
+  return (target: any, propertyKey: string | symbol) => {
     if (typeof propertyKey === 'symbol') {
       throw new Error(`hookName is not support symbol [${propertyKey.description}]`);
     }
@@ -20,20 +23,28 @@ export function ApplicationHook(hookName?: string): PropertyDecorator {
   };
 };
 
-const WithApplicationExtensionConstructorParams = (tag: string): ParameterDecorator => {
-  return (target: any, _propertyKey: string|symbol, parameterIndex: number) => {
+const WithApplicationExtensionParams = (tag: string): ParameterDecorator => {
+  return (target: any, _propertyKey: string | symbol, parameterIndex: number) => {
     const paramsMd = Reflect.getOwnMetadata(HOOK_CONSTRUCTOR_PARAMS, target) ?? [];
     paramsMd[parameterIndex] = tag;
-    Reflect.defineMetadata(HOOK_CONSTRUCTOR_PARAMS, paramsMd, target);
+    if (_propertyKey) {
+      Reflect.defineMetadata(HOOK_CONSTRUCTOR_PARAMS, paramsMd, target[_propertyKey]); // for proto
+    } else {
+      Reflect.defineMetadata(HOOK_CONSTRUCTOR_PARAMS, paramsMd, target); // for constructor
+    }
   };
 }
 
 export function WithApplication(): ParameterDecorator {
-  return WithApplicationExtensionConstructorParams(HOOK_CONSTRUCTOR_PARAMS_APP);
+  return WithApplicationExtensionParams(HOOK_CONSTRUCTOR_PARAMS_APP);
 }
 
 export function WithContainer(): ParameterDecorator {
-  return WithApplicationExtensionConstructorParams(HOOK_CONSTRUCTOR_PARAMS_CONTAINER);
+  return WithApplicationExtensionParams(HOOK_CONSTRUCTOR_PARAMS_CONTAINER);
+}
+
+export function WithContext(): ParameterDecorator {
+  return WithApplicationExtensionParams(HOOK_PARAMS_CONTEXT);
 }
 
 export * from './loader/decorator';

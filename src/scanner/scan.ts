@@ -10,9 +10,11 @@ import {
     PLUGIN_CONFIG_PATTERN,
     PLUGIN_META,
     EXCEPTION_FILE,
-    EXTENSION_PATTERN,
+    FRAMEWORK_PATTERN,
+    PACKAGE_JSON,
     DEFAULT_LOADER_LIST_WITH_ORDER,
-    DEFAULT_LOADER
+    DEFAULT_LOADER,
+    HOOK_FILE_LOADER,
 } from '../constraints';
 import {
     ScannerOptions,
@@ -20,6 +22,7 @@ import {
 import { Manifest, ManifestItem } from '../loader';
 import ConfigurationHandler from '../configuration';
 import { PluginFactory } from '../plugin';
+import { FrameworkHandler } from '../framework';
 
 export class Scanner {
     private options: ScannerOptions;
@@ -40,33 +43,55 @@ export class Scanner {
 
     public async scan(root: string) {
         // 0. Scan Application
-        await this.walk(root);
-    
+        await this.walk(root, 'app');
+
         // 1. Calculate Plugin Load Order
         const pluginConfigHandler = new ConfigurationHandler();
         for (const pluginConfigFile of this.itemMap.get('plugin-config') ?? []) {
-          const pluginConfig = await compatibleRequire(pluginConfigFile.path);
-          if (pluginConfig) {
-            let [_, env, extname] = pluginConfigFile.filename.split('.');
-            if (!extname) {
-              env = 'default';
+            const pluginConfig = await compatibleRequire(pluginConfigFile.path);
+            if (pluginConfig) {
+                let [_, env, extname] = pluginConfigFile.filename.split('.');
+                if (!extname) {
+                    env = 'default';
+                }
+                pluginConfigHandler.setConfig(env, pluginConfig);
             }
-            pluginConfigHandler.setConfig(env, pluginConfig);
-          }
         }
         const mergedConfig = await pluginConfigHandler.getMergedConfig();
         const pluginSortedList = await PluginFactory.createFromConfig(mergedConfig || {});
         for (const plugin of pluginSortedList.reverse()) {
-          const metaList = this.itemMap.get('plugin-meta') ?? [];
-          metaList.push({
-            path: plugin.metaFilePath,
-            extname: path.extname(plugin.metaFilePath),
-            filename: path.basename(plugin.metaFilePath),
-            loader: 'plugin-meta',
-            source: plugin.name
-          });
-          await this.walk(plugin.importPath, plugin.name);
+            const metaList = this.itemMap.get('plugin-meta') ?? [];
+            metaList.push({
+                path: plugin.metaFilePath,
+                extname: path.extname(plugin.metaFilePath),
+                filename: path.basename(plugin.metaFilePath),
+                loader: 'plugin-meta',
+                source: 'plugin',
+                unitName: plugin.name,
+            });
+            await this.walk(plugin.importPath, 'plugin', plugin.name);
         }
+
+        // 2. Scan Frameworks
+        const serialize = FrameworkHandler.serialize;
+        const frameworkMap = new Map<string, boolean>();
+        const frameworks: string[] = [];
+        frameworks.push(...serialize(this.itemMap.get('framework') ?? []));
+        frameworks.push(...serialize(this.itemMap.get('package-json') ?? []));
+        let frameworkBaseDir = root;
+        for (const frame of frameworks) {
+            if (frameworkMap.get(frame)) {
+                continue;
+            }
+            frameworkMap.set(frame, true);
+            const frameworkConfig = await compatibleRequire(frame);
+            frameworkConfig.framework && (frameworkConfig.package = frameworkConfig.framework);
+            const baseFrameworkPath = await FrameworkHandler.handle(frameworkBaseDir, frameworkConfig);
+            baseFrameworkPath && (frameworkBaseDir = baseFrameworkPath) && await this.walk(baseFrameworkPath, 'framework');
+            frameworks.push(...serialize(this.itemMap.get('framework') ?? []));
+            frameworks.push(...serialize(this.itemMap.get('package-json') ?? []));
+        }
+
         const result: Manifest = {
             items: this.getItemsFromMap(),
         };
@@ -76,7 +101,7 @@ export class Scanner {
         return result;
     }
 
-    private async walk(root: string, unitName: string = this.options.appName!) {
+    private async walk(root: string, source: string, unitName: string = '') {
         if (!existsSync(root)) {
             return;
         }
@@ -100,7 +125,7 @@ export class Scanner {
                 if (this.exist(realPath, PLUGIN_META)) {
                     continue;
                 }
-                await this.walk(realPath);
+                await this.walk(realPath, source, unitName);
                 continue;
             }
 
@@ -111,9 +136,10 @@ export class Scanner {
                     path: this.moduleExtensions.includes(extname) ? path.resolve(root, filenameWithoutExt) : realPath,
                     extname,
                     filename,
-                    loader: this.getLoaderName(filename),
-                    source: unitName
+                    loader: await this.getLoaderName(root, filename),
+                    source
                 };
+                unitName && (item.unitName = unitName);
                 const itemList = this.itemMap.get(item.loader ?? DEFAULT_LOADER);
                 if (Array.isArray(itemList)) {
                     itemList.unshift(item);
@@ -130,16 +156,31 @@ export class Scanner {
         return items;
     }
 
-    private getLoaderName(filename: string): string {
-        // TODO: 后面考虑重构通过参数传递匹配规则
+    private async getLoaderName(root: string, filename: string): Promise<string> {
+        // package.json
+        if (this.isPakcageJson(filename)) {
+            return 'package-json';
+        }
+
+        // artus-exception.yaml
+        if (this.isException(filename)) {
+            return 'exception';
+        }
+
+        // get loader from reflect metadata
+        const target = await compatibleRequire(path.join(root, filename));
+        const metadata = Reflect.getMetadata(HOOK_FILE_LOADER, target);
+        if (metadata?.loader) {
+            return metadata.loader;
+        }
+
+        // TODO: wait for refactor
         if (this.isConfig(filename)) {
             return 'config';
         } else if (this.isPluginConfig(filename)) {
             return 'plugin-config';
-        } else if (this.isException(filename)) {
-            return 'exception';
-        } else if (this.isExtension(filename)) {
-            return 'extension';
+        } else if (this.isFramework(filename)) {
+            return 'framework';
         } else {
             return 'module';
         }
@@ -180,8 +221,12 @@ export class Scanner {
     }
 
     // TODO:
-    private isExtension(filename: string,): boolean {
-        return isMatch(filename, EXTENSION_PATTERN);
+    private isFramework(filename: string): boolean {
+        return isMatch(filename, FRAMEWORK_PATTERN);
+    }
+
+    private isPakcageJson(filename: string): boolean {
+        return isMatch(filename, PACKAGE_JSON);
     }
 
     private exist(dir: string, filenames: string[]): boolean {

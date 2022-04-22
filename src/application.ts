@@ -28,6 +28,14 @@ export class ArtusApplication implements Application {
     return this.container.get(ArtusInjectEnum.Config);
   }
 
+  get frameworks(): Record<string, any> {
+    return this.container.get(ArtusInjectEnum.Frameworks);
+  }
+
+  get packages(): Record<string, any> {
+    return this.container.get(ArtusInjectEnum.Packages);
+  }
+
   get trigger(): Trigger {
     return this.container.get(ArtusInjectEnum.Trigger);
   }
