@@ -15,9 +15,12 @@ import {
     DEFAULT_LOADER_LIST_WITH_ORDER,
     DEFAULT_LOADER,
     HOOK_FILE_LOADER,
+    DEFAULT_CONFIG_DIR,
 } from '../constraints';
 import {
     ScannerOptions,
+    WalkOptions,
+    LoaderOptions,
 } from './types';
 import { Manifest, ManifestItem } from '../loader';
 import ConfigurationHandler from '../configuration';
@@ -34,16 +37,26 @@ export class Scanner {
         this.options = {
             appName: 'app',
             needWriteFile: true,
+            conifgDir: DEFAULT_CONFIG_DIR,
             ...options,
             excluded: DEFAULT_EXCLUDES.concat(options.excluded ?? []),
             extensions: this.moduleExtensions.concat(options.extensions ?? [], ['.yaml']),
         };
+
+        this.checkOptions();
+
         this.itemMap = new Map(DEFAULT_LOADER_LIST_WITH_ORDER.map((loaderName) => ([loaderName, []])));
+    }
+
+    private checkOptions() {
+        if (!this.options.conifgDir) {
+            throw new Error(`config dir must be passed in.`);
+        }
     }
 
     public async scan(root: string) {
         // 0. Scan Application
-        await this.walk(root, 'app');
+        await this.walk(root, { source: 'app', baseDir: root });
 
         // 1. Calculate Plugin Load Order
         const pluginConfigHandler = new ConfigurationHandler();
@@ -69,7 +82,7 @@ export class Scanner {
                 source: 'plugin',
                 unitName: plugin.name,
             });
-            await this.walk(plugin.importPath, 'plugin', plugin.name);
+            await this.walk(plugin.importPath, { source: 'plugin', baseDir: plugin.importPath, unitName: plugin.name });
         }
 
         // 2. Scan Frameworks
@@ -87,7 +100,8 @@ export class Scanner {
             const frameworkConfig = await compatibleRequire(frame);
             frameworkConfig.framework && (frameworkConfig.package = frameworkConfig.framework);
             const baseFrameworkPath = await FrameworkHandler.handle(frameworkBaseDir, frameworkConfig);
-            baseFrameworkPath && (frameworkBaseDir = baseFrameworkPath) && await this.walk(baseFrameworkPath, 'framework');
+            baseFrameworkPath && (frameworkBaseDir = baseFrameworkPath)
+                && await this.walk(baseFrameworkPath, { source: 'framework', baseDir: baseFrameworkPath });
             frameworks.push(...serialize(this.itemMap.get('framework') ?? []));
             frameworks.push(...serialize(this.itemMap.get('package-json') ?? []));
         }
@@ -101,7 +115,13 @@ export class Scanner {
         return result;
     }
 
-    private async walk(root: string, source: string, unitName: string = '') {
+    private async walk(
+        root: string,
+        { source, unitName, baseDir }: WalkOptions = {
+            source: '',
+            unitName: this.options.appName,
+            baseDir: ''
+        }) {
         if (!existsSync(root)) {
             return;
         }
@@ -125,7 +145,7 @@ export class Scanner {
                 if (this.exist(realPath, PLUGIN_META)) {
                     continue;
                 }
-                await this.walk(realPath, source, unitName);
+                await this.walk(realPath, { source, unitName, baseDir });
                 continue;
             }
 
@@ -136,7 +156,7 @@ export class Scanner {
                     path: this.moduleExtensions.includes(extname) ? path.resolve(root, filenameWithoutExt) : realPath,
                     extname,
                     filename,
-                    loader: await this.getLoaderName(root, filename),
+                    loader: await this.getLoaderName(filename, { root, baseDir }),
                     source
                 };
                 unitName && (item.unitName = unitName);
@@ -156,7 +176,12 @@ export class Scanner {
         return items;
     }
 
-    private async getLoaderName(root: string, filename: string): Promise<string> {
+    private isConfigDir(baseDir: string, currentDir: string): boolean {
+        const { conifgDir } = this.options;
+        return path.join(baseDir, conifgDir) === currentDir;
+    }
+
+    private async getLoaderName(filename: string, { root, baseDir }: LoaderOptions): Promise<string> {
         // package.json
         if (this.isPakcageJson(filename)) {
             return 'package-json';
@@ -167,6 +192,17 @@ export class Scanner {
             return 'exception';
         }
 
+        // config dir
+        if (this.isConfigDir(baseDir, root)) {
+            if (this.isConfig(filename)) {
+                return 'config';
+            } else if (this.isPluginConfig(filename)) {
+                return 'plugin-config';
+            } else if (this.isFrameworkConfig(filename)) {
+                return 'framework';
+            }
+        }
+
         // get loader from reflect metadata
         const target = await compatibleRequire(path.join(root, filename));
         const metadata = Reflect.getMetadata(HOOK_FILE_LOADER, target);
@@ -174,16 +210,8 @@ export class Scanner {
             return metadata.loader;
         }
 
-        // TODO: wait for refactor
-        if (this.isConfig(filename)) {
-            return 'config';
-        } else if (this.isPluginConfig(filename)) {
-            return 'plugin-config';
-        } else if (this.isFramework(filename)) {
-            return 'framework';
-        } else {
-            return 'module';
-        }
+        // default loder
+        return 'module';
     }
 
     /**
@@ -221,7 +249,7 @@ export class Scanner {
     }
 
     // TODO:
-    private isFramework(filename: string): boolean {
+    private isFrameworkConfig(filename: string): boolean {
         return isMatch(filename, FRAMEWORK_PATTERN);
     }
 
