@@ -3,8 +3,17 @@ import { Scanner } from '../src/scanner';
 import path from 'path';
 import axios from 'axios';
 import assert from 'assert';
+import { ARTUS_SERVER_ENV } from '../src/constraints';
 
 describe('test/framework.test.ts', () => {
+  beforeEach(async function () {
+    process.env[ARTUS_SERVER_ENV] = 'private';
+  });
+
+  afterEach(async function () {
+    process.env[ARTUS_SERVER_ENV] = undefined;
+  });
+
   it('should run succeed', async () => {
     const scanner = new Scanner({
       needWriteFile: false, extensions: ['.ts', '.js', '.json'],
@@ -23,7 +32,7 @@ describe('test/framework.test.ts', () => {
     assert(port === 3003);
     const testResponse = await axios.get(`http://127.0.0.1:${port}/home`);
     assert(testResponse.status === 200);
-    assert(testResponse.data.title === 'Hello Artus from application');
+    assert(testResponse.data.title === 'Hello Artus from application <private>');
 
     // check config loaded succeed
     const testResponseConfig = await axios.get(`http://127.0.0.1:${port}/config`);
