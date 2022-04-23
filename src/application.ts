@@ -74,7 +74,11 @@ export class ArtusApplication implements Application {
     // Load user manifest
     this.manifest = manifest;
 
-    await this.loaderFactory.loadManifest(manifest);
+    // load framework
+    await this.loaderFactory.loadFramework(manifest);
+
+    // load other files
+    await this.loaderFactory.loadManifest(manifest, this);
 
     await this.lifecycleManager.emitHook('didLoad');
 

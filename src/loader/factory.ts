@@ -1,8 +1,9 @@
 import { Container } from '@artus/injection';
 import { ArtusInjectEnum, DEFAULT_LOADER } from '../constraints';
 import { Manifest, ManifestItem, LoaderConstructor, LoaderHookUnit } from './types';
-import ConfigurationHandler from '../configuration';
+import ConfigurationHandler, { Framework } from '../configuration';
 import { LifecycleManager } from '../lifecycle';
+import { ArtusApplication } from '../application';
 
 export const configSet = {
   framework: new Set<string>(),
@@ -25,10 +26,40 @@ export class LoaderFactory {
     return new LoaderFactory(container);
   }
 
-  async loadManifest(manifest: Manifest): Promise<void> {
+  async loadFramework(manifest: Manifest): Promise<void> {
+    const frameworks = manifest.items.filter(item => item.loader === 'framework');
+    const configurationHandler: ConfigurationHandler = this.container.get(ConfigurationHandler);
+
+    await this.loadItemList(frameworks, {
+      framework: {
+        after: () => this.container.set({
+          id: ArtusInjectEnum.Frameworks,
+          value: configurationHandler.getFrameworks()
+        })
+      }
+    });
+  };
+
+  filterUnusedFrameworkFiles(manifest: Manifest, app: ArtusApplication): Manifest {
+    const frameworks = app.frameworks as Map<string, Framework>;
+    const dropFiles: string[] = [];
+    for (const [, { drop }] of frameworks.entries()) {
+      if (!drop) {
+        continue;
+      }
+      dropFiles.push(...drop.map(item => item.path));
+    }
+    manifest.items = manifest.items.filter(item => item.loader !== 'framework'
+      && dropFiles.every(ignorePath => !item.path.startsWith(ignorePath)));
+
+    return manifest;
+  }
+
+  async loadManifest(manifest: Manifest, app: ArtusApplication): Promise<void> {
     const lifecycleManager: LifecycleManager = this.container.get(ArtusInjectEnum.LifecycleManager);
     const configurationHandler: ConfigurationHandler = this.container.get(ConfigurationHandler);
 
+    manifest = this.filterUnusedFrameworkFiles(manifest, app);
     await this.loadItemList(manifest.items, {
       config: {
         before: () => lifecycleManager.emitHook('configWillLoad'),
@@ -39,12 +70,6 @@ export class LoaderFactory {
           });
           lifecycleManager.emitHook('configDidLoad');
         }
-      },
-      framework: {
-        after: () => this.container.set({
-          id: ArtusInjectEnum.Frameworks,
-          value: configurationHandler.getFrameworks()
-        })
       },
       'package-json': {
         after: () => this.container.set({

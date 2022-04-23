@@ -12,4 +12,22 @@ export default class Hello {
     const { params: { config } } = ctx.input;
     return { title: `Hello Artus ${config.name}` };
   }
+
+  @HttpMethod({
+    method: HTTPMethodEnum.GET,
+    path: '/get_name2'
+  })
+  async name2(@WithContext() ctx: Context) {
+    const { params: { config } } = ctx.input;
+    return { title: `Hello Artus ${config.name2}` };
+  }
+
+  @HttpMethod({
+    method: HTTPMethodEnum.GET,
+    path: '/get_name3'
+  })
+  async name3(@WithContext() ctx: Context) {
+    const { params: { config } } = ctx.input;
+    return { title: `Hello Artus ${config.name3}` };
+  }
 };

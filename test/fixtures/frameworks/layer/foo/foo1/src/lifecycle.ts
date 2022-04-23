@@ -4,7 +4,6 @@ import { ApplicationExtension, ApplicationHook, WithApplication } from '../../..
 import { ApplicationLifecycle } from '../../../../../../../src/types';
 import { Input } from '@artus/pipeline';
 import { ArtusApplication } from '../../../../../../../src';
-import HttpTrigger, { registerController } from './trigger/http';
 
 export let server: Server;
 
@@ -14,12 +13,6 @@ export default class ApplicationHookExtension implements ApplicationLifecycle {
 
   constructor(@WithApplication() app: ArtusApplication) {
     this.app = app;
-  }
-
-  @ApplicationHook()
-  async didLoad() {
-    // register controller
-    registerController(this.app.trigger as HttpTrigger);
   }
 
   @ApplicationHook()

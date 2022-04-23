@@ -10,6 +10,7 @@ interface ManifestItem extends Record<string, any> {
   filename: string;
   loader?: string;
   source?: string;
+  unitName?: string
 }
 
 interface LoaderHookUnit {

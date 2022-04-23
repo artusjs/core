@@ -87,24 +87,11 @@ export class Scanner {
 
         // 2. Scan Frameworks
         const serialize = FrameworkHandler.serialize;
-        const frameworkMap = new Map<string, boolean>();
         const frameworks: string[] = [];
+        const frameworkMap = new Map<string, boolean>();
         frameworks.push(...serialize(this.itemMap.get('framework') ?? []));
         frameworks.push(...serialize(this.itemMap.get('package-json') ?? []));
-        let frameworkBaseDir = root;
-        for (const frame of frameworks) {
-            if (frameworkMap.get(frame)) {
-                continue;
-            }
-            frameworkMap.set(frame, true);
-            const frameworkConfig = await compatibleRequire(frame);
-            frameworkConfig.framework && (frameworkConfig.package = frameworkConfig.framework);
-            const baseFrameworkPath = await FrameworkHandler.handle(frameworkBaseDir, frameworkConfig);
-            baseFrameworkPath && (frameworkBaseDir = baseFrameworkPath)
-                && await this.walk(baseFrameworkPath, { source: 'framework', baseDir: baseFrameworkPath });
-            frameworks.push(...serialize(this.itemMap.get('framework') ?? []));
-            frameworks.push(...serialize(this.itemMap.get('package-json') ?? []));
-        }
+        await this.recurseFramework(frameworks, root, frameworkMap);
 
         const result: Manifest = {
             items: this.getItemsFromMap(),
@@ -115,6 +102,27 @@ export class Scanner {
         return result;
     }
 
+    private async recurseFramework(frameworks: string[], frameworkBaseDir: string, frameworkMap: Map<string, boolean>) {
+        const serialize = FrameworkHandler.serialize;
+        for (const frame of frameworks) {
+            if (frameworkMap.get(frame)) {
+                continue;
+            } frameworkMap.set(frame, true);
+            const frameworkConfig = await compatibleRequire(frame);
+            frameworkConfig.framework && (frameworkConfig.package = frameworkConfig.framework);
+            const baseFrameworkPath = await FrameworkHandler.handle(frameworkBaseDir, frameworkConfig);
+            baseFrameworkPath && await this.walk(baseFrameworkPath, {
+                source: 'framework',
+                baseDir: baseFrameworkPath,
+                unitName: baseFrameworkPath
+            });
+            await this.recurseFramework([
+                ...serialize(this.itemMap.get('framework') ?? []),
+                ...serialize(this.itemMap.get('package-json') ?? [])
+            ], baseFrameworkPath, frameworkMap);
+        }
+    }
+
     private async walk(
         root: string,
         { source, unitName, baseDir }: WalkOptions = {
@@ -123,6 +131,8 @@ export class Scanner {
             baseDir: ''
         }) {
         if (!existsSync(root)) {
+            // TODO: use artus logger instead
+            console.warn(`[scan->walk] ${root} is not exists.`);
             return;
         }
 

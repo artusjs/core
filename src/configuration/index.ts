@@ -2,9 +2,10 @@ import { Injectable } from '@artus/injection';
 import { ARTUS_DEFAULT_CONFIG_ENV, ARTUS_SERVER_ENV } from '../constraints';
 import { mergeConfig } from '../loader/utils/merge';
 
-type ConfigObject = Record<string, any>;
-type PackageObject = ConfigObject;
-type Framework = { path: string };
+export type ConfigObject = Record<string, any>;
+export type PackageObject = ConfigObject;
+export type Framework = { path: string, choose: string, drop?: Framework[] };
+export type FrameworkOptions = { env: string, unitName: string };
 
 @Injectable()
 export default class ConfigurationHandler {
@@ -24,14 +25,33 @@ export default class ConfigurationHandler {
     this.configStore.set(env, mergeConfig(storedConfig, config));
   }
 
-  getFrameworks(): Map<string, Framework[]> {
-    return this.frameworks;
+  getFrameworks(
+    env?: string,
+    key = 'app',
+    frameworkMap = new Map<string, Framework>()): Map<string, Framework> {
+    if (!this.frameworks.has(key)) {
+      return frameworkMap;
+    }
+    const currentEnv = env ?? process.env[ARTUS_SERVER_ENV] ?? ARTUS_DEFAULT_CONFIG_ENV.DEV;
+    const list = this.frameworks.get(key) as unknown as Framework[];
+    const envList = list.filter(item => item.choose === currentEnv);
+    const defaultList = list.filter(item => item.choose === ARTUS_DEFAULT_CONFIG_ENV.DEFAULT);
+    const result = envList.length ? envList[0] : defaultList.length ? defaultList[0] : undefined;
+    if (!result) {
+      return frameworkMap;
+    }
+    result.drop = list.filter(item => item.path !== result.path);
+    frameworkMap.set(key, result);
+    this.getFrameworks(currentEnv, result?.path, frameworkMap);
+    return frameworkMap;
   }
 
-  addFramework(source: string, framework: Framework) {
-    const list = this.frameworks.get(source) ?? [];
+  addFramework(source: string, framework: Framework, options: FrameworkOptions) {
+    const key = options.unitName || source;
+    const list = this.frameworks.get(key) ?? [];
+    framework.choose = options.env;
     list.push(framework);
-    this.frameworks.set(source, list);
+    this.frameworks.set(key, list);
   }
 
   getPackages(): Map<string, PackageObject[]> {

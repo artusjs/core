@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { Scanner } from '../src/scanner';
 import path from 'path';
 // import axios from 'axios';
-// import assert from 'assert';
+import assert from 'assert';
 import { ARTUS_SERVER_ENV } from '../src/constraints';
 
 describe('test/framework.test.ts', () => {
@@ -21,13 +21,15 @@ describe('test/framework.test.ts', () => {
         conifgDir: 'src/config'
       });
       const manifest = await scanner.scan(path.resolve(__dirname, './fixtures/artus-application'));
-      console.log('manifest', manifest);
-      // const { main } = await import('./fixtures/artus-application/src');
-      // const app = await main(manifest);
-      // assert(app.artus.frameworks.get('app').length === 1);
-      // assert(app.artus.frameworks.get('framework').length === 1);
-      // assert(app.artus.packages.get('app').length === 1);
-      // assert(app.artus.packages.get('framework').length === 2);
+      // console.log('manifest', manifest);
+      const { main } = await import('./fixtures/artus-application/src');
+      const app = await main(manifest);
+      const { path: appFrameworkPath, choose: appFrameworkChoose } = app.artus.frameworks.get('app');
+      assert(appFrameworkPath);
+      assert(appFrameworkChoose === 'default');
+      const { path: barFrameworkPath, choose: barFrameworkChoose } = app.artus.frameworks.get(appFrameworkPath);
+      assert(barFrameworkPath);
+      assert(barFrameworkChoose === 'private');
       // assert(app.isListening());
       // const port = app.artus.config?.port;
       // assert(port === 3003);
@@ -40,7 +42,7 @@ describe('test/framework.test.ts', () => {
       // assert(testResponseConfig.status === 200);
       // assert(testResponseConfig.data.message === 'get conifg succeed');
 
-      // await app.artus.close();
+      await app.artus.close();
       // assert(!app.isListening());
     } catch (err) {
       console.error(err);
