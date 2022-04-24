@@ -1,29 +1,34 @@
-import { Manifest, ArtusApplication } from "../../../../src";
+import { Manifest, ArtusApplication, ArtusInjectEnum } from "../../../../src";
 import { AbstractBar } from '../../frameworks/bar/src';
-import { Inject } from "@artus/injection"
+import { Inject, Injectable } from "@artus/injection"
 
+@Injectable()
 export default class MyArtusApplication {
   @Inject('ABSTRACT_BAR')
   // @ts-ignore
   private bar: AbstractBar;
+  @Inject(ArtusInjectEnum.Application)
+  // @ts-ignore
   public artus: ArtusApplication;
 
-  constructor() {
-    this.artus = new ArtusApplication();
+  static async instance(manifest: Manifest): Promise<MyArtusApplication> {
+    const app = new ArtusApplication();
+    await app.load(manifest);
+    const instance = app.getContainer().get(MyArtusApplication);
+    return instance;
   }
 
   isListening(): boolean {
     return this.bar.isListening();
   }
 
-  async run(manifest: Manifest) {
-    await this.artus.load(manifest);
+  async run() {
     await this.artus.run();
   }
 }
 
 export async function main(manifest: Manifest) {
-  const app = new MyArtusApplication();
-  await app.run(manifest);
+  const app = await MyArtusApplication.instance(manifest);
+  await app.run();
   return app;
 }

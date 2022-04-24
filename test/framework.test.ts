@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { Scanner } from '../src/scanner';
 import path from 'path';
-// import axios from 'axios';
+import axios from 'axios';
 import assert from 'assert';
 import { ARTUS_SERVER_ENV } from '../src/constraints';
 
@@ -30,20 +30,27 @@ describe('test/framework.test.ts', () => {
       const { path: barFrameworkPath, choose: barFrameworkChoose } = app.artus.frameworks.get(appFrameworkPath);
       assert(barFrameworkPath);
       assert(barFrameworkChoose === 'private');
-      // assert(app.isListening());
-      // const port = app.artus.config?.port;
-      // assert(port === 3003);
-      // const testResponse = await axios.get(`http://127.0.0.1:${port}/home`);
-      // assert(testResponse.status === 200);
-      // assert(testResponse.data.title === 'Hello Artus from application <private>');
+      assert(app.isListening());
+      const port = app.artus.config?.port;
+      assert(port === 3003);
+      const testResponse = await axios.get(`http://127.0.0.1:${port}/home`);
+      assert(testResponse.status === 200);
+      assert(testResponse.data.title === 'Hello Artus from application <private>');
 
-      // // check config loaded succeed
-      // const testResponseConfig = await axios.get(`http://127.0.0.1:${port}/config`);
-      // assert(testResponseConfig.status === 200);
-      // assert(testResponseConfig.data.message === 'get conifg succeed');
+      //  check config loaded succeed
+      const testResponseConfig = await axios.get(`http://127.0.0.1:${port}/config`);
+      assert(testResponseConfig.status === 200);
+      assert(testResponseConfig.data.message === 'get conifg succeed');
+
+      // check frameworke used as env
+      const testResponseName2 = await axios.get(`http://127.0.0.1:${port}/get_name2`);
+      console.log(testResponseName2.data);
+      assert(testResponseName2.data.title === 'Hello Artus [name2] from framework: foo2 [default]');
+      const testResponseName3 = await axios.get(`http://127.0.0.1:${port}/get_name3`);
+      assert(testResponseName3.data.title === 'Hello Artus [name3] from framework: foo2 [private]');
 
       await app.artus.close();
-      // assert(!app.isListening());
+      assert(!app.isListening());
     } catch (err) {
       console.error(err);
     }
