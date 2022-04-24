@@ -3,7 +3,6 @@ import { ArtusInjectEnum, DEFAULT_LOADER } from '../constraints';
 import { Manifest, ManifestItem, LoaderConstructor, LoaderHookUnit } from './types';
 import ConfigurationHandler, { Framework } from '../configuration';
 import { LifecycleManager } from '../lifecycle';
-import { ArtusApplication } from '../application';
 
 export const configSet = {
   framework: new Set<string>(),
@@ -30,6 +29,14 @@ export class LoaderFactory {
     const frameworks = manifest.items.filter(item => item.loader === 'framework');
     const configurationHandler: ConfigurationHandler = this.container.get(ConfigurationHandler);
 
+    if (!frameworks.length) {
+      this.container.set({
+        id: ArtusInjectEnum.Frameworks,
+        value: configurationHandler.getFrameworks()
+      });
+      return;
+    }
+
     await this.loadItemList(frameworks, {
       framework: {
         after: () => this.container.set({
@@ -40,8 +47,7 @@ export class LoaderFactory {
     });
   };
 
-  filterUnusedFrameworkFiles(manifest: Manifest, app: ArtusApplication): Manifest {
-    const frameworks = app.frameworks as Map<string, Framework>;
+  filterUnusedFrameworkFiles(manifest: Manifest, frameworks: Map<string, Framework>): Manifest {
     const dropFiles: string[] = [];
     for (const [, { drop }] of frameworks.entries()) {
       if (!drop) {
@@ -55,11 +61,11 @@ export class LoaderFactory {
     return manifest;
   }
 
-  async loadManifest(manifest: Manifest, app: ArtusApplication): Promise<void> {
+  async loadManifest(manifest: Manifest, frameworks: Map<string, Framework> = new Map<string, Framework>()): Promise<void> {
     const lifecycleManager: LifecycleManager = this.container.get(ArtusInjectEnum.LifecycleManager);
     const configurationHandler: ConfigurationHandler = this.container.get(ConfigurationHandler);
 
-    manifest = this.filterUnusedFrameworkFiles(manifest, app);
+    manifest = this.filterUnusedFrameworkFiles(manifest, frameworks);
     await this.loadItemList(manifest.items, {
       config: {
         before: () => lifecycleManager.emitHook('configWillLoad'),

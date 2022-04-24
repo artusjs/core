@@ -5,7 +5,7 @@ import { HookFunction, LifecycleManager } from './lifecycle';
 import { LoaderFactory, Manifest } from './loader';
 import { Application, ApplicationInitOptions } from './types';
 import Trigger from './trigger';
-import ConfigurationHandler from './configuration';
+import ConfigurationHandler, { Framework } from './configuration';
 
 export class ArtusApplication implements Application {
   public manifest?: Manifest;
@@ -78,7 +78,7 @@ export class ArtusApplication implements Application {
     await this.loaderFactory.loadFramework(manifest);
 
     // load other files
-    await this.loaderFactory.loadManifest(manifest, this);
+    await this.loaderFactory.loadManifest(manifest, this.frameworks as unknown as Map<string, Framework>);
 
     await this.lifecycleManager.emitHook('didLoad');
 
