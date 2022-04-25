@@ -14,9 +14,7 @@ export class PluginFactory {
     const pluginInstanceMap: Map<string, BasePlugin> = new Map();
     for (const [name, item] of Object.entries(config)) {
       const pluginInstance = await PluginFactory.create(name, item);
-      if (pluginInstance.enable) {
-        pluginInstanceMap.set(name, pluginInstance);
-      }
+      pluginInstanceMap.set(name, pluginInstance);
     }
     let pluginDepEdgeList: [string, string][] = [];
     // Topological sort plugins
@@ -31,5 +29,20 @@ export class PluginFactory {
       throw new Error(`There is a cycle in the dependencies, wrong plugin is ${diffPlugin.join(',')}.`);
     }
     return pluginSortResult.map((name) => pluginInstanceMap.get(name)!);
+  }
+
+  static filterDuplicatePlugins(plugins: BasePlugin[]): BasePlugin[] {
+    const exists: Map<string, boolean> = new Map();
+    const filtedPlugins: BasePlugin[] = [];
+    for (const plugin of plugins) {
+      const key = plugin.importPath;
+      if (exists.get(key)) {
+        continue;
+      }
+      exists.set(key, true);
+      filtedPlugins.push(plugin);
+    }
+
+    return filtedPlugins;
   }
 }

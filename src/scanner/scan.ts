@@ -23,9 +23,9 @@ import {
     LoaderOptions,
 } from './types';
 import { Manifest, ManifestItem } from '../loader';
-import ConfigurationHandler from '../configuration';
-import { PluginFactory } from '../plugin';
+import { BasePlugin, PluginFactory } from '../plugin';
 import { FrameworkHandler } from '../framework';
+import { PluginConfigItem } from '../plugin/types';
 
 export class Scanner {
     private options: ScannerOptions;
@@ -59,19 +59,20 @@ export class Scanner {
         await this.walk(root, { source: 'app', baseDir: root });
 
         // 1. Calculate Plugin Load Order
-        const pluginConfigHandler = new ConfigurationHandler();
+        let pluginSortedList: BasePlugin[] = [];
         for (const pluginConfigFile of this.itemMap.get('plugin-config') ?? []) {
-            const pluginConfig = await compatibleRequire(pluginConfigFile.path);
-            if (pluginConfig) {
-                let [_, env, extname] = pluginConfigFile.filename.split('.');
-                if (!extname) {
-                    env = 'default';
+            const pluginConfig: Record<string, PluginConfigItem> = await compatibleRequire(pluginConfigFile.path);
+            const realConfig = {};
+            for (const [name, config] of Object.entries(pluginConfig)) {
+                if (!config.path && !config.package) {
+                    continue;
                 }
-                pluginConfigHandler.setConfig(env, pluginConfig);
+                realConfig[name] = config;
             }
+            pluginSortedList.push(...await PluginFactory.createFromConfig(realConfig));
+
         }
-        const mergedConfig = await pluginConfigHandler.getMergedConfig();
-        const pluginSortedList = await PluginFactory.createFromConfig(mergedConfig || {});
+        pluginSortedList = PluginFactory.filterDuplicatePlugins(pluginSortedList);
         for (const plugin of pluginSortedList.reverse()) {
             const metaList = this.itemMap.get('plugin-meta') ?? [];
             metaList.push({
