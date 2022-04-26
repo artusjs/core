@@ -40,7 +40,7 @@ export class Scanner {
             conifgDir: DEFAULT_CONFIG_DIR,
             ...options,
             excluded: DEFAULT_EXCLUDES.concat(options.excluded ?? []),
-            extensions: this.moduleExtensions.concat(options.extensions ?? [], ['.yaml']),
+            extensions: [...new Set(this.moduleExtensions.concat(options.extensions ?? [], ['.yaml']))],
         };
 
         this.checkOptions();
