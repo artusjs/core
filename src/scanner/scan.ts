@@ -59,7 +59,7 @@ export class Scanner {
         await this.walk(root, { source: 'app', baseDir: root });
 
         // 1. Calculate Plugin Load Order
-        let pluginSortedList: BasePlugin[] = [];
+        let allPlugins: BasePlugin[] = [];
         for (const pluginConfigFile of this.itemMap.get('plugin-config') ?? []) {
             const pluginConfig: Record<string, PluginConfigItem> = await compatibleRequire(pluginConfigFile.path);
             const realConfig = {};
@@ -69,11 +69,11 @@ export class Scanner {
                 }
                 realConfig[name] = config;
             }
-            pluginSortedList.push(...await PluginFactory.createFromConfig(realConfig));
+            allPlugins.push(...await PluginFactory.createFromConfig(realConfig));
 
         }
-        pluginSortedList = PluginFactory.filterDuplicatePlugins(pluginSortedList);
-        for (const plugin of pluginSortedList.reverse()) {
+        allPlugins = PluginFactory.filterDuplicatePlugins(allPlugins);
+        for (const plugin of allPlugins.reverse()) {
             const metaList = this.itemMap.get('plugin-meta') ?? [];
             metaList.push({
                 path: plugin.metaFilePath,

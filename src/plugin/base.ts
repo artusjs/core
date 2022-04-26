@@ -11,18 +11,26 @@ export class BasePlugin implements Plugin {
 
   constructor(name: string, configItem: PluginConfigItem) {
     this.name = name;
+
+    this.importPath = BasePlugin.checkGetPluginConfig(name, configItem);
+    this.enable = configItem.enable ?? false;
+  }
+
+  async init() { }
+
+  static checkGetPluginConfig(name: string, configItem: PluginConfigItem, shouldThrow: boolean = true): string {
     let importPath = configItem.path ?? '';
     if (configItem.package) {
       importPath = require.resolve(configItem.package);
     }
     if (!importPath) {
-      throw new Error(`Plugin ${name} need have path or package field`);
+      if (shouldThrow) {
+        throw new Error(`Plugin ${name} need have path or package field`);
+      }
+      return '';
     }
-    this.importPath = importPath;
-    this.enable = configItem.enable ?? false;
+    return importPath;
   }
-
-  async init() { }
 
   checkDepExisted(pluginMap: PluginMap): void {
     for (const { name: pluginName, optional } of this.metadata.dependencies ?? []) {

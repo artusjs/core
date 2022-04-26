@@ -1,13 +1,8 @@
 import { Container } from '@artus/injection';
-import { ArtusInjectEnum, DEFAULT_LOADER } from '../constraints';
+import { ArtusInjectEnum, ArtusInjectPrefix, DEFAULT_LOADER, HOOK_CONFIG_HANDLE } from '../constraints';
 import { Manifest, ManifestItem, LoaderConstructor, LoaderHookUnit } from './types';
-import ConfigurationHandler, { Framework } from '../configuration';
+import ConfigurationHandler, { EnvUnit } from '../configuration';
 import { LifecycleManager } from '../lifecycle';
-
-export const configSet = {
-  framework: new Set<string>(),
-  plugin: new Set<string>(),
-};
 
 export class LoaderFactory {
   private container: Container;
@@ -22,6 +17,7 @@ export class LoaderFactory {
     this.container = container;
     this.envUnits = [
       ...envUnits,
+      'plugin-config',
       'framework-config'
     ]
   }
@@ -30,47 +26,57 @@ export class LoaderFactory {
     return new LoaderFactory(container, envUnits);
   }
 
+  async setContainer(envUnit: string) {
+    const configurationHandler: ConfigurationHandler = this.container.get(ConfigurationHandler);
+    const propertyKey = Reflect.getMetadata(`${HOOK_CONFIG_HANDLE}${envUnit}`, ConfigurationHandler);
+    this.container.set({
+      id: `${ArtusInjectPrefix}${envUnit}`,
+      value: await configurationHandler[propertyKey]()
+    })
+  }
+
   async loadEnvUnits(manifest: Manifest): Promise<void> {
     const items = manifest.items.filter(item => this.envUnits.includes(item.loader ?? ''));
-    const configurationHandler: ConfigurationHandler = this.container.get(ConfigurationHandler);
 
-    if (!items.length) {
-      this.container.set({
-        id: ArtusInjectEnum.Frameworks,
-        value: configurationHandler.getFrameworks()
-      });
-      return;
+    // set loader hook
+    const loaderHooks = {};
+    for (const envUnit of this.envUnits) {
+      await this.setContainer(envUnit);
+      loaderHooks[envUnit] = {
+        after: async () => await this.setContainer(envUnit)
+      };
     }
 
-    await this.loadItemList(items, {
-      ['framework-config']: {
-        after: () => this.container.set({
-          id: ArtusInjectEnum.Frameworks,
-          value: configurationHandler.getFrameworks()
-        })
-      }
-    });
+    await this.loadItemList(items, loaderHooks);
   };
 
-  filterUnusedFrameworkFiles(manifest: Manifest, frameworks: Map<string, Framework>): Manifest {
-    const dropFiles: string[] = [];
-    for (const [, { drop }] of frameworks.entries()) {
-      if (!drop) {
-        continue;
+  async filterUnusedFilesByEnv(manifest: Manifest): Promise<Manifest> {
+    const ignoreFiles: string[] = [];
+    for (const envUnit of this.envUnits) {
+      const configurationHandler: ConfigurationHandler = this.container.get(ConfigurationHandler);
+      const propertyKey = Reflect.getMetadata(`${HOOK_CONFIG_HANDLE}${envUnit}`, ConfigurationHandler);
+      const units: Map<string, EnvUnit> = await configurationHandler[propertyKey]();
+      for (const [, { ignore }] of units.entries()) {
+        if (!ignore) {
+          continue;
+        }
+        ignoreFiles.push(...ignore.map(item => item.path));
       }
-      dropFiles.push(...drop.map(item => item.path));
     }
-    manifest.items = manifest.items.filter(item => item.loader !== 'framework-config'
-      && dropFiles.every(ignorePath => !item.path.startsWith(ignorePath)));
+
+    manifest.items = manifest.items.filter(item =>
+      !this.envUnits.includes(item.loader ?? '')
+      && ignoreFiles.every(ignoreFile => !item.path.startsWith(ignoreFile))
+    );
 
     return manifest;
   }
 
-  async loadManifest(manifest: Manifest, frameworks: Map<string, Framework> = new Map<string, Framework>()): Promise<void> {
+  async loadManifest(manifest: Manifest): Promise<void> {
     const lifecycleManager: LifecycleManager = this.container.get(ArtusInjectEnum.LifecycleManager);
     const configurationHandler: ConfigurationHandler = this.container.get(ConfigurationHandler);
 
-    manifest = this.filterUnusedFrameworkFiles(manifest, frameworks);
+    manifest = await this.filterUnusedFilesByEnv(manifest);
     await this.loadItemList(manifest.items, {
       config: {
         before: () => lifecycleManager.emitHook('configWillLoad'),

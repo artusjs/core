@@ -22,7 +22,7 @@ export default class ApplicationHookExtension implements ApplicationLifecycle {
     server = http
       .createServer(async (req: http.IncomingMessage, res: http.ServerResponse) => {
         const input = new Input();
-        input.params = { req, res, config };
+        input.params = { req, res, config, app: this.app };
         await this.app.trigger.startPipeline(input);
       })
       .listen(port);
