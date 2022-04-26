@@ -16,7 +16,7 @@ export default class ApplicationHookExtension implements ApplicationLifecycle {
 
   @ApplicationHook()
   async willReady() {
-    const mysql = this.app.getContainer().get('ARTUS_REDIS') as Client;
-    await mysql.init(this.app.config as RedisConfig);
+    const redis = this.app.getContainer().get('ARTUS_REDIS') as Client;
+    await redis.init(this.app.config.redis as RedisConfig);
   }
 }

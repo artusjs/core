@@ -21,7 +21,7 @@ describe('test/framework.test.ts', () => {
         conifgDir: 'src/config'
       });
       const manifest = await scanner.scan(path.resolve(__dirname, './fixtures/artus-application'));
-      console.log('manifest', manifest);
+      // console.log('manifest', manifest);
       const { main } = await import('./fixtures/artus-application/src');
       const app = await main(manifest);
       const { path: appFrameworkPath, choose: appFrameworkChoose } = app.artus.frameworks.get('app');
@@ -47,6 +47,10 @@ describe('test/framework.test.ts', () => {
       assert(testResponseName2.data.title === 'Hello Artus [name2] from framework: foo2 [default]');
       const testResponseName3 = await axios.get(`http://127.0.0.1:${port}/get_name3`);
       assert(testResponseName3.data.title === 'Hello Artus [name3] from framework: foo2 [private]');
+
+      // check plugin
+      const testResponseName4 = await axios.get(`http://127.0.0.1:${port}/plugin-mysql`);
+      console.log(1233, testResponseName4.data);
 
       await app.artus.close();
       assert(!app.isListening());

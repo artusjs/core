@@ -1,3 +1,5 @@
 export default {
-  name: 'redis'
+  redis: {
+    clientName: 'redis'
+  }
 }

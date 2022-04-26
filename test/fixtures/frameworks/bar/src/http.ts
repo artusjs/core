@@ -53,6 +53,9 @@ export function registerController(trigger: HttpTrigger) {
     const fnMetaKeys = Reflect.getMetadataKeys(clazz);
 
     for (let key of fnMetaKeys) {
+      if (typeof key !== 'string') {
+        continue;
+      }
       if (!key.startsWith(HOOK_HTTP_META_PREFIX)) {
         continue;
       }
@@ -71,7 +74,7 @@ export function registerController(trigger: HttpTrigger) {
           const paramsMap = {
             [HOOK_PARAMS_CONTEXT]: ctx
           };
-          ctx.output.data.content = await target(...params.map((param) => paramsMap[param]));
+          ctx.output.data.content = await target.call(instance, ...params.map((param) => paramsMap[param]));
         }
         await next();
       });

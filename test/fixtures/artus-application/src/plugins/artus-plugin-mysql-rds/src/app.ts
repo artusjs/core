@@ -17,6 +17,6 @@ export default class ApplicationHookExtension implements ApplicationLifecycle {
   @ApplicationHook()
   async willReady() {
     const mysql = this.app.getContainer().get('ARTUS_MYSQL') as Client;
-    await mysql.init(this.app.config as MysqlConfig);
+    await mysql.init(this.app.config.mysql as MysqlConfig);
   }
 }

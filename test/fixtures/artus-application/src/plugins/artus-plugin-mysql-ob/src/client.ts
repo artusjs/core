@@ -1,7 +1,7 @@
 import { Injectable } from "@artus/injection";
 
 export interface MysqlConfig {
-  name: string
+  clientName: string
 }
 
 @Injectable({
@@ -11,7 +11,7 @@ export default class Client {
   private clientName: string = '';
 
   async init(config: MysqlConfig) {
-    this.clientName = config.name;
+    this.clientName = config.clientName;
   }
 
   async getClient(): Promise<string> {

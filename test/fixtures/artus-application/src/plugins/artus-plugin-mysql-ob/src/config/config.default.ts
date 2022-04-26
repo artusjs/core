@@ -1,3 +1,5 @@
 export default {
-  name: 'mysql-ob'
+  mysql: {
+    clientName: 'mysql-ob'
+  }
 }

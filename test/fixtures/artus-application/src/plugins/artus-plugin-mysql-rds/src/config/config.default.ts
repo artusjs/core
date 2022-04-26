@@ -1,3 +1,5 @@
 export default {
-  name: 'mysql-rds'
+  mysql: {
+    clientName: 'mysql-rds'
+  }
 }
