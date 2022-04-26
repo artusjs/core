@@ -11,25 +11,30 @@ export const configSet = {
 
 export class LoaderFactory {
   private container: Container;
+  private envUnits: string[];
   private static loaderClazzMap: Map<string, LoaderConstructor> = new Map();
 
   static registerLoader(loaderName: string, clazz: LoaderConstructor) {
     this.loaderClazzMap.set(loaderName, clazz);
   }
 
-  constructor(container: Container) {
+  constructor(container: Container, envUnits: string[] = []) {
     this.container = container;
+    this.envUnits = [
+      ...envUnits,
+      'framework-config'
+    ]
   }
 
-  static create(container: Container): LoaderFactory {
-    return new LoaderFactory(container);
+  static create(container: Container, envUnits: string[] = []): LoaderFactory {
+    return new LoaderFactory(container, envUnits);
   }
 
-  async loadFramework(manifest: Manifest): Promise<void> {
-    const frameworks = manifest.items.filter(item => item.loader === 'framework-config');
+  async loadEnvUnits(manifest: Manifest): Promise<void> {
+    const items = manifest.items.filter(item => this.envUnits.includes(item.loader ?? ''));
     const configurationHandler: ConfigurationHandler = this.container.get(ConfigurationHandler);
 
-    if (!frameworks.length) {
+    if (!items.length) {
       this.container.set({
         id: ArtusInjectEnum.Frameworks,
         value: configurationHandler.getFrameworks()
@@ -37,7 +42,7 @@ export class LoaderFactory {
       return;
     }
 
-    await this.loadItemList(frameworks, {
+    await this.loadItemList(items, {
       ['framework-config']: {
         after: () => this.container.set({
           id: ArtusInjectEnum.Frameworks,
