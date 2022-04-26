@@ -26,7 +26,7 @@ export class LoaderFactory {
   }
 
   async loadFramework(manifest: Manifest): Promise<void> {
-    const frameworks = manifest.items.filter(item => item.loader === 'framework');
+    const frameworks = manifest.items.filter(item => item.loader === 'framework-config');
     const configurationHandler: ConfigurationHandler = this.container.get(ConfigurationHandler);
 
     if (!frameworks.length) {
@@ -38,7 +38,7 @@ export class LoaderFactory {
     }
 
     await this.loadItemList(frameworks, {
-      framework: {
+      ['framework-config']: {
         after: () => this.container.set({
           id: ArtusInjectEnum.Frameworks,
           value: configurationHandler.getFrameworks()
@@ -55,7 +55,7 @@ export class LoaderFactory {
       }
       dropFiles.push(...drop.map(item => item.path));
     }
-    manifest.items = manifest.items.filter(item => item.loader !== 'framework'
+    manifest.items = manifest.items.filter(item => item.loader !== 'framework-config'
       && dropFiles.every(ignorePath => !item.path.startsWith(ignorePath)));
 
     return manifest;

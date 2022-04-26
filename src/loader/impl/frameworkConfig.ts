@@ -5,7 +5,7 @@ import { ManifestItem, Loader } from '../types';
 import compatibleRequire from '../../utils/compatible-require';
 import { ArtusInjectEnum, ARTUS_DEFAULT_CONFIG_ENV } from '../../constraints';
 
-@DefineLoader('framework')
+@DefineLoader('framework-config')
 class FrameworkLoader implements Loader {
   private container: Container;
 

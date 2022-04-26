@@ -52,7 +52,7 @@ export const DEFAULT_LOADER_LIST_WITH_ORDER = [
   'config',
   'plugin-meta',
   'module',
-  'framework',
+  'framework-config',
   'package-json',
 ];
 

@@ -90,7 +90,7 @@ export class Scanner {
         const serialize = FrameworkHandler.serialize;
         const frameworks: string[] = [];
         const frameworkMap = new Map<string, boolean>();
-        frameworks.push(...serialize(this.itemMap.get('framework') ?? []));
+        frameworks.push(...serialize(this.itemMap.get('framework-config') ?? []));
         frameworks.push(...serialize(this.itemMap.get('package-json') ?? []));
         await this.recurseFramework(frameworks, root, frameworkMap);
 
@@ -118,7 +118,7 @@ export class Scanner {
                 unitName: baseFrameworkPath
             });
             await this.recurseFramework([
-                ...serialize(this.itemMap.get('framework') ?? []),
+                ...serialize(this.itemMap.get('framework-config') ?? []),
                 ...serialize(this.itemMap.get('package-json') ?? [])
             ], baseFrameworkPath, frameworkMap);
         }
@@ -210,7 +210,7 @@ export class Scanner {
             } else if (this.isPluginConfig(filename)) {
                 return 'plugin-config';
             } else if (this.isFrameworkConfig(filename)) {
-                return 'framework';
+                return 'framework-config';
             }
         }
 
