@@ -9,4 +9,8 @@ export default {
     enable: true,
     path: path.resolve(__dirname, '../plugins/artus-plugin-redis')
   },
+  base: {
+    enable: true,
+    path: path.resolve(__dirname, '../plugins/artus-plugin-base')
+  }
 }

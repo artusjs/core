@@ -2,6 +2,7 @@ import { Injectable } from '@artus/injection';
 import { ARTUS_DEFAULT_CONFIG_ENV, ARTUS_SERVER_ENV } from '../constraints';
 import { mergeConfig } from '../loader/utils/merge';
 import { BasePlugin, PluginFactory } from '../plugin';
+import { PluginConfigItem } from '../plugin/types';
 import { DefineConfigHandle } from './decorator';
 
 export type ConfigObject = Record<string, any>;
@@ -34,22 +35,29 @@ export default class ConfigurationHandler {
     const pluginSortedList = await PluginFactory.createFromConfig(mergedConfig || {});
 
     // get all plugins
-    const allPlugins: BasePlugin[] = [];
+    const pluginsConfig: Map<string, PluginConfigItem[]> = new Map();
     for (const rawEnv of this.configStore.keys()) {
-      const { plugin: pluginConfig } = this.configStore.get(rawEnv) ?? {};
+      const config: any = this.configStore.get(rawEnv) ?? {};
+      const pluginConfig: Record<string, PluginConfigItem> = config.plugin;
       if (!pluginConfig) {
         continue;
       }
 
-      const validPluginConfig = {};
       for (const [name, config] of Object.entries(pluginConfig)) {
         if (!BasePlugin.checkGetPluginConfig(name, config as any, false)) {
           continue;
         }
-        validPluginConfig[name] = config;
+
+        const items = pluginsConfig.get(name);
+        if (Array.isArray(items)) {
+          items.push(config);
+          continue;
+        }
+        pluginsConfig.set(name, [config]);
       }
-      allPlugins.push(...await PluginFactory.createFromConfig(validPluginConfig))
     }
+
+    const allPlugins: BasePlugin[] = await PluginFactory.createFromConfigList(pluginsConfig);
 
     const pluginMap = new Map<string, EnvUnit>();
     for (const plugin of pluginSortedList) {

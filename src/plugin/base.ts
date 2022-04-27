@@ -1,6 +1,5 @@
 import { Plugin, PluginConfigItem, PluginMetadata } from "./types";
-
-type PluginMap = Map<string, BasePlugin>;
+type PluginsMap = Map<string, BasePlugin[]>;
 
 export class BasePlugin implements Plugin {
   public name: string;
@@ -32,10 +31,10 @@ export class BasePlugin implements Plugin {
     return importPath;
   }
 
-  checkDepExisted(pluginMap: PluginMap): void {
+  checkDepExisted(pluginsMap: PluginsMap) {
     for (const { name: pluginName, optional } of this.metadata.dependencies ?? []) {
-      const instance = pluginMap.get(pluginName);
-      if (!instance || !instance.enable) {
+      const instances = pluginsMap.get(pluginName) ?? [];
+      if (!instances.length || instances.every(instance => !instance.enable)) {
         if (optional) {
           // TODO: use artus logger instead
           console.warn(`Plugin ${this.name} need have optional dependence: ${pluginName}.`)

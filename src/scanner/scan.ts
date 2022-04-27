@@ -59,20 +59,22 @@ export class Scanner {
         await this.walk(root, { source: 'app', baseDir: root });
 
         // 1. Calculate Plugin Load Order
-        let allPlugins: BasePlugin[] = [];
+        const pluginsConfig: Map<string, PluginConfigItem[]> = new Map();
         for (const pluginConfigFile of this.itemMap.get('plugin-config') ?? []) {
             const pluginConfig: Record<string, PluginConfigItem> = await compatibleRequire(pluginConfigFile.path);
-            const realConfig = {};
             for (const [name, config] of Object.entries(pluginConfig)) {
                 if (!config.path && !config.package) {
                     continue;
                 }
-                realConfig[name] = config;
+                const items = pluginsConfig.get(name);
+                if (Array.isArray(items)) {
+                    items.push(config);
+                    continue;
+                }
+                pluginsConfig.set(name, [config]);
             }
-            allPlugins.push(...await PluginFactory.createFromConfig(realConfig));
-
         }
-        allPlugins = PluginFactory.filterDuplicatePlugins(allPlugins);
+        const allPlugins: BasePlugin[] = await PluginFactory.createFromConfigList(pluginsConfig);
         for (const plugin of allPlugins.reverse()) {
             const metaList = this.itemMap.get('plugin-meta') ?? [];
             metaList.push({
