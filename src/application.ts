@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { Container } from '@artus/injection';
 import { ArtusInjectEnum } from './constraints';
 import { ArtusStdError, ExceptionHandler } from './exception';
@@ -20,8 +21,8 @@ export class ArtusApplication implements Application {
     this.lifecycleManager = new LifecycleManager(this, this.container);
     this.loaderFactory = LoaderFactory.create(this.container, opts?.envUnits);
 
-    process.on('SIGINT', () => this.close());
-    process.on('SIGTERM', () => this.close());
+    process.on('SIGINT', () => this.close(true));
+    process.on('SIGTERM', () => this.close(true));
   }
 
   get config(): Record<string, any> {
@@ -94,8 +95,15 @@ export class ArtusApplication implements Application {
     this.lifecycleManager.registerHook(hookName, hookFn);
   }
 
-  async close() {
-    await this.lifecycleManager.emitHook('beforeClose');
+  async close(exit: boolean = false) {
+    try {
+      await this.lifecycleManager.emitHook('beforeClose');
+    } catch (e) {
+      throw new Error(e);
+    }
+    if (exit) {
+      process.exit(0);
+    }
   }
 
   throwException(code: string): void {
