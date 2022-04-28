@@ -1,6 +1,7 @@
 import path from 'path';
 import { BasePlugin } from './base';
 import { loadMetaFile } from '../utils/load-meta-file';
+import { exisis } from '../utils/fs';
 
 export class ArtusPlugin extends BasePlugin {
   async init() {
@@ -14,6 +15,12 @@ export class ArtusPlugin extends BasePlugin {
   }
 
   private async checkAndLoadMetadata() {
+    // check import path
+    if (!await exisis(this.importPath)) {
+      throw new Error(`load plugin <${this.name}> import path ${this.importPath} is not exists.`);
+    }
+
+    let find = false;
     const fileNameList = [
       'meta.yaml',
       'meta.yml',
@@ -22,16 +29,24 @@ export class ArtusPlugin extends BasePlugin {
     for (const fileName of fileNameList) {
       const metaFilePath = path.resolve(this.importPath, fileName);
       try {
+        if (!await exisis(metaFilePath)) {
+          continue;
+        }
         this.metadata = await loadMetaFile({
           path: metaFilePath,
           extname: path.extname(metaFilePath),
           filename: fileName,
         });
         this.metaFilePath = metaFilePath;
+        find = true;
         break;
-      } catch(e) {
-        // 单个文件找不到或者不合法，继续找下一个
+      } catch (e) {
+        throw new Error(`load plugin <${this.name}> failed, err: ${e}`);
       }
+    }
+
+    if (!find) {
+      throw new Error(`load plugin <${this.name}> import path ${this.importPath} can't find meta file.`);
     }
   }
 }

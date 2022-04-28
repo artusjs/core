@@ -4,5 +4,5 @@ export * from './exception';
 export * from './extension';
 export * from './pluginMeta';
 export * from './pluginConfig';
-export * from './framework';
+export * from './frameworkConfig';
 export * from './package';

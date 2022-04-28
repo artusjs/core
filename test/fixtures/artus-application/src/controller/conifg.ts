@@ -1,5 +1,5 @@
 import { Context } from '@artus/pipeline';
-import { HttpController, HttpMethod, HTTPMethodEnum } from '../../../frameworks/foo/src/trigger/http';
+import { HttpController, HttpMethod, HTTPMethodEnum } from '../../../frameworks/bar/src';
 import { WithContext } from '../../../../../src/decorator';
 
 @HttpController()

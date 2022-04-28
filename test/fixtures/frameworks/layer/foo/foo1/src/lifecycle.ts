@@ -1,10 +1,9 @@
 import { Server } from 'http';
 import http from 'http';
-import { ApplicationExtension, ApplicationHook, WithApplication } from '../../../../../src/decorator';
-import { ApplicationLifecycle } from '../../../../../src/types';
+import { ApplicationExtension, ApplicationHook, WithApplication } from '../../../../../../../src/decorator';
+import { ApplicationLifecycle } from '../../../../../../../src/types';
 import { Input } from '@artus/pipeline';
-import { ArtusApplication } from '../../../../../src';
-import HttpTrigger, { registerController } from './trigger/http';
+import { ArtusApplication } from '../../../../../../../src';
 
 export let server: Server;
 
@@ -17,19 +16,13 @@ export default class ApplicationHookExtension implements ApplicationLifecycle {
   }
 
   @ApplicationHook()
-  async didLoad() {
-    // register controller
-    registerController(this.app.trigger as HttpTrigger);
-  }
-
-  @ApplicationHook()
   willReady() {
     const config = this.app.config ?? {};
     const port = config.port;
     server = http
       .createServer(async (req: http.IncomingMessage, res: http.ServerResponse) => {
         const input = new Input();
-        input.params = { req, res, config };
+        input.params = { req, res, config, app: this.app };
         await this.app.trigger.startPipeline(input);
       })
       .listen(port);

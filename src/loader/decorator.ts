@@ -1,4 +1,4 @@
-import { LoaderFactory } from '.';
+import { LoaderFactory } from './factory';
 import { LoaderConstructor } from './types';
 
 export const DefineLoader = (loaderName: string): ClassDecorator => 

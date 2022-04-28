@@ -1,6 +1,5 @@
 import { Plugin, PluginConfigItem, PluginMetadata } from "./types";
-
-type PluginMap = Map<string, BasePlugin>;
+type PluginsMap = Map<string, BasePlugin[]>;
 
 export class BasePlugin implements Plugin {
   public name: string;
@@ -11,23 +10,31 @@ export class BasePlugin implements Plugin {
 
   constructor(name: string, configItem: PluginConfigItem) {
     this.name = name;
-    let importPath = configItem.path ?? '';
-    if (configItem.package) {
-      importPath = require.resolve(configItem.package);
-    }
-    if (!importPath) {
-      throw new Error(`Plugin ${name} need have path or package field`);
-    }
-    this.importPath = importPath;
+
+    this.importPath = BasePlugin.checkGetPluginConfig(name, configItem);
     this.enable = configItem.enable ?? false;
   }
 
   async init() { }
 
-  checkDepExisted(pluginMap: PluginMap): void {
+  static checkGetPluginConfig(name: string, configItem: PluginConfigItem, shouldThrow: boolean = true): string {
+    let importPath = configItem.path ?? '';
+    if (configItem.package) {
+      importPath = require.resolve(configItem.package);
+    }
+    if (!importPath) {
+      if (shouldThrow) {
+        throw new Error(`Plugin ${name} need have path or package field`);
+      }
+      return '';
+    }
+    return importPath;
+  }
+
+  checkDepExisted(pluginsMap: PluginsMap) {
     for (const { name: pluginName, optional } of this.metadata.dependencies ?? []) {
-      const instance = pluginMap.get(pluginName);
-      if (!instance || !instance.enable) {
+      const instances = pluginsMap.get(pluginName) ?? [];
+      if (!instances.length || instances.every(instance => !instance.enable)) {
         if (optional) {
           // TODO: use artus logger instead
           console.warn(`Plugin ${this.name} need have optional dependence: ${pluginName}.`)

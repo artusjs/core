@@ -1,11 +1,13 @@
 export const DEFAULT_LOADER = 'module';
 
+export const ArtusInjectPrefix = 'artus#';
+
 export const enum ArtusInjectEnum {
   Application = 'artus#application',
   Trigger = 'artus#trigger',
   LifecycleManager = 'artus#lifecycle-manager',
   Config = 'artus#config',
-  Frameworks = 'artus#frameworks',
+  Frameworks = 'artus#framework-config',
   Packages = 'artus#packages',
   DefaultContainerName = 'artus#default_container',
 }
@@ -26,6 +28,7 @@ export const HOOK_CONSTRUCTOR_PARAMS_APP = 'appHook:constructorParams:app';
 export const HOOK_CONSTRUCTOR_PARAMS_CONTAINER = 'appHook:constructorParams:container';
 export const HOOK_PARAMS_CONTEXT = 'appHook:constructorParams:context';
 export const HOOK_FILE_LOADER = 'appHook:fileLoader';
+export const HOOK_CONFIG_HANDLE = 'appHook:configHandle::';
 
 export const DEFAULT_EXCLUDES = [
   'test',
@@ -52,7 +55,7 @@ export const DEFAULT_LOADER_LIST_WITH_ORDER = [
   'config',
   'plugin-meta',
   'module',
-  'framework',
+  'framework-config',
   'package-json',
 ];
 
