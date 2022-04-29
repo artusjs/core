@@ -12,7 +12,6 @@ import {
     EXCEPTION_FILE,
     FRAMEWORK_PATTERN,
     PACKAGE_JSON,
-    DEFAULT_LOADER_LIST_WITH_ORDER,
     DEFAULT_LOADER,
     HOOK_FILE_LOADER,
     DEFAULT_CONFIG_DIR,
@@ -27,10 +26,14 @@ import { BasePlugin, PluginFactory } from '../plugin';
 import { FrameworkHandler } from '../framework';
 import { PluginConfigItem } from '../plugin/types';
 
+export type LoaderCheck = (filename: string, options: LoaderOptions) => boolean;
+export type LoaderCheckMap = Map<string, LoaderCheck>;
+
 export class Scanner {
     private options: ScannerOptions;
     private moduleExtensions: string[];
     private itemMap: Map<string, ManifestItem[]>;
+    private checkMap: LoaderCheckMap;
 
     constructor(options: Partial<ScannerOptions> = {}) {
         this.moduleExtensions = getDefaultExtensions();
@@ -45,7 +48,46 @@ export class Scanner {
 
         this.checkOptions();
 
-        this.itemMap = new Map(DEFAULT_LOADER_LIST_WITH_ORDER.map((loaderName) => ([loaderName, []])));
+        this.itemMap = new Map();
+        this.checkMap = new Map();
+        this.registerDefaultLoaderCheck();
+    }
+
+    public registerLoader(loaderName: string, loaderCheck?: LoaderCheck) {
+        // not allow override default loader check
+        if (Array.isArray(this.itemMap.get(loaderName))) {
+            return;
+        }
+
+        // init loader check
+        this.itemMap.set(loaderName, []);
+        if (loaderCheck) {
+            this.checkMap.set(loaderName, loaderCheck);
+        }
+    }
+
+    private registerDefaultLoaderCheck() {
+        // no checker
+        this.registerLoader('extension');
+        this.registerLoader('plugin-meta');
+        this.registerLoader('module');
+
+        // check filename
+        this.registerLoader('exception', filename => isMatch(filename, EXCEPTION_FILE));
+        this.registerLoader('package-json', filename => isMatch(filename, PACKAGE_JSON));
+
+        // check within config path
+        this.registerLoader('plugin-config',
+            (filename, { baseDir, root }) => this.isConfigDir(baseDir, root) && isMatch(filename, PLUGIN_CONFIG_PATTERN));
+        this.registerLoader('config',
+            (filename, { baseDir, root }) => this.isConfigDir(baseDir, root) && isMatch(filename, CONFIG_PATTERN));
+        this.registerLoader('framework-config',
+            (filename, { baseDir, root }) => this.isConfigDir(baseDir, root) && isMatch(filename, FRAMEWORK_PATTERN));
+    }
+
+    public isConfigDir(baseDir: string, currentDir: string): boolean {
+        const { conifgDir } = this.options;
+        return path.join(baseDir, conifgDir) === currentDir;
     }
 
     private checkOptions() {
@@ -189,41 +231,22 @@ export class Scanner {
         return items;
     }
 
-    private isConfigDir(baseDir: string, currentDir: string): boolean {
-        const { conifgDir } = this.options;
-        return path.join(baseDir, conifgDir) === currentDir;
-    }
-
-    private async getLoaderName(filename: string, { root, baseDir }: LoaderOptions): Promise<string> {
-        // package.json
-        if (this.isPakcageJson(filename)) {
-            return 'package-json';
-        }
-
-        // artus-exception.yaml
-        if (this.isException(filename)) {
-            return 'exception';
-        }
-
-        // config dir
-        if (this.isConfigDir(baseDir, root)) {
-            if (this.isConfig(filename)) {
-                return 'config';
-            } else if (this.isPluginConfig(filename)) {
-                return 'plugin-config';
-            } else if (this.isFrameworkConfig(filename)) {
-                return 'framework-config';
+    private async getLoaderName(filename: string, options: LoaderOptions): Promise<string> {
+        // get loader from loaderCheck
+        for (const [loader, checker] of this.checkMap.entries()) {
+            if (checker.call(this, filename, options)) {
+                return loader;
             }
         }
 
         // get loader from reflect metadata
-        const target = await compatibleRequire(path.join(root, filename));
+        const target = await compatibleRequire(path.join(options.root, filename));
         const metadata = Reflect.getMetadata(HOOK_FILE_LOADER, target);
         if (metadata?.loader) {
             return metadata.loader;
         }
 
-        // default loder
+        // default loder is module
         return 'module';
     }
 
@@ -244,30 +267,6 @@ export class Scanner {
             result = !this.options.extensions.includes(extname);
         }
         return result;
-    }
-
-    // TODO: 怎么判断是否是配置文件
-    private isConfig(filename: string): boolean {
-        return isMatch(filename, CONFIG_PATTERN)
-    }
-
-    // TODO: 怎么判断是否是插件配置文件
-    private isPluginConfig(filename: string): boolean {
-        return isMatch(filename, PLUGIN_CONFIG_PATTERN);
-    }
-
-    // TODO:
-    private isException(filename: string): boolean {
-        return isMatch(filename, EXCEPTION_FILE);
-    }
-
-    // TODO:
-    private isFrameworkConfig(filename: string): boolean {
-        return isMatch(filename, FRAMEWORK_PATTERN);
-    }
-
-    private isPakcageJson(filename: string): boolean {
-        return isMatch(filename, PACKAGE_JSON);
     }
 
     private exist(dir: string, filenames: string[]): boolean {
