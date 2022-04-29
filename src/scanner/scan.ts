@@ -67,22 +67,24 @@ export class Scanner {
     }
 
     private registerDefaultLoaderCheck() {
-        // no checker
-        this.registerLoader('extension');
-        this.registerLoader('plugin-meta');
-        this.registerLoader('module');
-
-        // check filename
         this.registerLoader('exception', filename => isMatch(filename, EXCEPTION_FILE));
-        this.registerLoader('package-json', filename => isMatch(filename, PACKAGE_JSON));
 
-        // check within config path
         this.registerLoader('plugin-config',
             (filename, { baseDir, root }) => this.isConfigDir(baseDir, root) && isMatch(filename, PLUGIN_CONFIG_PATTERN));
+
+        this.registerLoader('extension');
+
         this.registerLoader('config',
             (filename, { baseDir, root }) => this.isConfigDir(baseDir, root) && isMatch(filename, CONFIG_PATTERN));
+
+        this.registerLoader('plugin-meta');
+
+        this.registerLoader('module');
+
         this.registerLoader('framework-config',
             (filename, { baseDir, root }) => this.isConfigDir(baseDir, root) && isMatch(filename, FRAMEWORK_PATTERN));
+
+        this.registerLoader('package-json', filename => isMatch(filename, PACKAGE_JSON));
     }
 
     public isConfigDir(baseDir: string, currentDir: string): boolean {
