@@ -4,10 +4,7 @@ export interface ScannerOptions {
   needWriteFile: boolean;
   excluded?: string[];
   configDir: string
-}
-
-export interface ScanOptions {
-  env: string[]
+  envs?: string[];
 }
 
 export interface WalkOptions {

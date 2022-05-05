@@ -17,9 +17,10 @@ describe('test/framework.test.ts', () => {
   it('should run succeed', async () => {
     const scanner = new Scanner({
       needWriteFile: false, extensions: ['.ts', '.js', '.json'],
-      configDir: 'src/config'
+      configDir: 'src/config',
+      envs: ['private']
     });
-    const { private: manifest } = await scanner.scan(path.resolve(__dirname, './fixtures/artus-application'), { env: ['private'] });
+    const { private: manifest } = await scanner.scan(path.resolve(__dirname, './fixtures/artus-application'));
     // console.log('manifest', manifest);
     const { main } = await import('./fixtures/artus-application/src');
     const app = await main(manifest);

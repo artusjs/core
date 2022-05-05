@@ -16,12 +16,12 @@ import {
     DEFAULT_LOADER,
     HOOK_FILE_LOADER,
     DEFAULT_CONFIG_DIR,
+    ARTUS_DEFAULT_CONFIG_ENV,
 } from '../constraints';
 import {
     ScannerOptions,
     WalkOptions,
     LoaderOptions,
-    ScanOptions,
 } from './types';
 import { Manifest, ManifestItem } from '../loader';
 import ConfigurationHandler from '../configuration';
@@ -55,10 +55,28 @@ export class Scanner {
         }
     }
 
-    public async scan(root: string, options: ScanOptions = { env: ['default'] }): Promise<Record<string, Manifest>> {
+    private async scanEnvList(root: string): Promise<string[]> {
+        const { configDir, envs } = this.options;
+        if (Array.isArray(envs) && envs.length) {
+          return envs;
+        }
+        const configFileList = await fs.readdir(path.resolve(root, configDir));
+        const envSet: Set<string> = new Set([ARTUS_DEFAULT_CONFIG_ENV.DEFAULT]);
+        for (const configFilename of configFileList) {
+          const env = ConfigurationHandler.getEnvFromFilename(configFilename);
+          envSet.add(env);
+        }
+        return [...envSet];
+    }
+
+    public async scan(root: string): Promise<Record<string, Manifest>> {
         const result = {};
-        for (const enviro of options.env) {
-            result[enviro] = await this.scanItems(root, enviro);
+        const envList = await this.scanEnvList(root);
+        for (const env of envList) {
+            result[env] = await this.scanItems(root, env);
+        }
+        if (this.options.needWriteFile) {
+            this.writeFile(`manifest.json`, JSON.stringify(result, null, 2));
         }
         return result;
     }
@@ -73,14 +91,7 @@ export class Scanner {
         // 2. Calculate Plugin Load Order (need scan after framework because of plugin config maybe in framework)
         const pluginConfigHandler = new ConfigurationHandler();
         for (const pluginConfigFile of this.itemMap.get('plugin-config') ?? []) {
-            const pluginConfig = await compatibleRequire(pluginConfigFile.path);
-            if (pluginConfig) {
-                let [_, env, extname] = pluginConfigFile.filename.split('.');
-                if (!extname) {
-                    env = 'default';
-                }
-                pluginConfigHandler.setConfig(env, pluginConfig);
-            }
+            await pluginConfigHandler.setConfigByFile(pluginConfigFile);
         }
         const mergedConfig = pluginConfigHandler.getMergedConfig(env);
         const pluginSortedList = await PluginFactory.createFromConfig(mergedConfig || {});
@@ -103,9 +114,6 @@ export class Scanner {
         const result: Manifest = {
             items: this.getItemsFromMap(),
         };
-        if (this.options.needWriteFile) {
-            this.writeFile(`manifest.${env}.json`, JSON.stringify(result, null, 2));
-        }
         return result;
     }
 
