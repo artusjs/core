@@ -6,6 +6,10 @@ export interface ScannerOptions {
   conifgDir: string
 }
 
+export interface ScanOptions {
+  env: string[]
+}
+
 export interface WalkOptions {
   source: string,
   baseDir: string,
