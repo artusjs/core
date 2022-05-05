@@ -3,7 +3,7 @@ export interface ScannerOptions {
   extensions: string[];
   needWriteFile: boolean;
   excluded?: string[];
-  conifgDir: string
+  configDir: string
 }
 
 export interface ScanOptions {

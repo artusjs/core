@@ -38,7 +38,7 @@ export class Scanner {
         this.options = {
             appName: 'app',
             needWriteFile: true,
-            conifgDir: DEFAULT_CONFIG_DIR,
+            configDir: DEFAULT_CONFIG_DIR,
             ...options,
             excluded: DEFAULT_EXCLUDES.concat(options.excluded ?? []),
             extensions: [...new Set(this.moduleExtensions.concat(options.extensions ?? [], ['.yaml']))],
@@ -50,7 +50,7 @@ export class Scanner {
     }
 
     private checkOptions() {
-        if (!this.options.conifgDir) {
+        if (!this.options.configDir) {
             throw new Error(`config dir must be passed in.`);
         }
     }
@@ -192,8 +192,8 @@ export class Scanner {
     }
 
     private isConfigDir(baseDir: string, currentDir: string): boolean {
-        const { conifgDir } = this.options;
-        return path.join(baseDir, conifgDir) === currentDir;
+        const { configDir } = this.options;
+        return path.join(baseDir, configDir) === currentDir;
     }
 
     private async getLoaderName(filename: string, { root, baseDir }: LoaderOptions): Promise<string> {

@@ -17,7 +17,7 @@ describe('test/framework.test.ts', () => {
   it('should run succeed', async () => {
     const scanner = new Scanner({
       needWriteFile: false, extensions: ['.ts', '.js', '.json'],
-      conifgDir: 'src/config'
+      configDir: 'src/config'
     });
     const { private: manifest } = await scanner.scan(path.resolve(__dirname, './fixtures/artus-application'), { env: ['private'] });
     // console.log('manifest', manifest);
