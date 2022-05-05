@@ -19,7 +19,7 @@ export class ArtusApplication implements Application {
   constructor(opts?: ApplicationInitOptions) {
     this.container = new Container(opts?.containerName ?? ArtusInjectEnum.DefaultContainerName);
     this.lifecycleManager = new LifecycleManager(this, this.container);
-    this.loaderFactory = LoaderFactory.create(this.container, opts?.envUnits);
+    this.loaderFactory = LoaderFactory.create(this.container);
 
     process.on('SIGINT', () => this.close(true));
     process.on('SIGTERM', () => this.close(true));
@@ -75,10 +75,6 @@ export class ArtusApplication implements Application {
     // Load user manifest
     this.manifest = manifest;
 
-    // load env units
-    await this.loaderFactory.loadEnvUnits(manifest);
-
-    // load other files
     await this.loaderFactory.loadManifest(manifest);
 
     await this.lifecycleManager.emitHook('didLoad');

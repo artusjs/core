@@ -1,7 +1,7 @@
 import { Plugin } from './types';
 
 // A utils function that toplogical sort plugins
-export function topologicalSort(pluginInstancesMap: Map<string, Plugin[]>, pluginDepEdgeList: [string, string][]): string[] {
+export function topologicalSort(pluginInstanceMap: Map<string, Plugin>, pluginDepEdgeList: [string, string][]): string[] {
   const res: string[] = [];
   const indegree: Map<string, number> = new Map();
 
@@ -11,7 +11,7 @@ export function topologicalSort(pluginInstancesMap: Map<string, Plugin[]>, plugi
 
   const queue: string[] = [];
 
-  for (const [name] of pluginInstancesMap) {
+  for (const [name] of pluginInstanceMap) {
     if (!indegree.has(name)) {
       queue.push(name);
     }

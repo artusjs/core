@@ -19,16 +19,14 @@ describe('test/framework.test.ts', () => {
       needWriteFile: false, extensions: ['.ts', '.js', '.json'],
       conifgDir: 'src/config'
     });
-    const manifest = await scanner.scan(path.resolve(__dirname, './fixtures/artus-application'));
+    const { private: manifest } = await scanner.scan(path.resolve(__dirname, './fixtures/artus-application'), { env: ['private'] });
     // console.log('manifest', manifest);
     const { main } = await import('./fixtures/artus-application/src');
     const app = await main(manifest);
-    const { path: appFrameworkPath, choose: appFrameworkChoose } = app.artus.frameworks.get('app');
+    const { path: appFrameworkPath } = app.artus.frameworks.get('app');
     assert(appFrameworkPath);
-    assert(appFrameworkChoose === 'default');
-    const { path: barFrameworkPath, choose: barFrameworkChoose } = app.artus.frameworks.get(appFrameworkPath);
+    const { path: barFrameworkPath } = app.artus.frameworks.get(appFrameworkPath);
     assert(barFrameworkPath);
-    assert(barFrameworkChoose === 'private');
     assert(app.isListening());
     const port = app.artus.config?.port;
     assert(port === 3003);

@@ -21,11 +21,12 @@ import {
     ScannerOptions,
     WalkOptions,
     LoaderOptions,
+    ScanOptions,
 } from './types';
 import { Manifest, ManifestItem } from '../loader';
-import { BasePlugin, PluginFactory } from '../plugin';
+import ConfigurationHandler from '../configuration';
+import { PluginFactory } from '../plugin';
 import { FrameworkHandler } from '../framework';
-import { PluginConfigItem } from '../plugin/types';
 
 export class Scanner {
     private options: ScannerOptions;
@@ -54,29 +55,40 @@ export class Scanner {
         }
     }
 
-    public async scan(root: string) {
+    public async scan(root: string, options: ScanOptions = { env: ['default'] }): Promise<Record<string, Manifest>> {
+        const result = {};
+        for (const enviro of options.env) {
+            result[enviro] = await this.scanItems(root, enviro);
+        }
+        return result;
+    }
+
+    private async scanItems(root: string, env: string) {
         // 0. Scan Application
         await this.walk(root, { source: 'app', baseDir: root });
 
-        // 1. Calculate Plugin Load Order
-        const pluginsConfig: Map<string, PluginConfigItem[]> = new Map();
+        // 1. Scan Frameworks
+        await this.recurseFramework(env, root, []);
+
+        // 2. Calculate Plugin Load Order (need scan after framework because of plugin config maybe in framework)
+        const pluginConfigHandler = new ConfigurationHandler();
         for (const pluginConfigFile of this.itemMap.get('plugin-config') ?? []) {
-            const pluginConfig: Record<string, PluginConfigItem> = await compatibleRequire(pluginConfigFile.path);
-            for (const [name, config] of Object.entries(pluginConfig)) {
-                if (!config.path && !config.package) {
-                    continue;
+            const pluginConfig = await compatibleRequire(pluginConfigFile.path);
+            if (pluginConfig) {
+                let [_, env, extname] = pluginConfigFile.filename.split('.');
+                if (!extname) {
+                    env = 'default';
                 }
-                const items = pluginsConfig.get(name);
-                if (Array.isArray(items)) {
-                    items.push(config);
-                    continue;
-                }
-                pluginsConfig.set(name, [config]);
+                pluginConfigHandler.setConfig(env, pluginConfig);
             }
         }
-        const allPlugins: BasePlugin[] = await PluginFactory.createFromConfigList(pluginsConfig);
-        for (const plugin of allPlugins.reverse()) {
+        const mergedConfig = pluginConfigHandler.getMergedConfig(env);
+        const pluginSortedList = await PluginFactory.createFromConfig(mergedConfig || {});
+        for (const plugin of pluginSortedList.reverse()) {
             const metaList = this.itemMap.get('plugin-meta') ?? [];
+            if (!plugin.enable) {
+                continue;
+            }
             metaList.push({
                 path: plugin.metaFilePath,
                 extname: path.extname(plugin.metaFilePath),
@@ -88,42 +100,29 @@ export class Scanner {
             await this.walk(plugin.importPath, { source: 'plugin', baseDir: plugin.importPath, unitName: plugin.name });
         }
 
-        // 2. Scan Frameworks
-        const serialize = FrameworkHandler.serialize;
-        const frameworks: string[] = [];
-        const frameworkMap = new Map<string, boolean>();
-        frameworks.push(...serialize(this.itemMap.get('framework-config') ?? []));
-        frameworks.push(...serialize(this.itemMap.get('package-json') ?? []));
-        await this.recurseFramework(frameworks, root, frameworkMap);
-
         const result: Manifest = {
             items: this.getItemsFromMap(),
         };
         if (this.options.needWriteFile) {
-            this.writeFile('manifest.json', JSON.stringify(result, null, 2));
+            this.writeFile(`manifest.${env}.json`, JSON.stringify(result, null, 2));
         }
         return result;
     }
 
-    private async recurseFramework(frameworks: string[], frameworkBaseDir: string, frameworkMap: Map<string, boolean>) {
-        const serialize = FrameworkHandler.serialize;
-        for (const frame of frameworks) {
-            if (frameworkMap.get(frame)) {
-                continue;
-            } frameworkMap.set(frame, true);
-            const frameworkConfig = await compatibleRequire(frame);
-            frameworkConfig.framework && (frameworkConfig.package = frameworkConfig.framework);
-            const baseFrameworkPath = await FrameworkHandler.handle(frameworkBaseDir, frameworkConfig);
-            baseFrameworkPath && await this.walk(baseFrameworkPath, {
-                source: 'framework',
-                baseDir: baseFrameworkPath,
-                unitName: baseFrameworkPath
-            });
-            await this.recurseFramework([
-                ...serialize(this.itemMap.get('framework-config') ?? []),
-                ...serialize(this.itemMap.get('package-json') ?? [])
-            ], baseFrameworkPath, frameworkMap);
+    private async recurseFramework(env: string, frameworkBaseDir: string, executed: string[]) {
+        const { config, done } =
+            await FrameworkHandler.mergeConfig(env, this.itemMap.get('framework-config') ?? [], executed);
+        const baseFrameworkPath = await FrameworkHandler.handle(frameworkBaseDir, config);
+        if (!baseFrameworkPath) {
+            return;
         }
+        await this.walk(baseFrameworkPath, {
+            source: 'framework',
+            baseDir: baseFrameworkPath,
+            unitName: baseFrameworkPath
+        });
+
+        this.recurseFramework(env, baseFrameworkPath, executed.concat(done));
     }
 
     private async walk(
@@ -186,7 +185,10 @@ export class Scanner {
         for (const [, unitItems] of this.itemMap) {
             items = items.concat(unitItems);
         }
-        return items;
+        const apps = items.filter(item => item.source === 'app');
+        const plugins = items.filter(item => item.source === 'plugin');
+        const frameworks = items.filter(item => item.source === 'framework');
+        return frameworks.concat(plugins).concat(apps);
     }
 
     private isConfigDir(baseDir: string, currentDir: string): boolean {

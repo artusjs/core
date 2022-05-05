@@ -28,6 +28,6 @@ export interface Plugin {
   metaFilePath: string;
 
   init(): Promise<void>;
-  checkDepExisted(map: Map<string, Plugin[]>): void;
+  checkDepExisted(map: Map<string, Plugin>): void;
   getDepEdgeList(): [string, string][];
 }
