@@ -1,9 +1,11 @@
 import { Container } from '@artus/injection';
 import { DefineLoader } from '../decorator';
-import { ManifestItem, Loader } from '../types';
+import { ManifestItem, Loader, LoaderCheckOptions } from '../types';
 import { ExceptionItem } from '../../exception/types';
 import { ExceptionHandler } from '../../exception';
 import { loadMetaFile } from '../../utils/load-meta-file';
+import { EXCEPTION_FILE } from '../../constraints';
+import { isMatch } from '../../utils';
 
 @DefineLoader('exception')
 class ExceptionLoader implements Loader {
@@ -11,6 +13,10 @@ class ExceptionLoader implements Loader {
 
   constructor(container) {
     this.container = container;
+  }
+
+  async is(opts: LoaderCheckOptions) {
+    return isMatch(opts.filename, EXCEPTION_FILE);
   }
 
   async load(item: ManifestItem) {

@@ -1,8 +1,10 @@
+import * as path from 'path';
 import { Container } from '@artus/injection';
-import { ArtusInjectEnum, DEFAULT_LOADER } from '../constraints';
-import { Manifest, ManifestItem, LoaderConstructor, LoaderHookUnit } from './types';
+import { ArtusInjectEnum, DEFAULT_LOADER, HOOK_FILE_LOADER } from '../constraints';
+import { Manifest, ManifestItem, LoaderConstructor, LoaderHookUnit, LoaderCheckOptions } from './types';
 import ConfigurationHandler from '../configuration';
 import { LifecycleManager } from '../lifecycle';
+import compatibleRequire from '../utils/compatible-require';
 
 export class LoaderFactory {
   private container: Container;
@@ -76,5 +78,25 @@ export class LoaderFactory {
     }
     const loader = new LoaderClazz(this.container);
     await loader.load(item);
+  }
+
+  async getLoaderName(opts: LoaderCheckOptions): Promise<string> {
+    for (const [loaderName, LoaderClazz] of LoaderFactory.loaderClazzMap.entries()) {
+      const loader = new LoaderClazz(this.container);
+      if (await loader.is?.(opts)) {
+        return loaderName;
+      }
+    }
+    const { root, filename } = opts;
+
+    // get loader from reflect metadata
+    const target = await compatibleRequire(path.join(root, filename));
+    const metadata = Reflect.getMetadata(HOOK_FILE_LOADER, target);
+    if (metadata?.loader) {
+        return metadata.loader;
+    }
+
+    // default loder
+    return DEFAULT_LOADER;
   }
 }
