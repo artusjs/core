@@ -1,7 +1,8 @@
 import 'reflect-metadata';
 
-import { Container } from '@artus/injection';
 import assert from 'assert';
+import path from 'path';
+import { Container } from '@artus/injection';
 import { Application, ArtusInjectEnum, LifecycleManager, LoaderFactory } from '../src';
 import ConfigurationHandler from '../src/configuration';
 
@@ -39,6 +40,30 @@ describe('test/loader.test.ts', () => {
         }
       });
       assert((container.get('testServiceA') as any).testMethod(appProxy) === 'Hello Artus');
+    });
+    describe('module with custom loader', () => {
+      it('should load module test.ts with custom loader', async () => {
+        const { default: manifest } = require('./fixtures/module-with-custom-loader/src/index');
+  
+        const container = new Container('testDefault');
+        const loaderFactory = LoaderFactory.create(container);
+  
+        // Mock for loader
+        const lifecycleManager = new LifecycleManager(null as unknown as Application, container);
+        container.set({ id: ArtusInjectEnum.LifecycleManager, value: lifecycleManager });
+        container.set({ type: ConfigurationHandler });
+
+        const loaderName = await loaderFactory.getLoaderName({
+          filename: 'test.ts',
+          root: path.resolve(__dirname, './fixtures/module-with-custom-loader/src'),
+          baseDir: path.resolve(__dirname, './fixtures/module-with-custom-loader/src'),
+          configDir: ''
+        });
+        expect(loaderName).toBe('test-custom-loader');
+        jest.spyOn(console, 'log');
+        await loaderFactory.loadManifest(manifest);
+        expect(console.log).toBeCalledWith('TestCustomLoader.load TestClass');
+      });
     });
   });
 });
