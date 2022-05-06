@@ -3,11 +3,8 @@ export interface ScannerOptions {
   extensions: string[];
   needWriteFile: boolean;
   excluded?: string[];
-  conifgDir: string
-}
-
-export interface ScanOptions {
-  env: string[]
+  configDir: string
+  envs?: string[];
 }
 
 export interface WalkOptions {

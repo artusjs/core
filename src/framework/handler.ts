@@ -1,7 +1,6 @@
 import path from 'path';
 import ConfigurationHandler, { ConfigObject } from '../configuration';
-import { ManifestItem } from "../types";
-import compatibleRequire from '../utils/compatible-require';
+import { ManifestItem } from '../types';
 
 export interface FrameworkConfig {
   path?: string,
@@ -13,14 +12,7 @@ export class FrameworkHandler {
     frameworks = frameworks.filter(item => !done.includes(item.path));
     const frameworkConfigHandler = new ConfigurationHandler();
     for (const frameworkConfigFile of frameworks) {
-      const frameworkConfig = await compatibleRequire(frameworkConfigFile.path);
-      if (frameworkConfig) {
-        let [_, env, extname] = frameworkConfigFile.filename.split('.');
-        if (!extname) {
-          env = 'default';
-        }
-        frameworkConfigHandler.setConfig(env, frameworkConfig);
-      }
+      await frameworkConfigHandler.setConfigByFile(frameworkConfigFile);
     }
 
     done = done.concat(frameworks.map(item => item.path));
