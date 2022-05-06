@@ -1,7 +1,6 @@
 import path from 'path';
 import ConfigurationHandler, { ConfigObject } from '../configuration';
-import { ManifestItem } from "../types";
-import compatibleRequire from '../utils/compatible-require';
+import { ManifestItem } from '../types';
 
 export interface FrameworkConfig {
   path?: string,
