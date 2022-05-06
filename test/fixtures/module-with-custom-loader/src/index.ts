@@ -7,7 +7,7 @@ const rootDir = path.resolve(__dirname, './');
 @DefineLoader('test-custom-loader')
 export class TestCustomLoader implements Loader {
   async is(opts: LoaderCheckOptions) {
-    return opts.filename === 'test.ts'
+    return opts.filename === 'testClazz.ts'
   }
 
   async load(item: ManifestItem) {
@@ -20,9 +20,9 @@ export class TestCustomLoader implements Loader {
 export default ({
   items: [
     {
-      path: path.resolve(rootDir, './test.ts'),
+      path: path.resolve(rootDir, './testClazz.ts'),
       extname: '.ts',
-      filename: 'test.ts',
+      filename: 'testClazz.ts',
       loader: 'test-custom-loader'
     }
   ]

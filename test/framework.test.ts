@@ -21,7 +21,7 @@ describe('test/framework.test.ts', () => {
       envs: ['private']
     });
     const { private: manifest } = await scanner.scan(path.resolve(__dirname, './fixtures/artus-application'));
-    console.log('manifest', manifest);
+    // console.log('manifest', manifest);
     const { main } = await import('./fixtures/artus-application/src');
     const app = await main(manifest);
     const { path: appFrameworkPath } = app.artus.frameworks.get('app');
