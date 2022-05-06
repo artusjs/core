@@ -1,16 +1,30 @@
+import * as path from 'path';
 import { Container } from '@artus/injection';
 import ConfigurationHandler from '../../configuration';
-import { ArtusInjectEnum, ARTUS_DEFAULT_CONFIG_ENV } from '../../constraints';
+import { ArtusInjectEnum, ARTUS_DEFAULT_CONFIG_ENV, CONFIG_PATTERN } from '../../constraints';
 import { DefineLoader } from '../decorator';
-import { ManifestItem, Loader } from '../types';
+import { ManifestItem, Loader, LoaderCheckOptions } from '../types';
 import compatibleRequire from '../../utils/compatible-require';
+import { isMatch } from '../../utils';
 
 @DefineLoader('config')
 class ConfigLoader implements Loader {
-  private container: Container;
+  protected container: Container;
 
   constructor(container) {
     this.container = container;
+  }
+
+  async is(opts: LoaderCheckOptions): Promise<boolean> {
+    if (this.isConfigDir(opts)) {
+      return isMatch(opts.filename, CONFIG_PATTERN);
+    }
+    return false;
+  }
+
+  protected isConfigDir(opts: LoaderCheckOptions): boolean {
+      const { configDir, baseDir, root } = opts;
+      return path.join(baseDir, configDir) === root;
   }
 
   async load(item: ManifestItem) {

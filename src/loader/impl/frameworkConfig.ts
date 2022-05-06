@@ -1,16 +1,22 @@
-import { Container } from '@artus/injection';
 import ConfigurationHandler from '../../configuration';
 import { DefineLoader } from '../decorator';
-import { ManifestItem, Loader } from '../types';
+import { ManifestItem, Loader, LoaderCheckOptions } from '../types';
 import compatibleRequire from '../../utils/compatible-require';
-import { ArtusInjectEnum, ARTUS_DEFAULT_CONFIG_ENV } from '../../constraints';
+import { ArtusInjectEnum, ARTUS_DEFAULT_CONFIG_ENV, FRAMEWORK_PATTERN } from '../../constraints';
+import ConfigLoader from './config';
+import { isMatch } from '../../utils';
 
 @DefineLoader('framework-config')
-class FrameworkLoader implements Loader {
-  private container: Container;
-
+class FrameworkLoader extends ConfigLoader implements Loader {
   constructor(container) {
-    this.container = container;
+    super(container);
+  }
+
+  async is(opts: LoaderCheckOptions): Promise<boolean> {
+    if (this.isConfigDir(opts)) {
+      return isMatch(opts.filename, FRAMEWORK_PATTERN);
+    }
+    return false;
   }
 
   async load(item: ManifestItem) {

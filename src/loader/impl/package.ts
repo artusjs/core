@@ -1,8 +1,10 @@
 import { Container } from '@artus/injection';
 import ConfigurationHandler from '../../configuration';
 import { DefineLoader } from '../decorator';
-import { ManifestItem, Loader } from '../types';
+import { ManifestItem, Loader, LoaderCheckOptions } from '../types';
 import compatibleRequire from '../../utils/compatible-require';
+import { PACKAGE_JSON } from '../../constraints';
+import { isMatch } from '../../utils';
 
 @DefineLoader('package-json')
 class PackageLoader implements Loader {
@@ -10,6 +12,10 @@ class PackageLoader implements Loader {
 
   constructor(container) {
     this.container = container;
+  }
+
+  async is(opts: LoaderCheckOptions) {
+    return isMatch(opts.filename, PACKAGE_JSON);
   }
 
   async load(item: ManifestItem) {
