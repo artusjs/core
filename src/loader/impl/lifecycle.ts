@@ -6,8 +6,8 @@ import { DefineLoader } from '../decorator';
 import { ManifestItem, Loader } from '../types';
 import compatibleRequire from '../../utils/compatible-require';
 
-@DefineLoader('extension')
-class ExtensionLoader implements Loader {
+@DefineLoader('lifecycle-hook-unit')
+class LifecycleLoader implements Loader {
   private container: Container;
 
   constructor(container) {
@@ -17,8 +17,8 @@ class ExtensionLoader implements Loader {
   async load(item: ManifestItem) {
     const extClazz: Constructable<ApplicationLifecycle> = await compatibleRequire(item.path);
     const lifecycleManager: LifecycleManager = this.container.get(ArtusInjectEnum.LifecycleManager);
-    lifecycleManager.registerExtension(extClazz);
+    lifecycleManager.registerHookUnit(extClazz);
   }
 }
 
-export default ExtensionLoader;
+export default LifecycleLoader;

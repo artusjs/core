@@ -1,16 +1,16 @@
 import { Server } from 'http';
 import Koa from 'koa';
-import { ApplicationExtension, ApplicationHook } from '../../../src/decorator';
+import { LifecycleHookUnit, LifecycleHook } from '../../../src/decorator';
 import { ApplicationLifecycle } from '../../../src/types';
 
 export let server: Server;
 const koaApp = new Koa();
 
-@ApplicationExtension()
-export default class ApplicationHookExtension implements ApplicationLifecycle {
+@LifecycleHookUnit()
+export default class MyLifecycle implements ApplicationLifecycle {
   testStr: string = 'Hello Artus';
 
-  @ApplicationHook()
+  @LifecycleHook()
   willReady() {
     koaApp.use((ctx) => {
       ctx.status = 200;
@@ -19,7 +19,7 @@ export default class ApplicationHookExtension implements ApplicationLifecycle {
     server = koaApp.listen(3000);
   }
 
-  @ApplicationHook()
+  @LifecycleHook()
   beforeClose() {
     server?.close();
   }

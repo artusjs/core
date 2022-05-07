@@ -1,20 +1,20 @@
 import http, { Server } from 'http';
 import { Context, Input } from '@artus/pipeline';
 import { ArtusApplication } from '../../../../src';
-import { ApplicationExtension, ApplicationHook, WithApplication } from '../../../../src/decorator';
+import { LifecycleHookUnit, LifecycleHook, WithApplication } from '../../../../src/decorator';
 import { ApplicationLifecycle } from '../../../../src/types';
 
 export let server: Server;
 
-@ApplicationExtension()
-export default class ApplicationHookExtension implements ApplicationLifecycle {
+@LifecycleHookUnit()
+export default class MyLifecycle implements ApplicationLifecycle {
   app: ArtusApplication;
 
   constructor(@WithApplication() app: ArtusApplication) {
     this.app = app;
   }
 
-  @ApplicationHook()
+  @LifecycleHook()
   async didLoad() {
     this.app.trigger.use(async (ctx: Context) => {
       const { data } = ctx.output;
@@ -22,7 +22,7 @@ export default class ApplicationHookExtension implements ApplicationLifecycle {
     });
   }
 
-  @ApplicationHook()
+  @LifecycleHook()
   willReady() {
     server = http
       .createServer(async (req: http.IncomingMessage, res: http.ServerResponse) => {
@@ -33,7 +33,7 @@ export default class ApplicationHookExtension implements ApplicationLifecycle {
       .listen(3001)
   }
 
-  @ApplicationHook()
+  @LifecycleHook()
   beforeClose() {
     server?.close();
   }

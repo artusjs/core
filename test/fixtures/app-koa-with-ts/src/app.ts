@@ -4,7 +4,7 @@ import { Container } from '@artus/injection';
 import { Context, Input } from '@artus/pipeline';
 
 import { ArtusApplication } from '../../../../src';
-import { ApplicationExtension, ApplicationHook, WithApplication, WithContainer } from '../../../../src/decorator';
+import { LifecycleHookUnit, LifecycleHook, WithApplication, WithContainer } from '../../../../src/decorator';
 import { ApplicationLifecycle } from '../../../../src/types';
 
 import KoaApplication from './koaApp';
@@ -12,8 +12,8 @@ import HelloController from './controllers/hello';
 
 export let server: Server;
 
-@ApplicationExtension()
-export default class ApplicationHookExtension implements ApplicationLifecycle {
+@LifecycleHookUnit()
+export default class MyLifecycle implements ApplicationLifecycle {
   app: ArtusApplication;
   container: Container;
 
@@ -26,7 +26,7 @@ export default class ApplicationHookExtension implements ApplicationLifecycle {
     return this.container.get(KoaApplication);
   }
 
-  @ApplicationHook()
+  @LifecycleHook()
   async didLoad() {
     this.app.trigger.use(async (ctx: Context) => {
       const { koaCtx } = ctx.input.params;
@@ -35,7 +35,7 @@ export default class ApplicationHookExtension implements ApplicationLifecycle {
     });
   }
 
-  @ApplicationHook('willReady')
+  @LifecycleHook('willReady')
   setKoaMiddleware() {
     this.koaApp.use(async (koaCtx: DefaultContext) => {
       const input = new Input();
@@ -45,12 +45,12 @@ export default class ApplicationHookExtension implements ApplicationLifecycle {
     });
   }
 
-  @ApplicationHook('willReady')
+  @LifecycleHook('willReady')
   startKoaServer() {
     server = this.koaApp.listen(3000);
   }
 
-  @ApplicationHook()
+  @LifecycleHook()
   beforeClose() {
     server?.close();
   }

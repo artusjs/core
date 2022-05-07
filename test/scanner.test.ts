@@ -16,7 +16,7 @@ describe('test/scanner.test.ts', () => {
         expect(manifest.items.filter(item => item.loader === 'plugin-config').length).toBe(1);
         expect(manifest.items.filter(item => item.loader === 'plugin-meta').length).toBe(1);
         expect(manifest.items.filter(item => item.loader === 'exception').length).toBe(1);
-        expect(manifest.items.filter(item => item.loader === 'extension').length).toBe(2);
+        expect(manifest.items.filter(item => item.loader === 'lifecycle-hook-unit').length).toBe(2);
         expect(manifest.items.filter(item => item.loader === 'config').length).toBe(1);
         expect(manifest.items.filter(item => item.loader === 'module').length).toBe(5);
 

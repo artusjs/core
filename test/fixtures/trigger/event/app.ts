@@ -1,20 +1,20 @@
 import { EventEmitter } from 'events';
 import { ArtusApplication } from '../../../../src';
-import { ApplicationExtension, ApplicationHook, WithApplication } from '../../../../src/decorator';
+import { LifecycleHookUnit, LifecycleHook, WithApplication } from '../../../../src/decorator';
 import { Context, Input, Next } from '@artus/pipeline';
 import { ApplicationLifecycle } from '../../../../src/types';
 
 export let event = new EventEmitter();
 
-@ApplicationExtension()
-export default class ApplicationHookExtension implements ApplicationLifecycle {
+@LifecycleHookUnit()
+export default class MyLifecycle implements ApplicationLifecycle {
   app: ArtusApplication;
 
   constructor(@WithApplication() app: ArtusApplication) {
     this.app = app;
   }
 
-  @ApplicationHook()
+  @LifecycleHook()
   async didLoad() {
     this.app.trigger.use(async (ctx: Context, next: Next) => {
       const { input: { params: { type, payload } } } = ctx;
@@ -37,7 +37,7 @@ export default class ApplicationHookExtension implements ApplicationLifecycle {
     });
   }
 
-  @ApplicationHook()
+  @LifecycleHook()
   willReady() {
     event.on('e1', async payload => {
       const input = new Input();
@@ -54,7 +54,7 @@ export default class ApplicationHookExtension implements ApplicationLifecycle {
     });
   }
 
-  @ApplicationHook()
+  @LifecycleHook()
   beforeClose() {
     event.removeAllListeners();
   }

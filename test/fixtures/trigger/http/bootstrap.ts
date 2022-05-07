@@ -10,7 +10,7 @@ async function main() {
         path: path.resolve(__dirname, './app'),
         extname: '.ts',
         filename: 'app.ts',
-        loader: 'extension',
+        loader: 'lifecycle-hook-unit',
         source: 'app'
       },
       {
