@@ -59,6 +59,9 @@ export class Scanner {
         const configFileList = await fs.readdir(path.resolve(root, configDir));
         const envSet: Set<string> = new Set([ARTUS_DEFAULT_CONFIG_ENV.DEFAULT]);
         for (const configFilename of configFileList) {
+            if(configFilename.endsWith('.d.ts')){
+              continue;
+            }
           const env = ConfigurationHandler.getEnvFromFilename(configFilename);
           envSet.add(env);
         }
