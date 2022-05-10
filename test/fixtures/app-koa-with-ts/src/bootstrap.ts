@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import path from 'path';
 import { ArtusApplication } from '../../../../src';
 import { server } from './app';
