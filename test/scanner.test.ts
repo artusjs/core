@@ -24,4 +24,18 @@ describe('test/scanner.test.ts', () => {
         expect(manifest.items.filter(item => item.unitName === 'mysql').length).toBe(0);
         expect(manifest.items.filter(item => item.source === 'app').length).toBe(10);
     });
+
+    it('should scan module with custom loader', async () => {
+      await import('./fixtures/module-with-custom-loader/src');
+      const scanner = new Scanner({ needWriteFile: false, extensions: ['.ts', '.js', '.json'], configDir: '.', loaderListGenerator: () => ['test-custom-loader'] });
+      const scanResults = await scanner.scan(path.resolve(__dirname, './fixtures/module-with-custom-loader'));
+      const { default: manifest } = scanResults;
+      // console.log('manifest', manifest);
+      expect(Object.entries(scanResults).length).toBe(1);
+      expect(manifest).toBeDefined();
+      expect(manifest.items).toBeDefined();
+      expect(Array.isArray(manifest.items)).toBe(true);
+      expect(manifest.items.length).toBe(1);
+      expect(manifest.items[0]?.loader).toBe('test-custom-loader');
+    });
 });
