@@ -1,8 +1,8 @@
-import { ApplicationExtension, ApplicationHook } from '../../../../../src/decorator';
+import { LifecycleHookUnit, LifecycleHook } from '../../../../../src/decorator';
 
-@ApplicationExtension()
+@LifecycleHookUnit()
 export default class Hook {
-  @ApplicationHook()
+  @LifecycleHook()
   async willReady() {
     console.log('Redis Plugin will ready');
   }

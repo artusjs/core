@@ -1,9 +1,9 @@
 import { Constructable, Container } from '@artus/injection';
 import { Application } from '../types';
 import {
-  HOOK_CONSTRUCTOR_PARAMS,
-  HOOK_CONSTRUCTOR_PARAMS_APP,
-  HOOK_CONSTRUCTOR_PARAMS_CONTAINER,
+  CONSTRUCTOR_PARAMS,
+  CONSTRUCTOR_PARAMS_APP,
+  CONSTRUCTOR_PARAMS_CONTAINER,
   HOOK_NAME_META_PREFIX
 } from '../constraints';
 
@@ -50,12 +50,12 @@ export class LifecycleManager {
     }
   }
 
-  registerExtension(extClazz: Constructable<any>) {
+  registerHookUnit(extClazz: Constructable<any>) {
     const fnMetaKeys = Reflect.getMetadataKeys(extClazz);
-    const constructorParams = Reflect.getMetadata(HOOK_CONSTRUCTOR_PARAMS, extClazz) ?? [];
+    const constructorParams = Reflect.getMetadata(CONSTRUCTOR_PARAMS, extClazz) ?? [];
     const paramsMap = {
-      [HOOK_CONSTRUCTOR_PARAMS_APP]: this.app,
-      [HOOK_CONSTRUCTOR_PARAMS_CONTAINER]: this.container
+      [CONSTRUCTOR_PARAMS_APP]: this.app,
+      [CONSTRUCTOR_PARAMS_CONTAINER]: this.container
     };
     const extClazzInstance = new extClazz(...constructorParams.map((param) => paramsMap[param]));
     for (const fnMetaKey of fnMetaKeys) {

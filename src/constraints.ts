@@ -23,10 +23,10 @@ export enum ARTUS_DEFAULT_CONFIG_ENV {
 };
 
 export const HOOK_NAME_META_PREFIX = 'hookName:';
-export const HOOK_CONSTRUCTOR_PARAMS = 'appHook:constructorParams';
-export const HOOK_CONSTRUCTOR_PARAMS_APP = 'appHook:constructorParams:app';
-export const HOOK_CONSTRUCTOR_PARAMS_CONTAINER = 'appHook:constructorParams:container';
-export const HOOK_PARAMS_CONTEXT = 'appHook:constructorParams:context';
+export const CONSTRUCTOR_PARAMS = 'constructor:params';
+export const CONSTRUCTOR_PARAMS_APP = 'constructor:params:app';
+export const CONSTRUCTOR_PARAMS_CONTAINER = 'constructor:params:container';
+export const CONSTRUCTOR_PARAMS_CONTEXT = 'constructor:params:context';
 export const HOOK_FILE_LOADER = 'appHook:fileLoader';
 export const HOOK_CONFIG_HANDLE = 'appHook:configHandle::';
 
@@ -51,7 +51,7 @@ export const EXCEPTION_FILE = 'artus-exception.yaml';
 export const DEFAULT_LOADER_LIST_WITH_ORDER = [
   'exception',
   'plugin-config',
-  'extension',
+  'lifecycle-hook-unit',
   'config',
   'plugin-meta',
   'module',
