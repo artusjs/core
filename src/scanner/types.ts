@@ -3,8 +3,9 @@ export interface ScannerOptions {
   extensions: string[];
   needWriteFile: boolean;
   excluded?: string[];
-  configDir: string
+  configDir: string;
   envs?: string[];
+  loaderListGenerator: (defaultLoaderList: string[]) => string[];
 }
 
 export interface WalkOptions {

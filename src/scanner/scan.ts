@@ -34,6 +34,7 @@ export class Scanner {
             appName: 'app',
             needWriteFile: true,
             configDir: DEFAULT_CONFIG_DIR,
+            loaderListGenerator: (defaultLoaderList: string[]) => defaultLoaderList,
             ...options,
             excluded: DEFAULT_EXCLUDES.concat(options.excluded ?? []),
             extensions: [...new Set(this.moduleExtensions.concat(options.extensions ?? [], ['.yaml']))],
@@ -41,7 +42,10 @@ export class Scanner {
 
         this.checkOptions();
 
-        this.itemMap = new Map(DEFAULT_LOADER_LIST_WITH_ORDER.map((loaderName) => ([loaderName, []])));
+        this.itemMap = new Map(
+          this.options.loaderListGenerator(DEFAULT_LOADER_LIST_WITH_ORDER)
+            .map((loaderName) => ([loaderName, []]))
+        );
         this.loaderFactory = LoaderFactory.create(new Container(ArtusInjectEnum.DefaultContainerName));
     }
 
