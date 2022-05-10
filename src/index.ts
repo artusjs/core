@@ -18,6 +18,9 @@ export * from './decorator';
 export * from './types';
 export * from './constraints';
 
+import ConfigurationHandler from './configuration';
+export { ConfigurationHandler };
+
 import Trigger from './trigger';
 export { Trigger };
 
