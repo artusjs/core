@@ -56,4 +56,4 @@ jobs:
     - run: git push
       env:
         # The secret is passed automatically. Nothing to configure.
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ secrets.GITHUB_ADMIN_TOKEN }}
