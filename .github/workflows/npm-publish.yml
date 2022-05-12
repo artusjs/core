@@ -31,6 +31,8 @@ jobs:
     - run: git config --global user.name "Artus Version Bot"
     - run: git config --global user.email "artusjs-version-bot@example.org"
     # upgrade npm version in package.json to the tag used in the release.
+    - run: git status
+    # upgrade npm version in package.json to the tag used in the release.
     - run: npm version ${{ github.event.release.tag_name }}
     # build the project
     - run: npm run build
