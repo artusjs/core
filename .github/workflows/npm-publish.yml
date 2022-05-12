@@ -26,13 +26,16 @@ jobs:
         node-version: 16
         # Specifies the registry, this field is required!
         registry-url: https://registry.npmjs.org/
+    - run: git status
     # clean install of your projects' deps. We use "npm ci" to avoid package lock changes
     - run: npm install
+    - run: git status
     # set up git since we will later push to the repo
     - run: git config --global user.name "Artus Version Bot"
     - run: git config --global user.email "artusjs-version-bot@example.org"
     # upgrade npm version in package.json to the tag used in the release.
     - run: git status
+    - run: cat .github/workflows/nodejs.yml
     # upgrade npm version in package.json to the tag used in the release.
     - run: npm version ${{ github.event.release.tag_name }}
     # build the project
