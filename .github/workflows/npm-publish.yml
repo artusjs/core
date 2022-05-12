@@ -19,6 +19,7 @@ jobs:
         # "github.event.release.target_commitish" is a global variable and specifies the branch the release targeted
         ref: ${{ github.event.release.target_commitish }}
     # install Node.js
+    - run: git status
     - name: Use Node.js 16
       uses: actions/setup-node@v1
       with:
