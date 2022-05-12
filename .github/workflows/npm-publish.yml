@@ -7,8 +7,8 @@ on:
       - published
 
 jobs:
-  build:
-
+  publish:
+    name: Publish to NPM & Create Pull Request of Version Update
     # Run on latest version of ubuntu
     runs-on: ubuntu-latest
 
@@ -31,6 +31,7 @@ jobs:
     - run: git config --global user.name "Artus Version Bot"
     - run: git config --global user.email "artusjs-version-bot@example.org"
     # upgrade npm version in package.json to the tag used in the release.
+    # upgrade npm version in package.json to the tag used in the release.
     - run: npm version ${{ github.event.release.tag_name }}
     # build the project
     - run: npm run build
@@ -46,8 +47,7 @@ jobs:
       if: "github.event.release.prerelease"
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-    # push the version changes to GitHub
-    - run: git push
-      env:
-        # The secret is passed automatically. Nothing to configure.
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v4
+      with:
+        title: "[Version] ${{ github.event.release.tag_name }}"
