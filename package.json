@@ -1,6 +1,6 @@
 {
   "name": "@artus/core",
-  "version": "0.0.1",
+  "version": "1.0.0-beta.0",
   "description": "Core package of Artus",
   "main": "lib/index.js",
   "scripts": {
