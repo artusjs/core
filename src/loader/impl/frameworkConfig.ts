@@ -7,7 +7,7 @@ import ConfigLoader from './config';
 import { isMatch } from '../../utils';
 
 @DefineLoader('framework-config')
-class FrameworkLoader extends ConfigLoader implements Loader {
+class FrameworkConfigLoader extends ConfigLoader implements Loader {
   constructor(container) {
     super(container);
   }
@@ -43,4 +43,4 @@ class FrameworkLoader extends ConfigLoader implements Loader {
   }
 }
 
-export default FrameworkLoader;
+export default FrameworkConfigLoader;

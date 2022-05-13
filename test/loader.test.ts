@@ -44,6 +44,10 @@ describe('test/loader.test.ts', () => {
   });
   describe('module with custom loader', () => {
     it('should load module test.ts with custom loader', async () => {
+      // SEEME: the import&register code need be replaced by scanner at production.
+      const { default: TestCustomLoader } = require('./fixtures/module-with-custom-loader/src/loader/test_custom_loader');
+      LoaderFactory.register(TestCustomLoader);
+
       const { default: manifest } = require('./fixtures/module-with-custom-loader/src/index');
 
       const container = new Container('testDefault');

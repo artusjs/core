@@ -1,8 +1,7 @@
-import { LoaderFactory } from './factory';
-import { LoaderConstructor } from './types';
+import { LOADER_NAME_META } from '../constraints';
 
 export const DefineLoader = (loaderName: string): ClassDecorator => 
   (target: Function) => {
-    LoaderFactory.registerLoader(loaderName, target as unknown as LoaderConstructor);
+    Reflect.defineMetadata(LOADER_NAME_META, loaderName, target);
   }
 ;

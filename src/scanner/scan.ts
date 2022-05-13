@@ -11,6 +11,7 @@ import {
     DEFAULT_CONFIG_DIR,
     ARTUS_DEFAULT_CONFIG_ENV,
     ArtusInjectEnum,
+    LOADER_NAME_META,
 } from '../constraints';
 import {
     ScannerOptions,
@@ -44,7 +45,17 @@ export class Scanner {
 
         this.itemMap = new Map(
           this.options.loaderListGenerator(DEFAULT_LOADER_LIST_WITH_ORDER)
-            .map((loaderName) => ([loaderName, []]))
+            .map((loaderNameOrClazz) => {
+              if(typeof loaderNameOrClazz === 'string') {
+                return [loaderNameOrClazz, []];
+              }
+              const loaderClazz = loaderNameOrClazz;
+              const loaderName = Reflect.getMetadata(LOADER_NAME_META, loaderClazz);
+              if (!loaderName) {
+                return [undefined, []];
+              }
+              return [loaderName, []];
+            })
         );
         this.loaderFactory = LoaderFactory.create(new Container(ArtusInjectEnum.DefaultContainerName));
     }

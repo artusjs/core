@@ -1,6 +1,6 @@
 import * as path from 'path';
 import { Container } from '@artus/injection';
-import { ArtusInjectEnum, DEFAULT_LOADER, HOOK_FILE_LOADER } from '../constraints';
+import { ArtusInjectEnum, DEFAULT_LOADER, HOOK_FILE_LOADER, LOADER_NAME_META } from '../constraints';
 import { Manifest, ManifestItem, LoaderConstructor, LoaderHookUnit, LoaderCheckOptions } from './types';
 import ConfigurationHandler from '../configuration';
 import { LifecycleManager } from '../lifecycle';
@@ -10,7 +10,8 @@ export class LoaderFactory {
   private container: Container;
   private static loaderClazzMap: Map<string, LoaderConstructor> = new Map();
 
-  static registerLoader(loaderName: string, clazz: LoaderConstructor) {
+  static register(clazz: LoaderConstructor) {
+    const loaderName = Reflect.getMetadata(LOADER_NAME_META, clazz);
     this.loaderClazzMap.set(loaderName, clazz);
   }
 
