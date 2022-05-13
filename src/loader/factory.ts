@@ -23,31 +23,37 @@ export class LoaderFactory {
     return new LoaderFactory(container);
   }
 
+  get lifecycleManager(): LifecycleManager {
+    return this.container.get(ArtusInjectEnum.LifecycleManager);
+  }
+
+  get configurationHandler(): ConfigurationHandler {
+    return this.container.get(ConfigurationHandler);
+  }
+
   async loadManifest(manifest: Manifest): Promise<void> {
-    const lifecycleManager: LifecycleManager = this.container.get(ArtusInjectEnum.LifecycleManager);
-    const configurationHandler: ConfigurationHandler = this.container.get(ConfigurationHandler);
 
     await this.loadItemList(manifest.items, {
       config: {
-        before: () => lifecycleManager.emitHook('configWillLoad'),
+        before: () => this.lifecycleManager.emitHook('configWillLoad'),
         after: () => {
           this.container.set({
             id: ArtusInjectEnum.Config,
-            value: configurationHandler.getMergedConfig()
+            value: this.configurationHandler.getMergedConfig()
           });
-          lifecycleManager.emitHook('configDidLoad');
+          this.lifecycleManager.emitHook('configDidLoad');
         }
       },
       'framework-config': {
         after: () => this.container.set({
           id: ArtusInjectEnum.Frameworks,
-          value: configurationHandler.getFrameworkConfig()
+          value: this.configurationHandler.getFrameworkConfig()
         })
       },
       'package-json': {
         after: () => this.container.set({
           id: ArtusInjectEnum.Packages,
-          value: configurationHandler.getPackages()
+          value: this.configurationHandler.getPackages()
         })
       }
     });
