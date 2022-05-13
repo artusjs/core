@@ -32,7 +32,6 @@ export class LoaderFactory {
   }
 
   async loadManifest(manifest: Manifest): Promise<void> {
-
     await this.loadItemList(manifest.items, {
       config: {
         before: () => this.lifecycleManager.emitHook('configWillLoad'),
