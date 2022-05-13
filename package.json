@@ -3,6 +3,9 @@
   "version": "1.0.0-beta.0",
   "description": "Core package of Artus",
   "main": "lib/index.js",
+  "files": [
+    "lib"
+  ],
   "scripts": {
     "build": "tsc",
     "test": "jest --detectOpenHandles",
