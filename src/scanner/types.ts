@@ -11,6 +11,7 @@ export interface ScannerOptions {
 export interface WalkOptions {
   source: string,
   baseDir: string,
+  configDir: string,
   unitName?: string,
 }
 

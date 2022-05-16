@@ -7,6 +7,7 @@ export interface PluginMetadata {
   name: string;
   dependencies?: PluginDependencyItem[];
   type?: PluginType;
+  configDir?: string
 }
 
 export interface PluginDependencyItem {

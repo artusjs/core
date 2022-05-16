@@ -86,7 +86,7 @@ export class Scanner {
 
     private async scanItems(root: string, env: string) {
         // 0. Scan Application
-        await this.walk(root, { source: 'app', baseDir: root });
+        await this.walk(root, { source: 'app', baseDir: root, configDir: this.options.configDir });
 
         // 1. Scan Frameworks
         await this.recurseFramework(env, root, []);
@@ -111,7 +111,12 @@ export class Scanner {
                 source: 'plugin',
                 unitName: plugin.name,
             });
-            await this.walk(plugin.importPath, { source: 'plugin', baseDir: plugin.importPath, unitName: plugin.name });
+            await this.walk(plugin.importPath, {
+                source: 'plugin',
+                baseDir: plugin.importPath,
+                unitName: plugin.name,
+                configDir: plugin.metadata.configDir ?? this.options.configDir
+            });
         }
 
         const result: Manifest = {
@@ -130,7 +135,8 @@ export class Scanner {
         await this.walk(baseFrameworkPath, {
             source: 'framework',
             baseDir: baseFrameworkPath,
-            unitName: baseFrameworkPath
+            unitName: baseFrameworkPath,
+            configDir: this.options.configDir
         });
 
         await this.recurseFramework(env, baseFrameworkPath, executed.concat(done));
@@ -138,11 +144,8 @@ export class Scanner {
 
     private async walk(
         root: string,
-        { source, unitName, baseDir }: WalkOptions = {
-            source: '',
-            unitName: this.options.appName,
-            baseDir: ''
-        }) {
+        options: WalkOptions) {
+        const { source, unitName, baseDir, configDir } = options;
         if (!existsSync(root)) {
             // TODO: use artus logger instead
             console.warn(`[scan->walk] ${root} is not exists.`);
@@ -168,7 +171,7 @@ export class Scanner {
                 if (this.exist(realPath, PLUGIN_META)) {
                     continue;
                 }
-                await this.walk(realPath, { source, unitName, baseDir });
+                await this.walk(realPath, { source, unitName, baseDir, configDir });
                 continue;
             }
 
@@ -180,10 +183,10 @@ export class Scanner {
                     extname,
                     filename,
                     loader: await this.loaderFactory.getLoaderName({
-                      filename,
-                      root,
-                      baseDir,
-                      configDir: this.options.configDir,
+                        filename,
+                        root,
+                        baseDir,
+                        configDir
                     }),
                     source
                 };
