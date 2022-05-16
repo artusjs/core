@@ -1,6 +1,6 @@
 import { ScopeEnum } from '@artus/injection';
 import { Injectable, Inject } from '../../../../src';
-import TestServiceB from './testServiceB';
+import TestServiceB from './test_service_b';
 
 @Injectable({
   id: 'testServiceA',

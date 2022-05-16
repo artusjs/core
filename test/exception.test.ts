@@ -72,7 +72,7 @@ describe('test/app.test.ts', () => {
       try {
         const {
           main
-        } = await import('./fixtures/exception-with-ts-yaml/bootstrap');
+        } = await import('./fixtures/exception_with_ts_yaml/bootstrap');
         const app = await main();
 
         try {

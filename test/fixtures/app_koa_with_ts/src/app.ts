@@ -7,7 +7,7 @@ import { ArtusApplication } from '../../../../src';
 import { LifecycleHookUnit, LifecycleHook, WithApplication, WithContainer } from '../../../../src/decorator';
 import { ApplicationLifecycle } from '../../../../src/types';
 
-import KoaApplication from './koaApp';
+import KoaApplication from './koa_app';
 import HelloController from './controllers/hello';
 
 export let server: Server;
