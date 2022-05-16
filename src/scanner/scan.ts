@@ -52,7 +52,7 @@ export class Scanner {
               const loaderClazz = loaderNameOrClazz;
               const loaderName = Reflect.getMetadata(LOADER_NAME_META, loaderClazz);
               if (!loaderName) {
-                return [undefined, []];
+                throw new Error(`Loader ${loaderClazz.name} must have a @DefineLoader() decorator.`);
               }
               return [loaderName, []];
             })
