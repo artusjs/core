@@ -1,7 +1,7 @@
 import { Container } from '@artus/injection';
 import { DefineLoader } from '../decorator';
 import { ManifestItem, Loader } from '../types';
-import { loadMetaFile } from '../../utils/load-meta-file';
+import { loadMetaFile } from '../../utils/load_meta_file';
 import { PluginMetadata } from '../../plugin/types';
 
 @DefineLoader('plugin-meta')

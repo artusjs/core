@@ -4,7 +4,7 @@ import { ArtusInjectEnum, DEFAULT_LOADER, HOOK_FILE_LOADER, LOADER_NAME_META } f
 import { Manifest, ManifestItem, LoaderConstructor, LoaderHookUnit, LoaderCheckOptions } from './types';
 import ConfigurationHandler from '../configuration';
 import { LifecycleManager } from '../lifecycle';
-import compatibleRequire from '../utils/compatible-require';
+import compatibleRequire from '../utils/compatible_require';
 
 export class LoaderFactory {
   private container: Container;
