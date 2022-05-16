@@ -1,5 +1,6 @@
 import { Scanner } from '../src/scanner';
 import path from 'path';
+import { LoaderFactory } from '../src';
 
 
 describe('test/scanner.test.ts', () => {
@@ -26,8 +27,16 @@ describe('test/scanner.test.ts', () => {
     });
 
     it('should scan module with custom loader', async () => {
-      await import('./fixtures/module-with-custom-loader/src');
-      const scanner = new Scanner({ needWriteFile: false, extensions: ['.ts', '.js', '.json'], configDir: '.', loaderListGenerator: () => ['test-custom-loader'] });
+      // TODO: allow scan custom loader
+      const { default: TestCustomLoader } = await import('./fixtures/module-with-custom-loader/src/loader/test_custom_loader');
+      LoaderFactory.register(TestCustomLoader);
+
+      const scanner = new Scanner({
+        needWriteFile: false,
+        extensions: ['.ts', '.js', '.json'],
+        configDir: '.',
+        loaderListGenerator: () => [TestCustomLoader]
+      });
       const scanResults = await scanner.scan(path.resolve(__dirname, './fixtures/module-with-custom-loader'));
       const { default: manifest } = scanResults;
       // console.log('manifest', manifest);

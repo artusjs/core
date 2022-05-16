@@ -1,6 +1,6 @@
 import * as path from 'path';
 import { Container } from '@artus/injection';
-import { ArtusInjectEnum, DEFAULT_LOADER, HOOK_FILE_LOADER } from '../constraints';
+import { ArtusInjectEnum, DEFAULT_LOADER, HOOK_FILE_LOADER, LOADER_NAME_META } from '../constraints';
 import { Manifest, ManifestItem, LoaderConstructor, LoaderHookUnit, LoaderCheckOptions } from './types';
 import ConfigurationHandler from '../configuration';
 import { LifecycleManager } from '../lifecycle';
@@ -10,7 +10,8 @@ export class LoaderFactory {
   private container: Container;
   private static loaderClazzMap: Map<string, LoaderConstructor> = new Map();
 
-  static registerLoader(loaderName: string, clazz: LoaderConstructor) {
+  static register(clazz: LoaderConstructor) {
+    const loaderName = Reflect.getMetadata(LOADER_NAME_META, clazz);
     this.loaderClazzMap.set(loaderName, clazz);
   }
 
@@ -22,31 +23,36 @@ export class LoaderFactory {
     return new LoaderFactory(container);
   }
 
-  async loadManifest(manifest: Manifest): Promise<void> {
-    const lifecycleManager: LifecycleManager = this.container.get(ArtusInjectEnum.LifecycleManager);
-    const configurationHandler: ConfigurationHandler = this.container.get(ConfigurationHandler);
+  get lifecycleManager(): LifecycleManager {
+    return this.container.get(ArtusInjectEnum.LifecycleManager);
+  }
 
+  get configurationHandler(): ConfigurationHandler {
+    return this.container.get(ConfigurationHandler);
+  }
+
+  async loadManifest(manifest: Manifest): Promise<void> {
     await this.loadItemList(manifest.items, {
       config: {
-        before: () => lifecycleManager.emitHook('configWillLoad'),
+        before: () => this.lifecycleManager.emitHook('configWillLoad'),
         after: () => {
           this.container.set({
             id: ArtusInjectEnum.Config,
-            value: configurationHandler.getMergedConfig()
+            value: this.configurationHandler.getMergedConfig()
           });
-          lifecycleManager.emitHook('configDidLoad');
+          this.lifecycleManager.emitHook('configDidLoad');
         }
       },
       'framework-config': {
         after: () => this.container.set({
           id: ArtusInjectEnum.Frameworks,
-          value: configurationHandler.getFrameworkConfig()
+          value: this.configurationHandler.getFrameworkConfig()
         })
       },
       'package-json': {
         after: () => this.container.set({
           id: ArtusInjectEnum.Packages,
-          value: configurationHandler.getPackages()
+          value: this.configurationHandler.getPackages()
         })
       }
     });

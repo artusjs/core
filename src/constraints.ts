@@ -1,4 +1,5 @@
 export const DEFAULT_LOADER = 'module';
+export const LOADER_NAME_META = 'loader:name';
 
 export const ArtusInjectPrefix = 'artus#';
 
