@@ -1,6 +1,6 @@
 import { Inject } from '@artus/injection';
 import { ArtusInjectEnum } from '../constraints';
-import { LoggerLevel } from './level';
+import { LoggerLevel, LOGGER_LEVEL_MAP } from './level';
 import { Logger, LoggerOptions, LogOptions } from './types';
 
 export class BaseLogger implements Logger {
@@ -14,7 +14,7 @@ export class BaseLogger implements Logger {
   
   protected checkLoggerLevel(level: LoggerLevel) {
     const targetLevel = this.loggerOpts.level ?? LoggerLevel.INFO;
-    if (level < targetLevel) {
+    if (LOGGER_LEVEL_MAP[level] < LOGGER_LEVEL_MAP[targetLevel]) {
       return false;
     }
     return true;
