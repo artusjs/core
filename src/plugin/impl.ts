@@ -1,6 +1,6 @@
 import path from 'path';
 import { BasePlugin } from './base';
-import { loadMetaFile } from '../utils/load-meta-file';
+import { loadMetaFile } from '../utils/load_meta_file';
 import { exisis } from '../utils/fs';
 
 export class ArtusPlugin extends BasePlugin {

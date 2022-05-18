@@ -14,9 +14,9 @@ async function main() {
         source: 'app'
       },
       {
-        path: path.resolve(__dirname, './timerTrigger'),
+        path: path.resolve(__dirname, './timer_trigger'),
         extname: '.ts',
-        filename: 'timerTrigger.ts',
+        filename: 'timer_trigger.ts',
         loader: 'module',
         source: 'app'
       }

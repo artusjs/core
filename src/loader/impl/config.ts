@@ -4,7 +4,7 @@ import ConfigurationHandler from '../../configuration';
 import { ArtusInjectEnum, ARTUS_DEFAULT_CONFIG_ENV, CONFIG_PATTERN } from '../../constraints';
 import { DefineLoader } from '../decorator';
 import { ManifestItem, Loader, LoaderCheckOptions } from '../types';
-import compatibleRequire from '../../utils/compatible-require';
+import compatibleRequire from '../../utils/compatible_require';
 import { isMatch } from '../../utils';
 
 @DefineLoader('config')

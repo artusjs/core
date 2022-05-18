@@ -1,4 +1,4 @@
 name: "mysql"
-configDir: src/custom-config
+configDir: src/custom_config
 dependencies:
   - name: "base"

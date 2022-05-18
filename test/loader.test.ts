@@ -11,7 +11,7 @@ describe('test/loader.test.ts', () => {
       const container = new Container('testDefault');
       const loaderFactory = LoaderFactory.create(container);
 
-      const manifest = require('./fixtures/module-with-ts/src/index').default;
+      const manifest = require('./fixtures/module_with_ts/src/index').default;
       await loaderFactory.loadManifest(manifest);
       assert((container.get('testServiceA') as any).testMethod() === 'Hello Artus');
     });
@@ -21,7 +21,7 @@ describe('test/loader.test.ts', () => {
       const container = new Container('testDefault');
       const loaderFactory = LoaderFactory.create(container);
 
-      const manifest = require('./fixtures/module-with-js/src/index');
+      const manifest = require('./fixtures/module_with_js/src/index');
       await loaderFactory.loadManifest(manifest);
       const appProxy = new Proxy({}, {
         get (_target, properName: string) {
@@ -34,18 +34,18 @@ describe('test/loader.test.ts', () => {
   describe('module with custom loader', () => {
     it('should load module test.ts with custom loader', async () => {
       // SEEME: the import&register code need be replaced by scanner at production.
-      const { default: TestCustomLoader } = require('./fixtures/module-with-custom-loader/src/loader/test_custom_loader');
+      const { default: TestCustomLoader } = require('./fixtures/module_with_custom_loader/src/loader/test_custom_loader');
       LoaderFactory.register(TestCustomLoader);
 
-      const { default: manifest } = require('./fixtures/module-with-custom-loader/src/index');
+      const { default: manifest } = require('./fixtures/module_with_custom_loader/src/index');
 
       const container = new Container('testDefault');
       const loaderFactory = LoaderFactory.create(container);
 
       const loaderName = await loaderFactory.getLoaderName({
-        filename: 'testClazz.ts',
-        root: path.resolve(__dirname, './fixtures/module-with-custom-loader/src'),
-        baseDir: path.resolve(__dirname, './fixtures/module-with-custom-loader/src'),
+        filename: 'test_clazz.ts',
+        root: path.resolve(__dirname, './fixtures/module_with_custom_loader/src'),
+        baseDir: path.resolve(__dirname, './fixtures/module_with_custom_loader/src'),
         configDir: ''
       });
       expect(loaderName).toBe('test-custom-loader');

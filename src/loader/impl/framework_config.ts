@@ -1,7 +1,7 @@
 import ConfigurationHandler from '../../configuration';
 import { DefineLoader } from '../decorator';
 import { ManifestItem, Loader, LoaderCheckOptions } from '../types';
-import compatibleRequire from '../../utils/compatible-require';
+import compatibleRequire from '../../utils/compatible_require';
 import { ArtusInjectEnum, ARTUS_DEFAULT_CONFIG_ENV, FRAMEWORK_PATTERN } from '../../constraints';
 import ConfigLoader from './config';
 import { isMatch } from '../../utils';
@@ -33,13 +33,10 @@ class FrameworkConfigLoader extends ConfigLoader implements Loader {
     }
 
     const configHandler = this.container.get(ConfigurationHandler);
-    configHandler.addFramework(
-      item.source || 'app',
-      configObj,
-      {
-        env,
-        unitName: item.unitName || ''
-      });
+    configHandler.addFramework(item.source || 'app', configObj, {
+      env,
+      unitName: item.unitName || '',
+    });
   }
 }
 

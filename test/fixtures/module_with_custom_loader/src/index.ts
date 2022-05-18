@@ -7,9 +7,9 @@ const rootDir = path.resolve(__dirname, './');
 export default ({
   items: [
     {
-      path: path.resolve(rootDir, './testClazz.ts'),
+      path: path.resolve(rootDir, './test_clazz.ts'),
       extname: '.ts',
-      filename: 'testClazz.ts',
+      filename: 'test_clazz.ts',
       loader: 'test-custom-loader'
     }
   ]

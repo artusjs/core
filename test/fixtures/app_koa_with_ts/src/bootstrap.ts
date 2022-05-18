@@ -15,14 +15,14 @@ async function main() {
         source: 'app'
       },
       {
-        path: path.resolve(__dirname, './koaApp'),
+        path: path.resolve(__dirname, './koa_app'),
         extname: '.ts',
         filename: 'koaApp.ts',
         loader: 'module',
         source: 'app'
       },
       {
-        path: path.resolve(__dirname, './httpTrigger'),
+        path: path.resolve(__dirname, './http_trigger'),
         extname: '.ts',
         filename: 'httpTrigger.ts',
         loader: 'module',

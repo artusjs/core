@@ -14,9 +14,9 @@ async function main() {
         source: 'app'
       },
       {
-        path: path.resolve(__dirname, './httpTrigger'),
+        path: path.resolve(__dirname, './http_trigger'),
         extname: '.ts',
-        filename: 'httpTrigger.ts',
+        filename: 'http_trigger.ts',
         loader: 'module',
         source: 'app'
       }
