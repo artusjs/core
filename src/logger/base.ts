@@ -40,33 +40,7 @@ export class BaseLogger implements Logger {
     throw new Error('Not implemented');
   }
 
-  log({
-    level,
-    message,
-    args = [],
-  }: LogOptions): void {
-    if (message instanceof Error) {
-      if (level === LoggerLevel.ERROR) {
-        return this.error(message, ...args);
-      }
-      message = message.stack ?? message.message;
-    }
-    switch (level) {
-      case LoggerLevel.TRACE:
-        this.trace(message, ...args);
-        break;
-      case LoggerLevel.DEBUG:
-        this.debug(message, ...args);
-        break;
-      case LoggerLevel.INFO:
-        this.info(message, ...args);
-        break;
-      case LoggerLevel.WARN:
-        this.warn(message, ...args);
-        break;
-      case LoggerLevel.ERROR:
-        this.error(message, ...args);
-        break;
-    }
+  log(_opts: LogOptions): void {
+    throw new Error('Not implemented');
   }
 }

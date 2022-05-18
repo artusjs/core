@@ -1,6 +1,7 @@
 import { BaseLogger } from './base';
 import { DefineLogger } from './decorator';
 import { LoggerLevel } from './level';
+import { LogOptions } from './types';
 
 @DefineLogger()
 export default class ArtusLogger extends BaseLogger {
@@ -41,5 +42,35 @@ export default class ArtusLogger extends BaseLogger {
       return;
     }
     console.error(message, ...args);
+  }
+
+  public log({
+    level,
+    message,
+    args = []
+  }: LogOptions) {
+    if (message instanceof Error) {
+      if (level === LoggerLevel.ERROR) {
+        return this.error(message, ...args);
+      }
+      message = message.stack ?? message.message;
+    }
+    switch (level) {
+      case LoggerLevel.TRACE:
+        this.trace(message, ...args);
+        break;
+      case LoggerLevel.DEBUG:
+        this.debug(message, ...args);
+        break;
+      case LoggerLevel.INFO:
+        this.info(message, ...args);
+        break;
+      case LoggerLevel.WARN:
+        this.warn(message, ...args);
+        break;
+      case LoggerLevel.ERROR:
+        this.error(message, ...args);
+        break;
+    }
   }
 }
