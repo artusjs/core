@@ -1,12 +1,11 @@
-import { ScopeEnum } from '@artus/injection';
-import { Injectable } from '../../../../src';
+import { ScopeEnum, Injectable } from '@artus/injection';
 
 @Injectable({
   id: 'testServiceB',
   scope: ScopeEnum.SINGLETON
 })
 export default class TestServiceB {
-  sayHello () {
+  sayHello() {
     return 'Hello Artus';
   }
 }

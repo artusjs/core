@@ -1,5 +1,4 @@
-import { ScopeEnum } from '@artus/injection';
-import { Injectable, Inject } from '../../../../src';
+import { ScopeEnum, Injectable, Inject } from '@artus/injection';
 import TestServiceB from './test_service_b';
 
 @Injectable({
@@ -11,7 +10,7 @@ export default class TestServiceA {
   // @ts-ignore
   testServiceB: TestServiceB;
 
-  testMethod () {
+  testMethod() {
     return this.testServiceB.sayHello();
   }
 }
