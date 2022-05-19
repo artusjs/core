@@ -1,10 +1,3 @@
-
-
-export {
-  Inject,
-  Injectable
-} from '@artus/injection';
-
 export {
   ArtusInjectEnum
 } from './constraints';
