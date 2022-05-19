@@ -14,9 +14,9 @@ async function main() {
         source: 'app'
       },
       {
-        path: path.resolve(__dirname, './eventTrigger'),
+        path: path.resolve(__dirname, './event_trigger'),
         extname: '.ts',
-        filename: 'eventTrigger.ts',
+        filename: 'event_trigger.ts',
         loader: 'module',
         source: 'app'
       }

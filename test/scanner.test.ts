@@ -6,7 +6,7 @@ import { LoaderFactory } from '../src';
 describe('test/scanner.test.ts', () => {
     it('should scan application', async () => {
         const scanner = new Scanner({ needWriteFile: false, extensions: ['.ts', '.js', '.json'] });
-        const scanResults = await scanner.scan(path.resolve(__dirname, './fixtures/app-koa-with-ts'));
+        const scanResults = await scanner.scan(path.resolve(__dirname, './fixtures/app_koa_with_ts'));
         const { default: manifest } = scanResults;
         expect(Object.entries(scanResults).length).toBe(1);
         expect(manifest).toBeDefined();
@@ -28,7 +28,7 @@ describe('test/scanner.test.ts', () => {
 
     it('should scan module with custom loader', async () => {
       // TODO: allow scan custom loader
-      const { default: TestCustomLoader } = await import('./fixtures/module-with-custom-loader/src/loader/test_custom_loader');
+      const { default: TestCustomLoader } = await import('./fixtures/module_with_custom_loader/src/loader/test_custom_loader');
       LoaderFactory.register(TestCustomLoader);
 
       const scanner = new Scanner({
@@ -37,7 +37,7 @@ describe('test/scanner.test.ts', () => {
         configDir: '.',
         loaderListGenerator: () => [TestCustomLoader]
       });
-      const scanResults = await scanner.scan(path.resolve(__dirname, './fixtures/module-with-custom-loader'));
+      const scanResults = await scanner.scan(path.resolve(__dirname, './fixtures/module_with_custom_loader'));
       const { default: manifest } = scanResults;
       // console.log('manifest', manifest);
       expect(Object.entries(scanResults).length).toBe(1);

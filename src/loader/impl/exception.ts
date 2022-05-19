@@ -3,7 +3,7 @@ import { DefineLoader } from '../decorator';
 import { ManifestItem, Loader, LoaderCheckOptions } from '../types';
 import { ExceptionItem } from '../../exception/types';
 import { ExceptionHandler } from '../../exception';
-import { loadMetaFile } from '../../utils/load-meta-file';
+import { loadMetaFile } from '../../utils/load_meta_file';
 import { EXCEPTION_FILE } from '../../constraints';
 import { isMatch } from '../../utils';
 

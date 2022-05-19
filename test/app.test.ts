@@ -6,7 +6,7 @@ describe('test/app.test.ts', () => {
   describe('app koa with ts', () => {
     it('should run app', async () => {
       // Skip Controller
-      const HelloController = await import('./fixtures/app-koa-with-ts/src/controllers/hello');
+      const HelloController = await import('./fixtures/app_koa_with_ts/src/controllers/hello');
       assert(HelloController);
       expect(await new HelloController.default().index()).toStrictEqual({
         content: 'Hello Artus',
@@ -18,7 +18,7 @@ describe('test/app.test.ts', () => {
         const {
           main,
           isListening
-        } = await import('./fixtures/app-koa-with-ts/src/bootstrap');
+        } = await import('./fixtures/app_koa_with_ts/src/bootstrap');
         const app = await main();
         const testResponse = await axios.get('http://127.0.0.1:3000', {
           headers: {

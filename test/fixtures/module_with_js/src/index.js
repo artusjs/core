@@ -6,16 +6,16 @@ module.exports = ({
   items: [
     {
       id: 'testServiceA',
-      path: path.resolve(rootDir, './testServiceA.js'),
+      path: path.resolve(rootDir, './test_service_a.js'),
       extname: '.js',
-      filename: 'testServiceA.js',
+      filename: 'test_service_a.js',
     },
     {
       id: 'testServiceB',
       scope: 'Execution',
-      path: path.resolve(rootDir, './testServiceB.js'),
+      path: path.resolve(rootDir, './test_service_b.js'),
       extname: '.js',
-      filename: 'testServiceB.js',
+      filename: 'test_service_b.js',
     }
   ]
 });

@@ -1,11 +1,11 @@
 
 import { DefineLoader, Loader, LoaderCheckOptions, ManifestItem } from '../../../../../src';
-import compatibleRequire from '../../../../../src/utils/compatible-require';
+import compatibleRequire from '../../../../../src/utils/compatible_require';
 
 @DefineLoader('test-custom-loader')
 export default class TestCustomLoader implements Loader {
   async is(opts: LoaderCheckOptions) {
-    return opts.filename === 'testClazz.ts'
+    return opts.filename === 'test_clazz.ts'
   }
 
   async load(item: ManifestItem) {

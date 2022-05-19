@@ -10,10 +10,10 @@ describe('test/app.test.ts', () => {
       const mockPluginConfig = {
         'plugin-a': {
           enable: true,
-          path: path.resolve(__dirname, `${pluginPrefix}/plugin-a`),
+          path: path.resolve(__dirname, `${pluginPrefix}/plugin_a`),
           manifest: {
             pluginMeta: {
-              path: path.resolve(__dirname, `${pluginPrefix}/plugin-a/meta.js`),
+              path: path.resolve(__dirname, `${pluginPrefix}/plugin_a/meta.js`),
               extname: '.js',
               filename: 'meta.js',
             }
@@ -21,10 +21,10 @@ describe('test/app.test.ts', () => {
         },
         'plugin-b': {
           enable: true,
-          path: path.resolve(__dirname, `${pluginPrefix}/plugin-b`),
+          path: path.resolve(__dirname, `${pluginPrefix}/plugin_b`),
           manifest: {
             pluginMeta: {
-              path: path.resolve(__dirname, `${pluginPrefix}/plugin-b/meta.js`),
+              path: path.resolve(__dirname, `${pluginPrefix}/plugin_b/meta.js`),
               extname: '.js',
               filename: 'meta.js',
             }
@@ -32,10 +32,10 @@ describe('test/app.test.ts', () => {
         },
         'plugin-c': {
           enable: true,
-          path: path.resolve(__dirname, `${pluginPrefix}/plugin-c`),
+          path: path.resolve(__dirname, `${pluginPrefix}/plugin_c`),
           manifest: {
             pluginMeta: {
-              path: path.resolve(__dirname, `${pluginPrefix}/plugin-c/meta.js`),
+              path: path.resolve(__dirname, `${pluginPrefix}/plugin_c/meta.js`),
               extname: '.js',
               filename: 'meta.js',
             }
@@ -55,10 +55,10 @@ describe('test/app.test.ts', () => {
       const mockPluginConfig = {
         'plugin-a': {
           enable: true,
-          path: path.resolve(__dirname, `${pluginPrefix}/plugin-a`),
+          path: path.resolve(__dirname, `${pluginPrefix}/plugin_a`),
           manifest: {
             pluginMeta: {
-              path: path.resolve(__dirname, `${pluginPrefix}/plugin-a/meta.js`),
+              path: path.resolve(__dirname, `${pluginPrefix}/plugin_a/meta.js`),
               extname: '.js',
               filename: 'meta.js',
             }
@@ -66,10 +66,10 @@ describe('test/app.test.ts', () => {
         },
         'plugin-b': {
           enable: true,
-          path: path.resolve(__dirname, `${pluginPrefix}/plugin-b`),
+          path: path.resolve(__dirname, `${pluginPrefix}/plugin_b`),
           manifest: {
             pluginMeta: {
-              path: path.resolve(__dirname, `${pluginPrefix}/plugin-b/meta.js`),
+              path: path.resolve(__dirname, `${pluginPrefix}/plugin_b/meta.js`),
               extname: '.js',
               filename: 'meta.js',
             }
@@ -77,10 +77,10 @@ describe('test/app.test.ts', () => {
         },
         'plugin-c': {
           enable: true,
-          path: path.resolve(__dirname, `${pluginPrefix}/plugin-c`),
+          path: path.resolve(__dirname, `${pluginPrefix}/plugin_c`),
           manifest: {
             pluginMeta: {
-              path: path.resolve(__dirname, `${pluginPrefix}/plugin-c/meta.js`),
+              path: path.resolve(__dirname, `${pluginPrefix}/plugin_c/meta.js`),
               extname: '.js',
               filename: 'meta.js',
             }
@@ -88,10 +88,10 @@ describe('test/app.test.ts', () => {
         },
         'plugin-wrong-a': {
           enable: true,
-          path: path.resolve(__dirname, `${pluginPrefix}/plugin-wrong-a`),
+          path: path.resolve(__dirname, `${pluginPrefix}/plugin_wrong_a`),
           manifest: {
             pluginMeta: {
-              path: path.resolve(__dirname, `${pluginPrefix}/plugin-wrong-a/meta.js`),
+              path: path.resolve(__dirname, `${pluginPrefix}/plugin_wrong_a/meta.js`),
               extname: '.js',
               filename: 'meta.js',
             }
@@ -99,10 +99,10 @@ describe('test/app.test.ts', () => {
         },
         'plugin-wrong-b': {
           enable: true,
-          path: path.resolve(__dirname, `${pluginPrefix}/plugin-wrong-b`),
+          path: path.resolve(__dirname, `${pluginPrefix}/plugin_wrong_b`),
           manifest: {
             pluginMeta: {
-              path: path.resolve(__dirname, `${pluginPrefix}/plugin-wrong-b/meta.js`),
+              path: path.resolve(__dirname, `${pluginPrefix}/plugin_wrong_b/meta.js`),
               extname: '.js',
               filename: 'meta.js',
             }
@@ -118,10 +118,10 @@ describe('test/app.test.ts', () => {
       const mockPluginConfig = {
         'plugin-a': {
           enable: true,
-          path: path.resolve(__dirname, `${pluginPrefix}/plugin-a`),
+          path: path.resolve(__dirname, `${pluginPrefix}/plugin_a`),
           manifest: {
             pluginMeta: {
-              path: path.resolve(__dirname, `${pluginPrefix}/plugin-a/meta.js`),
+              path: path.resolve(__dirname, `${pluginPrefix}/plugin_a/meta.js`),
               extname: '.js',
               filename: 'meta.js',
             }
@@ -137,10 +137,10 @@ describe('test/app.test.ts', () => {
       const mockPluginConfig = {
         'plugin-a': {
           enable: true,
-          path: path.resolve(__dirname, `${pluginPrefix}/plugin-a`),
+          path: path.resolve(__dirname, `${pluginPrefix}/plugin_a`),
           manifest: {
             pluginMeta: {
-              path: path.resolve(__dirname, `${pluginPrefix}/plugin-a/meta.js`),
+              path: path.resolve(__dirname, `${pluginPrefix}/plugin_a/meta.js`),
               extname: '.js',
               filename: 'meta.js',
             }
@@ -148,10 +148,10 @@ describe('test/app.test.ts', () => {
         },
         'plugin-b': {
           enable: false,
-          path: path.resolve(__dirname, `${pluginPrefix}/plugin-b`),
+          path: path.resolve(__dirname, `${pluginPrefix}/plugin_b`),
           manifest: {
             pluginMeta: {
-              path: path.resolve(__dirname, `${pluginPrefix}/plugin-b/meta.js`),
+              path: path.resolve(__dirname, `${pluginPrefix}/plugin_b/meta.js`),
               extname: '.js',
               filename: 'meta.js',
             }
@@ -159,10 +159,10 @@ describe('test/app.test.ts', () => {
         },
         'plugin-c': {
           enable: true,
-          path: path.resolve(__dirname, `${pluginPrefix}/plugin-c`),
+          path: path.resolve(__dirname, `${pluginPrefix}/plugin_c`),
           manifest: {
             pluginMeta: {
-              path: path.resolve(__dirname, `${pluginPrefix}/plugin-c/meta.js`),
+              path: path.resolve(__dirname, `${pluginPrefix}/plugin_c/meta.js`),
               extname: '.js',
               filename: 'meta.js',
             }
@@ -178,10 +178,10 @@ describe('test/app.test.ts', () => {
       const mockPluginConfig = {
         'plugin-d': {
           enable: true,
-          path: path.resolve(__dirname, `${pluginPrefix}/plugin-d`),
+          path: path.resolve(__dirname, `${pluginPrefix}/plugin_d`),
           manifest: {
             pluginMeta: {
-              path: path.resolve(__dirname, `${pluginPrefix}/plugin-d/meta.js`),
+              path: path.resolve(__dirname, `${pluginPrefix}/plugin_d/meta.js`),
               extname: '.js',
               filename: 'meta.js',
             }

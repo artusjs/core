@@ -2,7 +2,7 @@ import { Injectable } from '@artus/injection';
 import { ARTUS_DEFAULT_CONFIG_ENV, ARTUS_SERVER_ENV } from '../constraints';
 import { ManifestItem } from '../loader';
 import { mergeConfig } from '../loader/utils/merge';
-import compatibleRequire from '../utils/compatible-require';
+import compatibleRequire from '../utils/compatible_require';
 import { DefineConfigHandle } from './decorator';
 
 export type ConfigObject = Record<string, any>;

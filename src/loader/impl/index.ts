@@ -2,9 +2,9 @@ import ModuleLoader from './module';
 import ConfigLoader from './config';
 import ExceptionLoader from './exception';
 import LifecycleLoader from './lifecycle';
-import PluginMetaLoader from './pluginMeta';
-import PluginConfigLoader from './pluginConfig';
-import FrameworkConfigLoader from './frameworkConfig';
+import PluginMetaLoader from './plugin_meta';
+import PluginConfigLoader from './plugin_config';
+import FrameworkConfigLoader from './framework_config';
 import PackageLoader from './package';
 
 export {
