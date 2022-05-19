@@ -14,16 +14,16 @@ async function main() {
         source: 'app'
       },
       {
-        path: path.resolve(__dirname, '../../../artus_exception.yaml'),
+        path: path.resolve(__dirname, '../../../exception.yaml'),
         extname: '.yaml',
-        filename: 'artus_exception.yaml',
+        filename: 'exception.yaml',
         loader: 'exception',
         source: 'app'
       },
       {
-        path: path.resolve(__dirname, './artus_exception.yaml'),
+        path: path.resolve(__dirname, './exception.yaml'),
         extname: '.yaml',
-        filename: 'artus_exception.yaml',
+        filename: 'exception.yaml',
         loader: 'exception',
         source: 'app'
       }
