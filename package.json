@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "@artus/injection": "^0.2.0",
-    "@artus/pipeline": "^0.1.6",
+    "@artus/pipeline": "^0.2.0",
     "deepmerge": "^4.2.2",
     "js-yaml": "^4.1.0",
     "minimatch": "^5.0.1"
