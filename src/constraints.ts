@@ -5,12 +5,13 @@ export const ArtusInjectPrefix = 'artus#';
 
 export const enum ArtusInjectEnum {
   Application = 'artus#application',
-  Trigger = 'artus#trigger',
-  LifecycleManager = 'artus#lifecycle-manager',
   Config = 'artus#config',
-  Frameworks = 'artus#framework-config',
-  Packages = 'artus#packages',
   DefaultContainerName = 'artus#default_container',
+  Frameworks = 'artus#framework-config',
+  LifecycleManager = 'artus#lifecycle-manager',
+  Logger = 'artus#logger',
+  Packages = 'artus#packages',
+  Trigger = 'artus#trigger',
 }
 
 export const ARTUS_EXCEPTION_DEFAULT_LOCALE = 'en';

@@ -36,7 +36,7 @@
     "typescript": "^4.6.2"
   },
   "dependencies": {
-    "@artus/injection": "^0.1.1",
+    "@artus/injection": "^0.1.3",
     "@artus/pipeline": "^0.1.6",
     "deepmerge": "^4.2.2",
     "js-yaml": "^4.1.0",
