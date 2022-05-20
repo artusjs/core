@@ -12,7 +12,7 @@
     "lib"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p ./tsconfig.build.json",
     "test": "jest --detectOpenHandles",
     "ci": "npm run test"
   },
@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "@artus/injection": "^0.2.0",
-    "@artus/pipeline": "^0.2.0",
+    "@artus/pipeline": "^0.2.1",
     "deepmerge": "^4.2.2",
     "js-yaml": "^4.1.0",
     "minimatch": "^5.0.1"
