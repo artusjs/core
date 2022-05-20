@@ -1,7 +1,6 @@
 {
     "compilerOptions": {
         "outDir": "./lib",
-        "rootDir": "./src",
         "target": "es2017",
         "module": "commonjs",
         "lib": [
@@ -35,7 +34,5 @@
     },
     "exclude": [
         "lib",
-        "test",
-        "**/*.test.ts"
     ],
 }
