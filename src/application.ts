@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import path from 'path';
 import { Container } from '@artus/injection';
 import { ArtusInjectEnum } from './constraints';
 import { ArtusStdError, ExceptionHandler } from './exception';
@@ -73,7 +74,11 @@ export class ArtusApplication implements Application {
     this.defaultClazzLoaded = true;
   }
 
-  async load(manifest: Manifest) {
+  async load(manifest: Manifest, root: string = process.cwd()) {
+    if (manifest.relative) {
+      manifest.items.forEach(item => item.path = path.join(root, item.path));
+    }
+
     if (!this.defaultClazzLoaded) {
       await this.loadDefaultClass();
     }

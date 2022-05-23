@@ -2,6 +2,7 @@ import { Container } from '@artus/injection';
 
 interface Manifest {
   items: ManifestItem[];
+  relative?: boolean;
 }
 
 interface ManifestItem extends Record<string, any> {

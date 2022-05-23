@@ -1,3 +1,4 @@
+import path from 'path';
 import { Manifest, ArtusApplication, ArtusInjectEnum } from "../../../../src";
 import { AbstractBar } from '../../frameworks/bar/src';
 import { Inject, Injectable } from "@artus/injection"
@@ -13,7 +14,7 @@ export default class MyArtusApplication {
 
   static async instance(manifest: Manifest): Promise<MyArtusApplication> {
     const app = new ArtusApplication();
-    await app.load(manifest);
+    await app.load(manifest, path.join(__dirname, '..'));
     const instance = app.getContainer().get(MyArtusApplication);
     return instance;
   }
