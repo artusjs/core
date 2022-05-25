@@ -16,7 +16,7 @@ import ConfigurationHandler, { ConfigObject } from '../configuration';
 import { ConfigLoader } from '../loader/impl';
 import { FrameworkConfig, FrameworkHandler } from '../framework';
 import { BasePlugin, PluginFactory } from '../plugin';
-import { ScanUtill } from './utils';
+import { ScanUtils } from './utils';
 
 export class Scanner {
   private moduleExtensions = ['.js', '.json', '.node'];
@@ -117,7 +117,7 @@ export class Scanner {
   }
 
   private async walk(root: string, options: WalkOptions) {
-    await new ScanUtill(options).walk(root);
+    await ScanUtils.walk(root, options);
   }
 
   private setPluginMeta(plugin: BasePlugin) {

@@ -12,18 +12,11 @@ import { LoaderFactory, ManifestItem } from '../loader';
 import { WalkOptions } from './types';
 import { isMatch } from '../utils';
 
-export class ScanUtill {
-  private options: WalkOptions;
-  private loaderFactory: LoaderFactory;
+export class ScanUtils {
+  static loaderFactory: LoaderFactory = LoaderFactory.create(new Container(ArtusInjectEnum.DefaultContainerName));
 
-  constructor(options: WalkOptions) {
-    this.options = options;
-    this.loaderFactory = LoaderFactory.create(new Container(ArtusInjectEnum.DefaultContainerName));
-  }
-
-
-  async walk(root: string) {
-    const { source, unitName, baseDir, configDir } = this.options;
+  static async walk(root: string, options: WalkOptions) {
+    const { source, unitName, baseDir, configDir } = options;
     if (!existsSync(root)) {
       // TODO: use artus logger instead
       console.warn(`[scan->walk] ${root} is not exists.`);
@@ -39,7 +32,7 @@ export class ScanUtill {
     for (const item of items) {
       const realPath = path.resolve(root, item);
       const extname = path.extname(realPath);
-      if (this.isExclude(item, extname)) {
+      if (this.isExclude(item, extname, options.excluded, options.extensions)) {
         continue;
       }
       const itemStat = await fs.stat(realPath);
@@ -49,7 +42,7 @@ export class ScanUtill {
         if (this.exist(realPath, PLUGIN_META)) {
           continue;
         }
-        await this.walk(realPath);
+        await ScanUtils.walk(realPath, options);
         continue;
       }
 
@@ -57,10 +50,10 @@ export class ScanUtill {
         const filename = path.basename(realPath);
         const filenameWithoutExt = path.basename(realPath, extname);
         const item: ManifestItem = {
-          path: this.options.extensions.includes(extname) ? path.resolve(root, filenameWithoutExt) : realPath,
+          path: options.extensions.includes(extname) ? path.resolve(root, filenameWithoutExt) : realPath,
           extname,
           filename,
-          loader: await this.loaderFactory.getLoaderName({
+          loader: await ScanUtils.loaderFactory.getLoaderName({
             filename,
             root,
             baseDir,
@@ -69,7 +62,7 @@ export class ScanUtill {
           source
         };
         unitName && (item.unitName = unitName);
-        const itemList = this.options.itemMap.get(item.loader ?? DEFAULT_LOADER);
+        const itemList = options.itemMap.get(item.loader ?? DEFAULT_LOADER);
         if (Array.isArray(itemList)) {
           itemList.push(item);
         }
@@ -77,20 +70,20 @@ export class ScanUtill {
     }
   }
 
-  private isExclude(filename: string, extname: string): boolean {
+  static isExclude(filename: string, extname: string,
+    excluded: string[], extensions: string[]): boolean {
     let result = false;
-    const { excluded } = this.options;
     if (!result && excluded) {
       result = isMatch(filename, excluded);
     }
 
     if (!result && extname) {
-      result = !this.options.extensions.includes(extname);
+      result = !extensions.includes(extname);
     }
     return result;
   }
 
-  private exist(dir: string, filenames: string[]): boolean {
+  static exist(dir: string, filenames: string[]): boolean {
     return filenames.some(filename => {
       return existsSync(path.resolve(dir, `${filename}`));
     });
