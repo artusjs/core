@@ -2,11 +2,26 @@
   "name": "@artus/core",
   "version": "1.0.0-beta.1",
   "description": "Core package of Artus",
-  "main": "lib/index.js",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
   "exports": {
-    ".": "./lib/index.js",
-    "./injection": "./lib/injection.js",
-    "./pipeline": "./lib/pipeline.js"
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./injection": {
+      "types": "./lib/injection.d.ts",
+      "default": "./lib/injection.js"
+    },
+    "./pipeline": {
+      "types": "./lib/pipeline.d.ts",
+      "default": "./lib/pipeline.js"
+    },
+    "./utils/*": {
+      "types": "./lib/utils/*.d.ts",
+      "default": "./lib/utils/*.js"
+    },
+    "./package.json": "./package.json"
   },
   "files": [
     "lib"
