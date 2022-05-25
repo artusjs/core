@@ -31,7 +31,7 @@ export class LoaderFactory {
     return this.container.get(ConfigurationHandler);
   }
 
-  async loadManifest(manifest: Manifest): Promise<void> {
+  async loadManifest(manifest: Manifest, root?: string): Promise<void> {
     await this.loadItemList(manifest.items, {
       config: {
         before: () => this.lifecycleManager.emitHook('configWillLoad'),
@@ -55,12 +55,13 @@ export class LoaderFactory {
           value: this.configurationHandler.getPackages()
         })
       }
-    });
+    }, root);
   }
 
-  async loadItemList(itemList: ManifestItem[] = [], hookMap?: Record<string, LoaderHookUnit>): Promise<void> {
+  async loadItemList(itemList: ManifestItem[] = [], hookMap?: Record<string, LoaderHookUnit>, root?: string): Promise<void> {
     let prevLoader: string = '';
     for (const item of itemList) {
+      item.path = root ? path.join(root, item.path) : item.path;
       const curLoader = item.loader ?? DEFAULT_LOADER;
       if (item.loader !== prevLoader) {
         if (prevLoader) {
@@ -99,7 +100,7 @@ export class LoaderFactory {
     const target = await compatibleRequire(path.join(root, filename));
     const metadata = Reflect.getMetadata(HOOK_FILE_LOADER, target);
     if (metadata?.loader) {
-        return metadata.loader;
+      return metadata.loader;
     }
 
     // default loder

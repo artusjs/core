@@ -1,5 +1,4 @@
 import 'reflect-metadata';
-import path from 'path';
 import { Container } from '@artus/injection';
 import { ArtusInjectEnum } from './constraints';
 import { ArtusStdError, ExceptionHandler } from './exception';
@@ -75,10 +74,6 @@ export class ArtusApplication implements Application {
   }
 
   async load(manifest: Manifest, root: string = process.cwd()) {
-    if (manifest.relative) {
-      manifest.items.forEach(item => item.path = path.join(root, item.path));
-    }
-
     if (!this.defaultClazzLoaded) {
       await this.loadDefaultClass();
     }
@@ -86,7 +81,7 @@ export class ArtusApplication implements Application {
     // Load user manifest
     this.manifest = manifest;
 
-    await this.loaderFactory.loadManifest(manifest);
+    await this.loaderFactory.loadManifest(manifest, manifest.relative ? root : undefined);
 
     await this.lifecycleManager.emitHook('didLoad');
 
