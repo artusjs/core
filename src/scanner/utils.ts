@@ -12,7 +12,7 @@ import { LoaderFactory, ManifestItem } from '../loader';
 import { WalkOptions } from './types';
 import { isMatch } from '../utils';
 
-export default class Walk {
+export class ScanUtill {
   private options: WalkOptions;
   private loaderFactory: LoaderFactory;
 
@@ -22,7 +22,7 @@ export default class Walk {
   }
 
 
-  async start(root: string) {
+  async walk(root: string) {
     const { source, unitName, baseDir, configDir } = this.options;
     if (!existsSync(root)) {
       // TODO: use artus logger instead
@@ -49,7 +49,7 @@ export default class Walk {
         if (this.exist(realPath, PLUGIN_META)) {
           continue;
         }
-        await this.start(realPath);
+        await this.walk(realPath);
         continue;
       }
 

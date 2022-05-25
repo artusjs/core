@@ -16,7 +16,7 @@ import ConfigurationHandler, { ConfigObject } from '../configuration';
 import { ConfigLoader } from '../loader/impl';
 import { FrameworkConfig, FrameworkHandler } from '../framework';
 import { BasePlugin, PluginFactory } from '../plugin';
-import Walk from './walk';
+import { ScanUtill } from './utils';
 
 export class Scanner {
   private moduleExtensions = ['.js', '.json', '.node'];
@@ -29,7 +29,7 @@ export class Scanner {
     this.options = {
       appName: 'app',
       needWriteFile: true,
-      useRelativePath: false,
+      useRelativePath: true,
       configDir: DEFAULT_CONFIG_DIR,
       loaderListGenerator: (defaultLoaderList: string[]) => defaultLoaderList,
       ...options,
@@ -117,7 +117,7 @@ export class Scanner {
   }
 
   private async walk(root: string, options: WalkOptions) {
-    await new Walk(options).start(root);
+    await new ScanUtill(options).walk(root);
   }
 
   private setPluginMeta(plugin: BasePlugin) {
