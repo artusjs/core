@@ -7,9 +7,9 @@ import {
   ArtusInjectEnum,
   DEFAULT_LOADER,
   PLUGIN_META
-} from "../constraints";
-import { LoaderFactory, ManifestItem } from "../loader";
-import { WalkOptions } from "./types";
+} from '../constraints';
+import { LoaderFactory, ManifestItem } from '../loader';
+import { WalkOptions } from './types';
 import { isMatch } from '../utils';
 
 export default class Walk {

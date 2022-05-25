@@ -9,9 +9,9 @@ import {
   DEFAULT_EXCLUDES,
   DEFAULT_LOADER_LIST_WITH_ORDER,
   LOADER_NAME_META,
-} from "../constraints";
-import { Manifest, ManifestItem } from "../loader";
-import { ScannerOptions, WalkOptions } from "./types";
+} from '../constraints';
+import { Manifest, ManifestItem } from '../loader';
+import { ScannerOptions, WalkOptions } from './types';
 import ConfigurationHandler, { ConfigObject } from '../configuration';
 import { ConfigLoader } from '../loader/impl';
 import { FrameworkConfig, FrameworkHandler } from '../framework';
