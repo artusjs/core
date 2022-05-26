@@ -111,7 +111,8 @@ export class Scanner {
     await this.walk(root, this.formatWalkOptions('app', root, ''));
 
     const result: Manifest = {
-      items: this.getItemsFromMap()
+      items: this.getItemsFromMap(this.options.useRelativePath, root),
+      relative: this.options.useRelativePath,
     }
     return result;
   }
@@ -177,11 +178,12 @@ export class Scanner {
     return Object.assign({}, commonOptions, { source, baseDir, unitName, configDir });
   }
 
-  private getItemsFromMap(): ManifestItem[] {
+  private getItemsFromMap(relative: boolean, appRoot: string): ManifestItem[] {
     let items: ManifestItem[] = [];
     for (const [, unitItems] of this.itemMap) {
       items = items.concat(unitItems);
     }
+    relative && (items.forEach(item => item.path = path.relative(appRoot, item.path)));
     return items;
   }
 

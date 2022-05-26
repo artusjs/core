@@ -73,7 +73,7 @@ export class ArtusApplication implements Application {
     this.defaultClazzLoaded = true;
   }
 
-  async load(manifest: Manifest) {
+  async load(manifest: Manifest, root: string = process.cwd()) {
     if (!this.defaultClazzLoaded) {
       await this.loadDefaultClass();
     }
@@ -81,7 +81,7 @@ export class ArtusApplication implements Application {
     // Load user manifest
     this.manifest = manifest;
 
-    await this.loaderFactory.loadManifest(manifest);
+    await this.loaderFactory.loadManifest(manifest, manifest.relative ? root : undefined);
 
     await this.lifecycleManager.emitHook('didLoad');
 
