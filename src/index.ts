@@ -9,6 +9,7 @@ export {
   ArtusInjectEnum
 } from './constraints';
 export * from './loader';
+export * from './logger';
 export * from './lifecycle';
 export * from './exception';
 export * from './plugin';
