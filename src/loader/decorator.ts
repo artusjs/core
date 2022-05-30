@@ -1,4 +1,4 @@
-import { LOADER_NAME_META } from '../constraints';
+import { LOADER_NAME_META } from '../constant';
 
 export const DefineLoader = (loaderName: string): ClassDecorator => 
   (target: Function) => {

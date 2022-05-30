@@ -1,5 +1,5 @@
 import { Inject } from '@artus/injection';
-import { ArtusInjectEnum } from '../constraints';
+import { ArtusInjectEnum } from '../constant';
 import { LoggerLevel, LOGGER_LEVEL_MAP } from './level';
 import { Logger, LoggerOptions, LogOptions } from './types';
 

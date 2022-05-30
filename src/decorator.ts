@@ -5,7 +5,7 @@ import {
   HOOK_NAME_META_PREFIX,
   CONSTRUCTOR_PARAMS_CONTEXT,
   HOOK_FILE_LOADER,
-} from './constraints';
+} from './constant';
 
 export function LifecycleHookUnit(): ClassDecorator {
   return (target: any) => {

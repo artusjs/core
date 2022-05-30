@@ -1,4 +1,4 @@
-export const enum PluginType {
+export enum PluginType {
   simple = 'simple',
   module = 'module',
 }

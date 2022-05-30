@@ -3,7 +3,7 @@ import ConfigurationHandler from '../../configuration';
 import { DefineLoader } from '../decorator';
 import { ManifestItem, Loader, LoaderCheckOptions } from '../types';
 import compatibleRequire from '../../utils/compatible_require';
-import { PACKAGE_JSON } from '../../constraints';
+import { PACKAGE_JSON } from '../../constant';
 import { isMatch } from '../../utils';
 
 @DefineLoader('package-json')

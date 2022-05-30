@@ -1,4 +1,4 @@
-import { PLUGIN_CONFIG_PATTERN } from '../../constraints';
+import { PLUGIN_CONFIG_PATTERN } from '../../constant';
 import { isMatch } from '../../utils';
 import { DefineLoader } from '../decorator';
 import { ManifestItem, Loader, LoaderCheckOptions } from '../types';

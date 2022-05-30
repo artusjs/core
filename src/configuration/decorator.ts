@@ -1,4 +1,4 @@
-import { HOOK_CONFIG_HANDLE } from "../constraints";
+import { HOOK_CONFIG_HANDLE } from "../constant";
 
 export function DefineConfigHandle(handleName?: string): PropertyDecorator {
   return (target: any, propertyKey: string | symbol) => {

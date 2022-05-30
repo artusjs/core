@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { ARTUS_SERVER_ENV } from '../src/constraints';
+import { ARTUS_SERVER_ENV } from '../src/constant';
 
 describe('test/app.test.ts', () => {
   describe('app with config', () => {
