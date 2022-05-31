@@ -1,7 +1,7 @@
 import * as path from 'path';
 import { Container } from '@artus/injection';
 import ConfigurationHandler from '../../configuration';
-import { ArtusInjectEnum, ARTUS_DEFAULT_CONFIG_ENV, CONFIG_PATTERN } from '../../constraints';
+import { ArtusInjectEnum, ARTUS_DEFAULT_CONFIG_ENV, CONFIG_PATTERN } from '../../constant';
 import { DefineLoader } from '../decorator';
 import { ManifestItem, Loader, LoaderCheckOptions } from '../types';
 import compatibleRequire from '../../utils/compatible_require';

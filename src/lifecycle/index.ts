@@ -5,7 +5,7 @@ import {
   CONSTRUCTOR_PARAMS_APP,
   CONSTRUCTOR_PARAMS_CONTAINER,
   HOOK_NAME_META_PREFIX
-} from '../constraints';
+} from '../constant';
 
 export type HookFunction = <T = unknown>(hookProps : {
   app: Application,

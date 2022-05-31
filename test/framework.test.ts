@@ -3,7 +3,7 @@ import { Scanner } from '../src/scanner';
 import path from 'path';
 import axios from 'axios';
 import assert from 'assert';
-import { ARTUS_SERVER_ENV } from '../src/constraints';
+import { ARTUS_SERVER_ENV } from '../src/constant';
 
 describe('test/framework.test.ts', () => {
   beforeEach(async function () {

@@ -1,5 +1,5 @@
 import { Injectable, ScopeEnum } from '@artus/injection';
-import { ArtusInjectEnum } from '../constraints';
+import { ArtusInjectEnum } from '../constant';
 
 export function DefineTrigger(): ClassDecorator {
   return (target:any) => Injectable({

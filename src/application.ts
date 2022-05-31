@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { Container } from '@artus/injection';
-import { ArtusInjectEnum } from './constraints';
+import { ArtusInjectEnum } from './constant';
 import { ArtusStdError, ExceptionHandler } from './exception';
 import { HookFunction, LifecycleManager } from './lifecycle';
 import { LoaderFactory, Manifest } from './loader';

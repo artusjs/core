@@ -7,7 +7,7 @@ import {
   ArtusInjectEnum,
   DEFAULT_LOADER,
   PLUGIN_META
-} from '../constraints';
+} from '../constant';
 import { LoaderFactory, ManifestItem } from '../loader';
 import { WalkOptions } from './types';
 import { isMatch } from '../utils';

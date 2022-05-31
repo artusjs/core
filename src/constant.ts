@@ -3,7 +3,7 @@ export const LOADER_NAME_META = 'loader:name';
 
 export const ArtusInjectPrefix = 'artus#';
 
-export const enum ArtusInjectEnum {
+export enum ArtusInjectEnum {
   Application = 'artus#application',
   Config = 'artus#config',
   DefaultContainerName = 'artus#default_container',

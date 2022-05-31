@@ -1,5 +1,5 @@
 import { Injectable } from '@artus/injection';
-import { ARTUS_DEFAULT_CONFIG_ENV, ARTUS_SERVER_ENV } from '../constraints';
+import { ARTUS_DEFAULT_CONFIG_ENV, ARTUS_SERVER_ENV } from '../constant';
 import { ManifestItem } from '../loader';
 import { mergeConfig } from '../loader/utils/merge';
 import compatibleRequire from '../utils/compatible_require';

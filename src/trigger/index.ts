@@ -1,6 +1,6 @@
 import { ExecutionContainer, Inject } from '@artus/injection';
 import { Input, Context, MiddlewareInput, Pipeline, Output } from '@artus/pipeline';
-import { ArtusInjectEnum } from '../constraints';
+import { ArtusInjectEnum } from '../constant';
 import { Application } from '../types';
 import { DefineTrigger } from './decorator';
 

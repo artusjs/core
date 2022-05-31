@@ -1,5 +1,5 @@
 import { Constructable, Container } from '@artus/injection';
-import { ArtusInjectEnum } from '../../constraints';
+import { ArtusInjectEnum } from '../../constant';
 import { LifecycleManager } from '../../lifecycle';
 import { ApplicationLifecycle } from '../../types';
 import { DefineLoader } from '../decorator';

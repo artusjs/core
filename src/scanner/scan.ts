@@ -9,7 +9,7 @@ import {
   DEFAULT_EXCLUDES,
   DEFAULT_LOADER_LIST_WITH_ORDER,
   LOADER_NAME_META,
-} from '../constraints';
+} from '../constant';
 import { Manifest, ManifestItem } from '../loader';
 import { ScannerOptions, WalkOptions } from './types';
 import ConfigurationHandler, { ConfigObject } from '../configuration';

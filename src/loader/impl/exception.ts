@@ -4,7 +4,7 @@ import { ManifestItem, Loader, LoaderCheckOptions } from '../types';
 import { ExceptionItem } from '../../exception/types';
 import { ExceptionHandler } from '../../exception';
 import { loadMetaFile } from '../../utils/load_meta_file';
-import { EXCEPTION_FILE } from '../../constraints';
+import { EXCEPTION_FILE } from '../../constant';
 import { isMatch } from '../../utils';
 
 @DefineLoader('exception')

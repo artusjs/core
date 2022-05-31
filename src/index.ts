@@ -7,7 +7,7 @@ export {
 
 export {
   ArtusInjectEnum
-} from './constraints';
+} from './constant';
 export * from './loader';
 export * from './logger';
 export * from './lifecycle';
@@ -17,7 +17,7 @@ export * from './application';
 export * from './scanner';
 export * from './decorator';
 export * from './types';
-export * from './constraints';
+export * from './constant';
 
 import ConfigurationHandler from './configuration';
 export { ConfigurationHandler };

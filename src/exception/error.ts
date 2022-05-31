@@ -1,4 +1,4 @@
-import { ARTUS_EXCEPTION_DEFAULT_LOCALE } from '../constraints';
+import { ARTUS_EXCEPTION_DEFAULT_LOCALE } from '../constant';
 import { ExceptionItem } from './types';
 
 export const ErrorCodeUtils = {

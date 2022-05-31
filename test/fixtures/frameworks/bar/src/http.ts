@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { Context, Next } from '@artus/pipeline';
 import { Constructable } from '@artus/injection';
-import { CONSTRUCTOR_PARAMS, CONSTRUCTOR_PARAMS_CONTEXT } from '../../../../../src/constraints';
+import { CONSTRUCTOR_PARAMS, CONSTRUCTOR_PARAMS_CONTEXT } from '../../../../../src/constant';
 import { HttpTrigger } from '../../abstract/foo';
 import { Injectable, ScopeEnum } from '@artus/injection';
 
