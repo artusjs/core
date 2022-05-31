@@ -89,8 +89,7 @@ export class LoaderFactory {
 
   async getLoaderName(opts: LoaderCheckOptions): Promise<string> {
     for (const [loaderName, LoaderClazz] of LoaderFactory.loaderClazzMap.entries()) {
-      const loader = new LoaderClazz(this.container);
-      if (await loader.is?.(opts)) {
+      if (await LoaderClazz.is?.(opts)) {
         return loaderName;
       }
     }

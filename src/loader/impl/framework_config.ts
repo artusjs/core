@@ -12,7 +12,7 @@ class FrameworkConfigLoader extends ConfigLoader implements Loader {
     super(container);
   }
 
-  async is(opts: LoaderCheckOptions): Promise<boolean> {
+  static async is(opts: LoaderCheckOptions): Promise<boolean> {
     if (this.isConfigDir(opts)) {
       return isMatch(opts.filename, FRAMEWORK_PATTERN);
     }

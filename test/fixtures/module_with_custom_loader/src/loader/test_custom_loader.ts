@@ -4,7 +4,7 @@ import compatibleRequire from '../../../../../src/utils/compatible_require';
 
 @DefineLoader('test-custom-loader')
 export default class TestCustomLoader implements Loader {
-  async is(opts: LoaderCheckOptions) {
+  static async is(opts: LoaderCheckOptions) {
     return opts.filename === 'test_clazz.ts'
   }
 

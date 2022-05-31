@@ -15,7 +15,7 @@ class ExceptionLoader implements Loader {
     this.container = container;
   }
 
-  async is(opts: LoaderCheckOptions) {
+  static async is(opts: LoaderCheckOptions) {
     return isMatch(opts.filename, EXCEPTION_FILE);
   }
 

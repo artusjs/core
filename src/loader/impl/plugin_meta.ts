@@ -1,8 +1,9 @@
 import { Container } from '@artus/injection';
 import { DefineLoader } from '../decorator';
-import { ManifestItem, Loader } from '../types';
+import { ManifestItem, Loader, LoaderCheckOptions } from '../types';
 import { loadMetaFile } from '../../utils/load_meta_file';
 import { PluginMetadata } from '../../plugin/types';
+import { PLUGIN_META } from '../../constant';
 
 @DefineLoader('plugin-meta')
 class PluginMetaLoader implements Loader {
@@ -10,6 +11,10 @@ class PluginMetaLoader implements Loader {
 
   constructor(container) {
     this.container = container;
+  }
+
+  static async is(opts: LoaderCheckOptions): Promise<boolean> {
+    return PLUGIN_META.includes(opts.filename);
   }
 
   async load(item: ManifestItem) {

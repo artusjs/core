@@ -15,14 +15,14 @@ class ConfigLoader implements Loader {
     this.container = container;
   }
 
-  async is(opts: LoaderCheckOptions): Promise<boolean> {
+  static async is(opts: LoaderCheckOptions): Promise<boolean> {
     if (this.isConfigDir(opts)) {
       return isMatch(opts.filename, CONFIG_PATTERN);
     }
     return false;
   }
 
-  protected isConfigDir(opts: LoaderCheckOptions): boolean {
+  protected static isConfigDir(opts: LoaderCheckOptions): boolean {
       const { configDir, baseDir, root } = opts;
       return path.join(baseDir, configDir) === root;
   }

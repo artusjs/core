@@ -7,7 +7,7 @@ import ConfigLoader from './config';
 @DefineLoader('plugin-config')
 class PluginConfigLoader extends ConfigLoader implements Loader {
 
-  async is(opts: LoaderCheckOptions): Promise<boolean> {
+  static async is(opts: LoaderCheckOptions): Promise<boolean> {
     if (this.isConfigDir(opts)) {
       return isMatch(opts.filename, PLUGIN_CONFIG_PATTERN);
     }

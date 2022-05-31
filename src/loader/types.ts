@@ -28,9 +28,9 @@ interface LoaderHookUnit {
 
 interface LoaderConstructor {
   new(container: Container): Loader;
+  is?(opts: LoaderCheckOptions): Promise<boolean>;
 };
 interface Loader {
-  is?(opts: LoaderCheckOptions): Promise<boolean>;
   load(item: ManifestItem): Promise<void>;
 };
 

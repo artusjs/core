@@ -14,7 +14,7 @@ class PackageLoader implements Loader {
     this.container = container;
   }
 
-  async is(opts: LoaderCheckOptions) {
+  static async is(opts: LoaderCheckOptions) {
     return isMatch(opts.filename, PACKAGE_JSON);
   }
 
