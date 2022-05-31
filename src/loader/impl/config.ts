@@ -3,7 +3,7 @@ import { Container } from '@artus/injection';
 import ConfigurationHandler from '../../configuration';
 import { ArtusInjectEnum, ARTUS_DEFAULT_CONFIG_ENV, CONFIG_PATTERN } from '../../constant';
 import { DefineLoader } from '../decorator';
-import { ManifestItem, Loader, LoaderCheckOptions } from '../types';
+import { ManifestItem, Loader, LoaderFindOptions } from '../types';
 import compatibleRequire from '../../utils/compatible_require';
 import { isMatch } from '../../utils';
 
@@ -15,14 +15,14 @@ class ConfigLoader implements Loader {
     this.container = container;
   }
 
-  static async is(opts: LoaderCheckOptions): Promise<boolean> {
+  static async is(opts: LoaderFindOptions): Promise<boolean> {
     if (this.isConfigDir(opts)) {
       return isMatch(opts.filename, CONFIG_PATTERN);
     }
     return false;
   }
 
-  protected static isConfigDir(opts: LoaderCheckOptions): boolean {
+  protected static isConfigDir(opts: LoaderFindOptions): boolean {
       const { configDir, baseDir, root } = opts;
       return path.join(baseDir, configDir) === root;
   }

@@ -1,6 +1,6 @@
 import { Container } from '@artus/injection';
 import { DefineLoader } from '../decorator';
-import { ManifestItem, Loader, LoaderCheckOptions } from '../types';
+import { ManifestItem, Loader, LoaderFindOptions } from '../types';
 import { ExceptionItem } from '../../exception/types';
 import { ExceptionHandler } from '../../exception';
 import { loadMetaFile } from '../../utils/load_meta_file';
@@ -15,7 +15,7 @@ class ExceptionLoader implements Loader {
     this.container = container;
   }
 
-  static async is(opts: LoaderCheckOptions) {
+  static async is(opts: LoaderFindOptions) {
     return isMatch(opts.filename, EXCEPTION_FILE);
   }
 

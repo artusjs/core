@@ -1,6 +1,6 @@
 import ConfigurationHandler from '../../configuration';
 import { DefineLoader } from '../decorator';
-import { ManifestItem, Loader, LoaderCheckOptions } from '../types';
+import { ManifestItem, Loader, LoaderFindOptions } from '../types';
 import compatibleRequire from '../../utils/compatible_require';
 import { ArtusInjectEnum, ARTUS_DEFAULT_CONFIG_ENV, FRAMEWORK_PATTERN } from '../../constant';
 import ConfigLoader from './config';
@@ -12,7 +12,7 @@ class FrameworkConfigLoader extends ConfigLoader implements Loader {
     super(container);
   }
 
-  static async is(opts: LoaderCheckOptions): Promise<boolean> {
+  static async is(opts: LoaderFindOptions): Promise<boolean> {
     if (this.isConfigDir(opts)) {
       return isMatch(opts.filename, FRAMEWORK_PATTERN);
     }

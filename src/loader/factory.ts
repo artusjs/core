@@ -1,7 +1,7 @@
 import * as path from 'path';
 import { Container } from '@artus/injection';
 import { ArtusInjectEnum, DEFAULT_LOADER, HOOK_FILE_LOADER, LOADER_NAME_META } from '../constant';
-import { Manifest, ManifestItem, LoaderConstructor, LoaderHookUnit, LoaderCheckOptions } from './types';
+import { Manifest, ManifestItem, LoaderConstructor, Loader, LoaderHookUnit, LoaderFindOptions, LoaderFindResult } from './types';
 import ConfigurationHandler from '../configuration';
 import { LifecycleManager } from '../lifecycle';
 import compatibleRequire from '../utils/compatible_require';
@@ -29,6 +29,14 @@ export class LoaderFactory {
 
   get configurationHandler(): ConfigurationHandler {
     return this.container.get(ConfigurationHandler);
+  }
+
+  getLoader(loaderName: string): Loader {
+    const LoaderClazz = LoaderFactory.loaderClazzMap.get(loaderName);
+    if (!LoaderClazz) {
+      throw new Error(`Cannot find loader '${loaderName}'`);
+    }
+    return new LoaderClazz(this.container);
   }
 
   async loadManifest(manifest: Manifest, root?: string): Promise<void> {
@@ -79,15 +87,27 @@ export class LoaderFactory {
 
   async loadItem(item: ManifestItem): Promise<void> {
     const loaderName = item.loader || DEFAULT_LOADER;
-    const LoaderClazz = LoaderFactory.loaderClazzMap.get(loaderName);
-    if (!LoaderClazz) {
-      throw new Error(`Cannot find loader '${loaderName}'`);
-    }
-    const loader = new LoaderClazz(this.container);
+    const loader = this.getLoader(loaderName);
+    loader.state = item._loaderState;
     await loader.load(item);
   }
 
-  async getLoaderName(opts: LoaderCheckOptions): Promise<string> {
+  async findLoader(opts: LoaderFindOptions): Promise<LoaderFindResult> {
+    const loaderName = await this.findLoaderName(opts);
+    const loaderClazz = LoaderFactory.loaderClazzMap.get(loaderName);
+    if (!loaderClazz) {
+      throw new Error(`Cannot find loader '${loaderName}'`);
+    }
+    const result: LoaderFindResult = {
+      loaderName,
+    };
+    if (loaderClazz.onFind) {
+      result.loaderState = await loaderClazz.onFind(opts);
+    }
+    return result;
+  }
+
+  async findLoaderName(opts: LoaderFindOptions): Promise<string> {
     for (const [loaderName, LoaderClazz] of LoaderFactory.loaderClazzMap.entries()) {
       if (await LoaderClazz.is?.(opts)) {
         return loaderName;

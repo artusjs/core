@@ -49,18 +49,25 @@ export class ScanUtils {
       if (itemStat.isFile()) {
         const filename = path.basename(realPath);
         const filenameWithoutExt = path.basename(realPath, extname);
+        const {
+          loaderName,
+          loaderState,
+        } = await ScanUtils.loaderFactory.findLoader({
+          filename,
+          root,
+          baseDir,
+          configDir
+        });
         const item: ManifestItem = {
           path: options.extensions.includes(extname) ? path.resolve(root, filenameWithoutExt) : realPath,
           extname,
           filename,
-          loader: await ScanUtils.loaderFactory.getLoaderName({
-            filename,
-            root,
-            baseDir,
-            configDir
-          }),
+          loader: loaderName,
           source
         };
+        if (loaderState) {
+          item._loaderState = loaderState;
+        }
         unitName && (item.unitName = unitName);
         const itemList = options.itemMap.get(item.loader ?? DEFAULT_LOADER);
         if (Array.isArray(itemList)) {
