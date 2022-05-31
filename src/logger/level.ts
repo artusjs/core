@@ -4,6 +4,7 @@ export enum LoggerLevel {
   INFO = 'INFO',
   WARN = 'WARN',
   ERROR = 'ERROR',
+  FATAL = 'FATAL',
 };
 
 export const LOGGER_LEVEL_MAP = {
@@ -12,4 +13,5 @@ export const LOGGER_LEVEL_MAP = {
   [LoggerLevel.INFO]: 2,
   [LoggerLevel.WARN]: 3,
   [LoggerLevel.ERROR]: 4,
+  [LoggerLevel.FATAL]: 5,
 };
