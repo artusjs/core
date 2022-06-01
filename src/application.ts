@@ -4,7 +4,7 @@ import { ArtusInjectEnum } from './constant';
 import { ArtusStdError, ExceptionHandler } from './exception';
 import { HookFunction, LifecycleManager } from './lifecycle';
 import { LoaderFactory, Manifest } from './loader';
-import { Application, ApplicationInitOptions } from './types';
+import { Application, ApplicationInitOptions, TriggerType } from './types';
 import Trigger from './trigger';
 import ConfigurationHandler from './configuration';
 import { ArtusLogger, Logger } from './logger';
@@ -42,7 +42,7 @@ export class ArtusApplication implements Application {
     return this.container.get(ArtusInjectEnum.Packages);
   }
 
-  get trigger(): Trigger {
+  get trigger(): TriggerType {
     return this.container.get(ArtusInjectEnum.Trigger);
   }
 
@@ -117,6 +117,4 @@ export class ArtusApplication implements Application {
   }
 }
 
-export {
-  Application
-};
+export { Application };
