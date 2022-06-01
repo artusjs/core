@@ -21,14 +21,14 @@ export default class Trigger {
     this.pipeline.use(middleware);
   }
 
-  async initContext(input: Input): Promise<Context> {
-    const ctx = new Context(input, new Output());
+  async initContext(input: Input, output?: Output): Promise<Context> {
+    const ctx = new Context(input, output || new Output());
     ctx.container = new ExecutionContainer(ctx, this.app.getContainer())
     return ctx;
   }
 
-  async startPipeline(input: Input = new Input()): Promise<Context> {
-    const ctx = await this.initContext(input);
+  async startPipeline(input: Input = new Input(), output?: Output): Promise<Context> {
+    const ctx = await (output ? this.initContext(input, output) : this.initContext(input));
     await this.pipeline.run(ctx);
     return ctx;
   }
