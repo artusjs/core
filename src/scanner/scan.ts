@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import * as path from 'path';
-import *  as fs from 'fs/promises';
+import * as fs from 'fs/promises';
 import { Container } from '@artus/injection';
 import {
   ArtusInjectEnum,
@@ -38,18 +38,17 @@ export class Scanner {
     };
 
     this.itemMap = new Map(
-      this.options.loaderListGenerator(DEFAULT_LOADER_LIST_WITH_ORDER)
-        .map((loaderNameOrClazz) => {
-          if (typeof loaderNameOrClazz === 'string') {
-            return [loaderNameOrClazz, []];
-          }
-          const loaderClazz = loaderNameOrClazz;
-          const loaderName = Reflect.getMetadata(LOADER_NAME_META, loaderClazz);
-          if (!loaderName) {
-            throw new Error(`Loader ${loaderClazz.name} must have a @DefineLoader() decorator.`);
-          }
-          return [loaderName, []];
-        })
+      this.options.loaderListGenerator(DEFAULT_LOADER_LIST_WITH_ORDER).map(loaderNameOrClazz => {
+        if (typeof loaderNameOrClazz === 'string') {
+          return [loaderNameOrClazz, []];
+        }
+        const loaderClazz = loaderNameOrClazz;
+        const loaderName = Reflect.getMetadata(LOADER_NAME_META, loaderClazz);
+        if (!loaderName) {
+          throw new Error(`Loader ${loaderClazz.name} must have a @DefineLoader() decorator.`);
+        }
+        return [loaderName, []];
+      })
     );
     this.configList = [];
     this.configHandle = new ConfigurationHandler();
@@ -103,9 +102,11 @@ export class Scanner {
     for (const plugin of pluginSortedList.reverse()) {
       if (!plugin.enable) continue;
       this.setPluginMeta(plugin);
-      await this.walk(plugin.importPath,
-        this.formatWalkOptions('plugin', plugin.importPath, plugin.name, plugin.metadata.configDir));
-    };
+      await this.walk(
+        plugin.importPath,
+        this.formatWalkOptions('plugin', plugin.importPath, plugin.name, plugin.metadata.configDir)
+      );
+    }
 
     // 3. scan all file in app
     await this.walk(root, this.formatWalkOptions('app', root, ''));
@@ -113,7 +114,7 @@ export class Scanner {
     const result: Manifest = {
       items: this.getItemsFromMap(this.options.useRelativePath, root),
       relative: this.options.useRelativePath,
-    }
+    };
     return result;
   }
 
@@ -134,16 +135,23 @@ export class Scanner {
   }
 
   private async getAllConfig(root: string, env: string) {
-    const { configDir } = this.options;
+    const configDir = this.getConfigDir(root, this.options.configDir);
+    if (!configDir) {
+      return {};
+    }
     const configFileList = await fs.readdir(path.resolve(root, configDir));
     const container = new Container(ArtusInjectEnum.DefaultContainerName);
     container.set({ type: ConfigurationHandler });
     const configHandler = new ConfigLoader(container);
     for (const pluginConfigFile of configFileList) {
+      const extname = path.extname(pluginConfigFile);
+      if (ScanUtils.isExclude(pluginConfigFile, extname, this.options.excluded, this.options.extensions)) {
+        continue;
+      }
       await configHandler.load({
         path: path.join(root, configDir, pluginConfigFile),
-        extname: path.basename(pluginConfigFile),
-        filename: pluginConfigFile
+        extname: extname,
+        filename: pluginConfigFile,
       });
     }
     const config = container.get(ConfigurationHandler).getMergedConfig(env);
@@ -151,8 +159,24 @@ export class Scanner {
     return config;
   }
 
-  private async getFrameworkDirs(config: FrameworkConfig, root: string,
-    env: string, dirs: string[] = []): Promise<string[]> {
+  private getConfigDir(root: string, dir: string): string {
+    if (ScanUtils.exist(root, [dir])) {
+      return dir;
+    }
+
+    if (ScanUtils.exist(root, [DEFAULT_CONFIG_DIR])) {
+      return DEFAULT_CONFIG_DIR;
+    }
+
+    return '';
+  }
+
+  private async getFrameworkDirs(
+    config: FrameworkConfig,
+    root: string,
+    env: string,
+    dirs: string[] = []
+  ): Promise<string[]> {
     if (!config || (!config.path && !config.package)) {
       return dirs;
     }
@@ -170,12 +194,17 @@ export class Scanner {
       extensions: this.options.extensions,
       excluded: this.options.excluded,
       itemMap: this.itemMap,
-    }
+    };
 
     unitName ??= baseDir;
     configDir ??= this.options.configDir;
 
-    return Object.assign({}, commonOptions, { source, baseDir, unitName, configDir });
+    return Object.assign({}, commonOptions, {
+      source,
+      baseDir,
+      unitName,
+      configDir,
+    });
   }
 
   private getItemsFromMap(relative: boolean, appRoot: string): ManifestItem[] {
@@ -183,7 +212,7 @@ export class Scanner {
     for (const [, unitItems] of this.itemMap) {
       items = items.concat(unitItems);
     }
-    relative && (items.forEach(item => item.path = path.relative(appRoot, item.path)));
+    relative && items.forEach(item => (item.path = path.relative(appRoot, item.path)));
     return items;
   }
 
