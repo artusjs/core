@@ -1,16 +1,16 @@
 import { ExecutionContainer, Inject } from '@artus/injection';
 import { Input, Context, MiddlewareInput, Pipeline, Output } from '@artus/pipeline';
 import { ArtusInjectEnum } from '../constant';
-import { Application } from '../types';
+import { Application, TriggerStructure } from '../types';
 import { DefineTrigger } from './decorator';
 
 @DefineTrigger()
-export default class Trigger {
-  private pipeline: Pipeline;
+export default class Trigger implements TriggerStructure{
+  protected pipeline: Pipeline;
 
   @Inject(ArtusInjectEnum.Application)
   // @ts-ignore
-  private app: Application;
+  protected app: Application;
 
   constructor() {
     this.pipeline = new Pipeline();

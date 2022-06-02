@@ -1,4 +1,5 @@
 import { Container } from '@artus/injection';
+import { MiddlewareInput, Input, Context } from '@artus/pipeline'
 import { HookFunction } from './lifecycle';
 import { Manifest } from './loader';
 import Trigger from './trigger';
@@ -30,4 +31,10 @@ export interface Application {
   getContainer(): Container;
 }
 
+export interface TriggerStructure {
+  use(middleware: MiddlewareInput): Promise<void>;
+  initContext(input: Input): Promise<Context>;
+  startPipeline(input?: Input): Promise<Context>;
+  [key: string]: any
+}
 export * from './loader/types';
