@@ -44,6 +44,13 @@ export default class ArtusLogger extends BaseLogger {
     console.error(message, ...args);
   }
 
+  public fatal(message: string | Error, ...args: any[]) {
+    if (!this.checkLoggerLevel(LoggerLevel.FATAL)) {
+      return;
+    }
+    console.error(message, ...args);
+  }
+
   public log({
     level,
     message,
@@ -70,6 +77,9 @@ export default class ArtusLogger extends BaseLogger {
         break;
       case LoggerLevel.ERROR:
         this.error(message, ...args);
+        break;
+      case LoggerLevel.FATAL:
+        this.fatal(message, ...args);
         break;
     }
   }

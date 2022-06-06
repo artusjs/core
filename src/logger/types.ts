@@ -16,6 +16,7 @@ export interface Logger {
   info(message: string, ...args: any[]): void;
   warn(message: string, ...args: any[]): void;
   error(message: string | Error, ...args: any[]): void;
+  fatal(message: string | Error, ...args: any[]): void;
 
   log(opts: LogOptions): void;
 }

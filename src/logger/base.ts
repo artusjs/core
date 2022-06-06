@@ -40,6 +40,10 @@ export class BaseLogger implements Logger {
     throw new Error('Not implemented');
   }
 
+  fatal(_message: string|Error, ..._args: any[]): void {
+    throw new Error('Not implemented');
+  }
+
   log(_opts: LogOptions): void {
     throw new Error('Not implemented');
   }
