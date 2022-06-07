@@ -1,7 +1,7 @@
 import { Container } from '@artus/injection';
 import ConfigurationHandler from '../../configuration';
 import { DefineLoader } from '../decorator';
-import { ManifestItem, Loader, LoaderCheckOptions } from '../types';
+import { ManifestItem, Loader, LoaderFindOptions } from '../types';
 import compatibleRequire from '../../utils/compatible_require';
 import { PACKAGE_JSON } from '../../constant';
 import { isMatch } from '../../utils';
@@ -14,7 +14,7 @@ class PackageLoader implements Loader {
     this.container = container;
   }
 
-  async is(opts: LoaderCheckOptions) {
+  static async is(opts: LoaderFindOptions) {
     return isMatch(opts.filename, PACKAGE_JSON);
   }
 

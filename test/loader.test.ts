@@ -42,7 +42,7 @@ describe('test/loader.test.ts', () => {
       const container = new Container('testDefault');
       const loaderFactory = LoaderFactory.create(container);
 
-      const loaderName = await loaderFactory.getLoaderName({
+      const loaderName = await loaderFactory.findLoaderName({
         filename: 'test_clazz.ts',
         root: path.resolve(__dirname, './fixtures/module_with_custom_loader/src'),
         baseDir: path.resolve(__dirname, './fixtures/module_with_custom_loader/src'),
@@ -52,6 +52,7 @@ describe('test/loader.test.ts', () => {
       jest.spyOn(console, 'log');
       await loaderFactory.loadManifest(manifest);
       expect(console.log).toBeCalledWith('TestCustomLoader.load TestClass');
+      expect(console.log).toBeCalledWith('TestCustomLoader.state loaderState');
     });
   });
 });

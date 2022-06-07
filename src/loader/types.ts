@@ -5,20 +5,26 @@ interface Manifest {
   relative?: boolean;
 }
 
-interface ManifestItem extends Record<string, any> {
+interface ManifestItem<LoaderState = unknown> extends Record<string, any> {
   path: string;
   extname: string;
   filename: string;
   loader?: string;
   source?: string;
   unitName?: string
+  _loaderState?: LoaderState;
 }
 
-interface LoaderCheckOptions {
+interface LoaderFindOptions {
   filename: string;
   root: string;
   baseDir: string;
   configDir: string;
+}
+
+interface LoaderFindResult {
+  loaderName: string;
+  loaderState?: unknown;
 }
 
 interface LoaderHookUnit {
@@ -28,9 +34,11 @@ interface LoaderHookUnit {
 
 interface LoaderConstructor {
   new(container: Container): Loader;
+  is?(opts: LoaderFindOptions): Promise<boolean>;
+  onFind?(opts: LoaderFindOptions): Promise<any>;
 };
 interface Loader {
-  is?(opts: LoaderCheckOptions): Promise<boolean>;
+  state?: any;
   load(item: ManifestItem): Promise<void>;
 };
 
@@ -39,7 +47,8 @@ export {
   ManifestItem,
   LoaderHookUnit,
   LoaderConstructor,
-  LoaderCheckOptions,
   Loader,
+  LoaderFindOptions,
+  LoaderFindResult,
 };
 
