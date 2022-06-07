@@ -1,10 +1,10 @@
 export enum LoggerLevel {
-  TRACE = 'TRACE',
-  DEBUG = 'DEBUG',
-  INFO = 'INFO',
-  WARN = 'WARN',
-  ERROR = 'ERROR',
-  FATAL = 'FATAL',
+  TRACE = 'trace',
+  DEBUG = 'debug',
+  INFO = 'info',
+  WARN = 'warn',
+  ERROR = 'error',
+  FATAL = 'fatal',
 };
 
 export const LOGGER_LEVEL_MAP = {
