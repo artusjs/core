@@ -1,5 +1,4 @@
 import { Plugin, PluginConfigItem, PluginMetadata } from "./types";
-import path from 'path';
 type PluginMap = Map<string, BasePlugin>;
 
 export class BasePlugin implements Plugin {
