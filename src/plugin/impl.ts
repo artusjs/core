@@ -27,7 +27,7 @@ export class ArtusPlugin extends BasePlugin {
       'meta.json',
     ];
     for (const fileName of fileNameList) {
-      const metaFilePath = path.resolve(this.importPath, fileName);
+      const metaFilePath = path.resolve(this.importPath, '..', fileName);
       try {
         if (!await exisis(metaFilePath)) {
           continue;
