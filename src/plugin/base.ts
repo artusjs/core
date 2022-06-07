@@ -13,7 +13,7 @@ export class BasePlugin implements Plugin {
     this.name = name;
     let importPath = configItem.path ?? '';
     if (configItem.package) {
-      const pkgJson = require(path.resolve(configItem.package, './package.json'));
+      const pkgJson = require(`${configItem.package}/package.json`);
       if(pkgJson && pkgJson.pluginPath){
         importPath = pkgJson.pluginPath;
       } else {
