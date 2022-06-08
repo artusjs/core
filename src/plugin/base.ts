@@ -1,4 +1,5 @@
 import { Plugin, PluginConfigItem, PluginMetadata } from "./types";
+import path from 'path';
 type PluginMap = Map<string, BasePlugin>;
 
 export class BasePlugin implements Plugin {
@@ -12,12 +13,7 @@ export class BasePlugin implements Plugin {
     this.name = name;
     let importPath = configItem.path ?? '';
     if (configItem.package) {
-      const pkgJson = require(`${configItem.package}/package.json`);
-      if(pkgJson && pkgJson.pluginPath){
-        importPath = pkgJson.pluginPath;
-      } else {
-        importPath = require.resolve(configItem.package);
-      }
+      importPath = path.resolve(require.resolve(`${configItem.package}/package.json`), '..');
     }
     if (!importPath) {
       throw new Error(`Plugin ${name} need have path or package field`);
