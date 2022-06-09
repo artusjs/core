@@ -12,7 +12,7 @@ export class BasePlugin implements Plugin {
   constructor(name: string, configItem: PluginConfigItem) {
     this.name = name;
     let importPath = configItem.path ?? '';
-    if (configItem.package) {
+    if (!importPath && configItem.package) {
       importPath = path.resolve(require.resolve(`${configItem.package}/package.json`), '..');
     }
     if (!importPath) {
