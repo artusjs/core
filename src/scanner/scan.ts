@@ -157,12 +157,16 @@ export class Scanner {
       if (ScanUtils.isExclude(filename, extname, this.options.excluded, this.options.extensions)) {
         return null;
       }
-      const loader = await loaderFactory.findLoaderName({
+      let loader = await loaderFactory.findLoaderName({
         filename,
         baseDir,
         root,
         configDir
       });
+      if (loader === 'framework-config') {
+        // SEEME: framework-config is a special loader, cannot be used when scan, need refactor later
+        loader = 'config';
+      }
       return {
         path: path.resolve(root, filename),
         extname,
@@ -172,7 +176,8 @@ export class Scanner {
       };
     }));
     await loaderFactory.loadItemList(configItemList.filter(v => v) as ManifestItem[]);
-    const config = container.get(ConfigurationHandler).getMergedConfig(env);
+    const configurationHandler = container.get(ConfigurationHandler);
+    const config = configurationHandler.getMergedConfig(env);
     let configList = [config];
     if (this.tmpConfigStore.has(env)) {
       // equal unshift config to configList
