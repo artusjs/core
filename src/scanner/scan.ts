@@ -10,10 +10,9 @@ import {
   DEFAULT_LOADER_LIST_WITH_ORDER,
   LOADER_NAME_META,
 } from '../constant';
-import { Manifest, ManifestItem } from '../loader';
+import { LoaderFactory, Manifest, ManifestItem } from '../loader';
 import { ScannerOptions, WalkOptions } from './types';
 import ConfigurationHandler, { ConfigObject } from '../configuration';
-import { ConfigLoader } from '../loader/impl';
 import { FrameworkConfig, FrameworkHandler } from '../framework';
 import { BasePlugin, PluginFactory } from '../plugin';
 import { ScanUtils } from './utils';
@@ -21,8 +20,8 @@ import { ScanUtils } from './utils';
 export class Scanner {
   private moduleExtensions = ['.js', '.json', '.node'];
   private options: ScannerOptions;
-  private itemMap: Map<string, ManifestItem[]>;
-  private configList: ConfigObject[];
+  private itemMap: Map<string, ManifestItem[]> = new Map();
+  private tmpConfigStore: Map<string, ConfigObject[]>;
   private configHandle: ConfigurationHandler;
 
   constructor(options: Partial<ScannerOptions> = {}) {
@@ -36,7 +35,11 @@ export class Scanner {
       excluded: DEFAULT_EXCLUDES.concat(options.excluded ?? []),
       extensions: [...new Set(this.moduleExtensions.concat(options.extensions ?? [], ['.yaml']))],
     };
+    this.tmpConfigStore = new Map();
+    this.configHandle = new ConfigurationHandler();
+  }
 
+  private async initItemMap(): Promise<void> {
     this.itemMap = new Map(
       this.options.loaderListGenerator(DEFAULT_LOADER_LIST_WITH_ORDER).map(loaderNameOrClazz => {
         if (typeof loaderNameOrClazz === 'string') {
@@ -50,8 +53,6 @@ export class Scanner {
         return [loaderName, []];
       })
     );
-    this.configList = [];
-    this.configHandle = new ConfigurationHandler();
   }
 
   private async scanEnvList(root: string): Promise<string[]> {
@@ -87,6 +88,9 @@ export class Scanner {
   }
 
   private async scanManifestByEnv(root: string, env: string): Promise<Manifest> {
+    // 0. init clean itemMap
+    await this.initItemMap();
+  
     const config = await this.getAllConfig(root, env);
 
     // 1. scan all file in framework
@@ -95,8 +99,12 @@ export class Scanner {
       await this.walk(frameworkDir, this.formatWalkOptions('framework', frameworkDir));
     }
 
+
     // 2. scan all file in plugin
-    this.configList.forEach(config => this.configHandle.setConfig(env, config));
+    if (this.tmpConfigStore.has(env)) {
+      const configList = this.tmpConfigStore.get(env) ?? [];
+      configList.forEach(config => this.configHandle.setConfig(env, config));
+    }
     const { plugin } = this.configHandle.getMergedConfig(env);
     const pluginSortedList = await PluginFactory.createFromConfig(plugin || {});
     for (const plugin of pluginSortedList.reverse()) {
@@ -134,28 +142,43 @@ export class Scanner {
     });
   }
 
-  private async getAllConfig(root: string, env: string) {
-    const configDir = this.getConfigDir(root, this.options.configDir);
+  private async getAllConfig(baseDir: string, env: string) {
+    const configDir = this.getConfigDir(baseDir, this.options.configDir);
     if (!configDir) {
       return {};
     }
-    const configFileList = await fs.readdir(path.resolve(root, configDir));
+    const root = path.resolve(baseDir, configDir);
+    const configFileList = await fs.readdir(root);
     const container = new Container(ArtusInjectEnum.DefaultContainerName);
     container.set({ type: ConfigurationHandler });
-    const configHandler = new ConfigLoader(container);
-    for (const pluginConfigFile of configFileList) {
-      const extname = path.extname(pluginConfigFile);
-      if (ScanUtils.isExclude(pluginConfigFile, extname, this.options.excluded, this.options.extensions)) {
-        continue;
+    const loaderFactory = LoaderFactory.create(container);
+    const configItemList: (ManifestItem|null)[] = await Promise.all(configFileList.map(async filename => {
+      const extname = path.extname(filename);
+      if (ScanUtils.isExclude(filename, extname, this.options.excluded, this.options.extensions)) {
+        return null;
       }
-      await configHandler.load({
-        path: path.join(root, configDir, pluginConfigFile),
-        extname: extname,
-        filename: pluginConfigFile,
+      const loader = await loaderFactory.findLoaderName({
+        filename,
+        baseDir,
+        root,
+        configDir
       });
-    }
+      return {
+        path: path.resolve(root, filename),
+        extname,
+        filename,
+        loader,
+        source: 'config',
+      };
+    }));
+    await loaderFactory.loadItemList(configItemList.filter(v => v) as ManifestItem[]);
     const config = container.get(ConfigurationHandler).getMergedConfig(env);
-    this.configList.unshift(config);
+    let configList = [config];
+    if (this.tmpConfigStore.has(env)) {
+      // equal unshift config to configList
+      configList = configList.concat(this.tmpConfigStore.get(env) ?? []);
+    }
+    this.tmpConfigStore.set(env, configList);
     return config;
   }
 
