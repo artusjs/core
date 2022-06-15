@@ -18,7 +18,10 @@ export class BasePlugin implements Plugin {
     this.enable = configItem.enable ?? false;
     if (this.enable) {
       let importPath = configItem.path ?? '';
-      if (!importPath && configItem.package) {
+      if (configItem.package) {
+        if (importPath) {
+          throw new Error(`plugin ${name} config error, package and path can't be set at the same time.`);
+        }
         importPath = BasePlugin.getPath(configItem.package);
       }
       if (!importPath) {
