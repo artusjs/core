@@ -8,13 +8,13 @@ describe('test/scanner.test.ts', () => {
         const scanner = new Scanner({ needWriteFile: false, extensions: ['.ts', '.js', '.json'] });
         const scanResults = await scanner.scan(path.resolve(__dirname, './fixtures/app_koa_with_ts'));
         const { default: manifest } = scanResults;
-        expect(Object.entries(scanResults).length).toBe(1);
+        expect(Object.entries(scanResults).length).toBe(2);
         expect(manifest).toBeDefined();
         expect(manifest.items).toBeDefined();
         // console.log('manifest', manifest);
-        expect(manifest.items.length).toBe(12);
+        expect(manifest.items.length).toBe(13);
 
-        expect(manifest.items.filter(item => item.loader === 'plugin-config').length).toBe(1);
+        expect(manifest.items.filter(item => item.loader === 'plugin-config').length).toBe(2);
         expect(manifest.items.filter(item => item.loader === 'plugin-meta').length).toBe(1);
         expect(manifest.items.filter(item => item.loader === 'exception').length).toBe(1);
         expect(manifest.items.filter(item => item.loader === 'lifecycle-hook-unit').length).toBe(2);
@@ -23,7 +23,15 @@ describe('test/scanner.test.ts', () => {
 
         expect(manifest.items.filter(item => item.unitName === 'redis').length).toBe(2);
         expect(manifest.items.filter(item => item.unitName === 'mysql').length).toBe(0);
-        expect(manifest.items.filter(item => item.source === 'app').length).toBe(10);
+        expect(manifest.items.filter(item => item.source === 'app').length).toBe(11);
+
+        const { dev: devManifest } = scanResults;
+        console.log('devManifest', devManifest);
+        expect(devManifest).toBeDefined();
+        expect(devManifest.items).toBeDefined();
+        expect(devManifest.items.length).toBe(14);
+        expect(devManifest.items.filter(item => item.loader === 'plugin-meta').length).toBe(2);
+        expect(devManifest.items.find(item => item.unitName === 'testDuplicate')).toBeDefined();
     });
 
     it('should scan module with custom loader', async () => {
