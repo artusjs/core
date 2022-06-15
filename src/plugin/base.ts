@@ -3,23 +3,29 @@ import path from 'path';
 type PluginMap = Map<string, BasePlugin>;
 
 export class BasePlugin implements Plugin {
+  static getPath(packageName: string): string {
+    return path.resolve(require.resolve(`${packageName}/package.json`), '..');
+  }
+
   public name: string;
   public enable: boolean;
-  public importPath: string;
+  public importPath: string = '';
   public metadata: Partial<PluginMetadata> = {};
   public metaFilePath: string = '';
 
   constructor(name: string, configItem: PluginConfigItem) {
     this.name = name;
-    let importPath = configItem.path ?? '';
-    if (configItem.package) {
-      importPath = path.resolve(require.resolve(`${configItem.package}/package.json`), '..');
-    }
-    if (!importPath) {
-      throw new Error(`Plugin ${name} need have path or package field`);
-    }
-    this.importPath = importPath;
     this.enable = configItem.enable ?? false;
+    if (this.enable) {
+      let importPath = configItem.path ?? '';
+      if (!importPath && configItem.package) {
+        importPath = BasePlugin.getPath(configItem.package);
+      }
+      if (!importPath) {
+        throw new Error(`Plugin ${name} need have path or package field`);
+      }
+      this.importPath = importPath;
+    }
   }
 
   async init() { }
