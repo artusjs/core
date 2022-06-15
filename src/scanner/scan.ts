@@ -236,7 +236,13 @@ export class Scanner {
       items = items.concat(unitItems);
     }
     relative && items.forEach(item => (item.path = path.relative(appRoot, item.path)));
-    return items;
+    return items.filter(item => {
+      if (item.loader === 'plugin-config') {
+        // remove PluginConfig to avoid re-merge on application running
+        return false;
+      }
+      return true;
+    });
   }
 
   private async writeFile(filename: string = 'manifest.json', data: string) {
