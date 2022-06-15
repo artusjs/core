@@ -23,6 +23,9 @@ class PluginConfigLoader extends ConfigLoader implements Loader {
       const pluginConfigItem: PluginConfigItem = configObj[pluginName];
       if (pluginConfigItem.package) {
         // convert package to path when load plugin config
+        if (pluginConfigItem.path) {
+          throw new Error(`Plugin ${pluginName} config can't have both package and path at ${item.path}`);
+        }
         if (pluginConfigItem.enable) {
           pluginConfigItem.path = ArtusPlugin.getPath(pluginConfigItem.package);
         }
