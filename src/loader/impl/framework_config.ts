@@ -1,8 +1,7 @@
-import ConfigurationHandler from '../../configuration';
+import { FrameworkObject } from '../../configuration';
 import { DefineLoader } from '../decorator';
 import { ManifestItem, Loader, LoaderFindOptions } from '../types';
-import compatibleRequire from '../../utils/compatible_require';
-import { ArtusInjectEnum, ARTUS_DEFAULT_CONFIG_ENV, FRAMEWORK_PATTERN } from '../../constant';
+import { FRAMEWORK_PATTERN } from '../../constant';
 import ConfigLoader from './config';
 import { isMatch } from '../../utils';
 
@@ -20,20 +19,9 @@ class FrameworkConfigLoader extends ConfigLoader implements Loader {
   }
 
   async load(item: ManifestItem) {
-    const originConfigObj = await compatibleRequire(item.path);
-    let [, env, extname] = item.filename.split('.');
-    if (!extname) {
-      // No env flag, set to Default
-      env = ARTUS_DEFAULT_CONFIG_ENV.DEFAULT;
-    }
-    let configObj = originConfigObj;
-    if (typeof originConfigObj === 'function') {
-      const app = this.container.get(ArtusInjectEnum.Application);
-      configObj = originConfigObj(app);
-    }
-
-    const configHandler = this.container.get(ConfigurationHandler);
-    configHandler.addFramework(item.source || 'app', configObj, {
+    const { env } = await this.getConfigFileMeta(item);
+    const configObj = await this.loadConfigFile(item) as FrameworkObject;
+    this.configurationHandler.addFramework(item.source || 'app', configObj, {
       env,
       unitName: item.unitName || '',
     });
