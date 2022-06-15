@@ -1,4 +1,6 @@
 import { PLUGIN_CONFIG_PATTERN } from '../../constant';
+import { ArtusPlugin } from '../../plugin';
+import { PluginConfigItem } from '../../plugin/types';
 import { isMatch } from '../../utils';
 import { DefineLoader } from '../decorator';
 import { ManifestItem, Loader, LoaderFindOptions } from '../types';
@@ -15,7 +17,22 @@ class PluginConfigLoader extends ConfigLoader implements Loader {
   }
 
   async load(item: ManifestItem) {
-    await super.load(item);
+    const { env } = await this.getConfigFileMeta(item);
+    let configObj = await this.loadConfigFile(item);
+    for (const pluginName of Object.keys(configObj)) {
+      const pluginConfigItem: PluginConfigItem = configObj[pluginName];
+      if (pluginConfigItem.package) {
+        // convert package to path when load plugin config
+        if (pluginConfigItem.enable) {
+          pluginConfigItem.path = ArtusPlugin.getPath(pluginConfigItem.package);
+        }
+        delete pluginConfigItem.package;
+        configObj[pluginName] = pluginConfigItem;
+      }
+    }
+    this.configurationHandler.setConfig(env, {
+      plugin: configObj
+    });
   }
 }
 
