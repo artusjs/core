@@ -47,13 +47,15 @@ export default class MyLifecycle implements ApplicationLifecycle {
     timers.push(setInterval(async () => {
       const input = new Input();
       input.params = { task: '1', execution };
-      await this.app.trigger.startPipeline(input);
+      const ctx = await this.app.trigger.initContext(input);
+      await this.app.trigger.startPipeline(ctx);
     }, 100));
 
     timers.push(setInterval(async () => {
       const input = new Input();
       input.params = { task: '2', execution };
-      await this.app.trigger.startPipeline(input);
+      const ctx = await this.app.trigger.initContext(input);
+      await this.app.trigger.startPipeline(ctx);
     }, 200));
   }
 

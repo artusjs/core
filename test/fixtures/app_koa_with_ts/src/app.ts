@@ -41,7 +41,8 @@ export default class MyLifecycle implements ApplicationLifecycle {
       const input = new Input();
       const { req, res } = koaCtx;
       input.params = { koaCtx, req, res };
-      await this.app.trigger.startPipeline(input);
+      const ctx = await this.app.trigger.initContext(input);
+      await this.app.trigger.startPipeline(ctx);
     });
   }
 
