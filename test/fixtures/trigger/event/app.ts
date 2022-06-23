@@ -43,14 +43,16 @@ export default class MyLifecycle implements ApplicationLifecycle {
       const input = new Input();
       input.params.type = 'e1';
       input.params.payload = payload;
-      await this.app.trigger.startPipeline(input);
+      const ctx = await this.app.trigger.initContext(input);
+      await this.app.trigger.startPipeline(ctx);
     });
 
     event.on('e2', async payload => {
       const input = new Input();
       input.params.type = 'e2';
       input.params.payload = payload;
-      await this.app.trigger.startPipeline(input);
+      const ctx = await this.app.trigger.initContext(input);
+      await this.app.trigger.startPipeline(ctx);
     });
   }
 

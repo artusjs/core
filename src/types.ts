@@ -33,7 +33,7 @@ export interface Application {
 export interface TriggerType {
   use(...args): Promise<void>;
   initContext(...args): Promise<BaseContext>;
-  startPipeline(...args): Promise<BaseContext>;
+  startPipeline(...args): Promise<void>;
 }
 
 export * from './loader/types';

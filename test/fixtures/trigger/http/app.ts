@@ -28,7 +28,8 @@ export default class MyLifecycle implements ApplicationLifecycle {
       .createServer(async (req: http.IncomingMessage, res: http.ServerResponse) => {
         const input = new Input();
         input.params = { req, res };
-        await this.app.trigger.startPipeline(input);
+        const ctx = await this.app.trigger.initContext(input);
+        await this.app.trigger.startPipeline(ctx);
       })
       .listen(3001)
   }
