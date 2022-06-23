@@ -1,7 +1,7 @@
 import { Container } from '@artus/injection';
+import { BaseContext } from '@artus/pipeline';
 import { HookFunction } from './lifecycle';
 import { Manifest } from './loader';
-import Trigger from './trigger';
 
 export interface ApplicationLifecycle {
   configWillLoad?: HookFunction;
@@ -20,7 +20,7 @@ export interface Application {
   manifest?: Manifest;
   config?: Record<string, any>;
 
-  get trigger(): Trigger;
+  get trigger(): TriggerType;
 
   load(manifest: Manifest): Promise<this>;
   run(): Promise<void>;
@@ -28,6 +28,12 @@ export interface Application {
 
   // 兜底方法，不建议使用
   getContainer(): Container;
+}
+
+export interface TriggerType {
+  use(...args): Promise<void>;
+  initContext(...args): Promise<BaseContext>;
+  startPipeline(...args): Promise<BaseContext>;
 }
 
 export * from './loader/types';
