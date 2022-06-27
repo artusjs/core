@@ -21,8 +21,8 @@ export class Scanner {
   private moduleExtensions = ['.js', '.json', '.node'];
   private options: ScannerOptions;
   private itemMap: Map<string, ManifestItem[]> = new Map();
-  private tmpConfigStore: Map<string, ConfigObject[]>;
-  private configHandle: ConfigurationHandler;
+  private tmpConfigStore: Map<string, ConfigObject[]> = new Map();
+  private configHandle: ConfigurationHandler = new ConfigurationHandler();
 
   constructor(options: Partial<ScannerOptions> = {}) {
     this.options = {
@@ -35,8 +35,6 @@ export class Scanner {
       excluded: DEFAULT_EXCLUDES.concat(options.excluded ?? []),
       extensions: [...new Set(this.moduleExtensions.concat(options.extensions ?? [], ['.yaml']))],
     };
-    this.tmpConfigStore = new Map();
-    this.configHandle = new ConfigurationHandler();
   }
 
   private async initItemMap(): Promise<void> {
