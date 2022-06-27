@@ -9,4 +9,8 @@ export default {
     enable: false,
     path: path.resolve(__dirname, '../mysql_plugin')
   },
+  testDuplicate: {
+    enable: false,
+    package: 'unimportant-package'
+  },
 };
