@@ -7,7 +7,7 @@ export interface LoggerOptions {
 export interface LogOptions {
   level: LoggerLevel;
   message: string|Error;
-  args?: any[];
+  splat?: any[];
 }
 
 export interface Logger {
