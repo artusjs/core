@@ -6,11 +6,11 @@ export default class TestLoggerClazz {
   @Inject()
   private logger!: ArtusLogger;
 
-  public testLog(level: LoggerLevel, message: string|Error, ...args: any[]) {
+  public testLog(level: LoggerLevel, message: string|Error, ...splat: any[]) {
     this.logger.log({
       level,
       message,
-      args,
+      splat,
     });
   }
 

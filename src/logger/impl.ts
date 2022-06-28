@@ -54,32 +54,32 @@ export default class ArtusLogger extends BaseLogger {
   public log({
     level,
     message,
-    args = []
+    splat = []
   }: LogOptions) {
     if (message instanceof Error) {
       if (level === LoggerLevel.ERROR) {
-        return this.error(message, ...args);
+        return this.error(message, ...splat);
       }
       message = message.stack ?? message.message;
     }
     switch (level) {
       case LoggerLevel.TRACE:
-        this.trace(message, ...args);
+        this.trace(message, ...splat);
         break;
       case LoggerLevel.DEBUG:
-        this.debug(message, ...args);
+        this.debug(message, ...splat);
         break;
       case LoggerLevel.INFO:
-        this.info(message, ...args);
+        this.info(message, ...splat);
         break;
       case LoggerLevel.WARN:
-        this.warn(message, ...args);
+        this.warn(message, ...splat);
         break;
       case LoggerLevel.ERROR:
-        this.error(message, ...args);
+        this.error(message, ...splat);
         break;
       case LoggerLevel.FATAL:
-        this.fatal(message, ...args);
+        this.fatal(message, ...splat);
         break;
     }
   }
