@@ -20,7 +20,10 @@ class ModuleLoader implements Loader {
     if (item.id) {
       opts.id = item.id;
     }
-    this.container.set(opts);
+
+    if(!this.container.hasValue(opts)) {
+      this.container.set(opts);
+    }
   }
 }
 
