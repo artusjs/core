@@ -4,6 +4,8 @@ import assert from 'assert';
 import path from 'path';
 import { Container } from '@artus/injection';
 import { LoaderFactory } from '../src';
+import { createApp } from './fixtures/custom_instance/index';
+import Custom from './fixtures/custom_instance/custom';
 
 describe('test/loader.test.ts', () => {
   describe('module with ts', () => {
@@ -16,6 +18,7 @@ describe('test/loader.test.ts', () => {
       assert((container.get('testServiceA') as any).testMethod() === 'Hello Artus');
     });
   });
+
   describe('module with js', () => {
     it('should load module testServiceA.js and testServiceB.js', async () => {
       const container = new Container('testDefault');
@@ -24,13 +27,14 @@ describe('test/loader.test.ts', () => {
       const manifest = require('./fixtures/module_with_js/src/index');
       await loaderFactory.loadManifest(manifest);
       const appProxy = new Proxy({}, {
-        get (_target, properName: string) {
+        get(_target, properName: string) {
           return container.get(properName);
         }
       });
       assert((container.get('testServiceA') as any).testMethod(appProxy) === 'Hello Artus');
     });
   });
+
   describe('module with custom loader', () => {
     it('should load module test.ts with custom loader', async () => {
       // SEEME: the import&register code need be replaced by scanner at production.
@@ -54,5 +58,12 @@ describe('test/loader.test.ts', () => {
       expect(console.log).toBeCalledWith('TestCustomLoader.load TestClass');
       expect(console.log).toBeCalledWith('TestCustomLoader.state loaderState');
     });
+  });
+
+  describe('custom instance', () => {
+    it('should not overide custom instance', async () => {
+      const app = await createApp();
+      expect(app.getContainer().get(Custom).getName()).toBe('foo');
+    })
   });
 });
