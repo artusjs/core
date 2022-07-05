@@ -105,7 +105,7 @@ export class Scanner {
     }
     const { plugin } = this.configHandle.getMergedConfig(env);
     const pluginSortedList = await PluginFactory.createFromConfig(plugin || {});
-    for (const plugin of pluginSortedList.reverse()) {
+    for (const plugin of pluginSortedList) {
       if (!plugin.enable) continue;
       this.setPluginMeta(plugin);
       await this.walk(
