@@ -42,6 +42,7 @@
   },
   "homepage": "https://github.com/artusjs/core#readme",
   "devDependencies": {
+    "@artus/tsconfig": "0.0.1",
     "@types/jest": "^27.4.1",
     "@types/js-yaml": "^4.0.5",
     "@types/koa": "^2.13.4",
