@@ -11,31 +11,31 @@ async function main() {
         extname: '.ts',
         filename: 'app.ts',
         loader: 'lifecycle-hook-unit',
-        source: 'app'
+        source: 'app',
       },
       {
         path: path.resolve(__dirname, '../../../exception.yaml'),
         extname: '.yaml',
         filename: 'exception.yaml',
         loader: 'exception',
-        source: 'app'
+        source: 'app',
       },
       {
         path: path.resolve(__dirname, './exception.yaml'),
         extname: '.yaml',
         filename: 'exception.yaml',
         loader: 'exception',
-        source: 'app'
-      }
-    ]
+        source: 'app',
+      },
+    ],
   });
   await app.run();
   return app;
-};
+}
 
 const isListening = () => server.listening;
 
 export {
   main,
-  isListening
+  isListening,
 };

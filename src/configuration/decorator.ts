@@ -7,4 +7,4 @@ export function DefineConfigHandle(handleName?: string): PropertyDecorator {
     }
     Reflect.defineMetadata(`${HOOK_CONFIG_HANDLE}${handleName}`, propertyKey, target.constructor);
   };
-};
+}

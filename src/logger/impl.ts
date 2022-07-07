@@ -5,10 +5,6 @@ import { LogOptions } from './types';
 
 @DefineLogger()
 export default class ArtusLogger extends BaseLogger {
-  constructor() {
-    super();
-  }
-
   public trace(message: string, ...args: any[]) {
     if (!this.checkLoggerLevel(LoggerLevel.TRACE)) {
       return;
@@ -22,7 +18,7 @@ export default class ArtusLogger extends BaseLogger {
     }
     console.debug(message, ...args);
   }
-  
+
   public info(message: string, ...args: any[]) {
     if (!this.checkLoggerLevel(LoggerLevel.INFO)) {
       return;
@@ -54,7 +50,7 @@ export default class ArtusLogger extends BaseLogger {
   public log({
     level,
     message,
-    splat = []
+    splat = [],
   }: LogOptions) {
     if (message instanceof Error) {
       if (level === LoggerLevel.ERROR) {

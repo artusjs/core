@@ -1,7 +1,7 @@
 import minimatch from 'minimatch';
 
 export function getDefaultExtensions() {
-  return Object.keys(require.extensions)
+  return Object.keys(require.extensions);
 }
 
 export function isMatch(filename: string, patterns: string | string[]) {

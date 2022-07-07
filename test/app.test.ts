@@ -11,19 +11,19 @@ describe('test/app.test.ts', () => {
       expect(await new HelloController.default().index()).toStrictEqual({
         content: 'Hello Artus',
         status: 200,
-        headers: {}
+        headers: {},
       });
 
       try {
         const {
           main,
-          isListening
+          isListening,
         } = await import('./fixtures/app_koa_with_ts/src/bootstrap');
         const app = await main();
         const testResponse = await axios.get('http://127.0.0.1:3000', {
           headers: {
-            'x-hello-artus': 'true'
-          }
+            'x-hello-artus': 'true',
+          },
         });
         expect(testResponse.status).toBe(200);
         expect(testResponse.data).toBe('Hello Artus');

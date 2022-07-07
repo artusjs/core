@@ -7,4 +7,4 @@ export async function exisis(path: string): Promise<boolean> {
     return false;
   }
   return true;
-};
+}

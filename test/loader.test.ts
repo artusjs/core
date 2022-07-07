@@ -29,7 +29,7 @@ describe('test/loader.test.ts', () => {
       const appProxy = new Proxy({}, {
         get(_target, properName: string) {
           return container.get(properName);
-        }
+        },
       });
       assert((container.get('testServiceA') as any).testMethod(appProxy) === 'Hello Artus');
     });
@@ -50,7 +50,7 @@ describe('test/loader.test.ts', () => {
         filename: 'test_clazz.ts',
         root: path.resolve(__dirname, './fixtures/module_with_custom_loader/src'),
         baseDir: path.resolve(__dirname, './fixtures/module_with_custom_loader/src'),
-        configDir: ''
+        configDir: '',
       });
       expect(loaderName).toBe('test-custom-loader');
       jest.spyOn(console, 'log');
@@ -64,6 +64,6 @@ describe('test/loader.test.ts', () => {
     it('should not overide custom instance', async () => {
       const app = await createApp();
       expect(app.getContainer().get(Custom).getName()).toBe('foo');
-    })
+    });
   });
 });

@@ -29,7 +29,9 @@
   "scripts": {
     "build": "tsc -p ./tsconfig.build.json",
     "test": "jest --detectOpenHandles",
-    "ci": "npm run test"
+    "ci": "npm run lint && npm run test",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "lint": "eslint . --ext .ts"
   },
   "repository": {
     "type": "git",
@@ -42,6 +44,7 @@
   },
   "homepage": "https://github.com/artusjs/core#readme",
   "devDependencies": {
+    "@artus/eslint-config-artus": "0.0.1",
     "@artus/tsconfig": "0.0.1",
     "@types/jest": "^27.4.1",
     "@types/js-yaml": "^4.0.5",
@@ -50,6 +53,8 @@
     "axios": "^0.26.1",
     "babel-jest": "^27.5.1",
     "egg-ci": "^1.19.0",
+    "eslint": "^8.19.0",
+    "eslint-plugin-import": "^2.26.0",
     "jest": "^27.5.1",
     "koa": "^2.13.4",
     "reflect-metadata": "^0.1.13",

@@ -1,7 +1,7 @@
 import {
   ArtusApplication,
   ApplicationLifecycle, LifecycleHookUnit, LifecycleHook,
-  WithApplication, WithContainer
+  WithApplication, WithContainer,
 } from '../../../src/index';
 
 import { Container } from '@artus/injection';
@@ -24,6 +24,6 @@ export default class MyLifecycle implements ApplicationLifecycle {
 
   @LifecycleHook()
   async beforeClose() {
-    console.log(this.container.get(Custom))
+    console.log(this.container.get(Custom));
   }
 }

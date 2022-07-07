@@ -6,10 +6,10 @@ import { ExceptionItem } from '../src/exception/types';
 describe('test/app.test.ts', () => {
   describe('register error code and throw', () => {
     const exceptionHandler = new ExceptionHandler();
-    const errorCode: string = 'ARTUS:TEMP_TEST';
+    const errorCode = 'ARTUS:TEMP_TEST';
     const exceptionItem: ExceptionItem = {
       desc: 'TEST-DESC',
-      detailUrl: 'http://test.artusjs.org'
+      detailUrl: 'http://test.artusjs.org',
     };
     exceptionHandler.registerCode(errorCode, exceptionItem);
     try {
@@ -29,26 +29,26 @@ describe('test/app.test.ts', () => {
 
   describe('register error code and throw, with i18n', () => {
     const exceptionHandler = new ExceptionHandler();
-    const errorCode: string = 'ARTUS:TEMP_TEST_I18N';
+    const errorCode = 'ARTUS:TEMP_TEST_I18N';
     const exceptionItem: ExceptionItem = {
       desc: {
         zh: 'TEST-DESC-ZH',
-        en: 'TEST-DESC-EN'
+        en: 'TEST-DESC-EN',
       },
-      detailUrl: 'http://test.artusjs.org'
+      detailUrl: 'http://test.artusjs.org',
     };
     exceptionHandler.registerCode(errorCode, exceptionItem);
     [
       undefined,
       'zh',
-      'en'
-    ].forEach((locale) => {
+      'en',
+    ].forEach(locale => {
       if (locale) {
         process.env.ARTUS_ERROR_LOCALE = locale;
       }
       const tDesc = exceptionItem.desc[locale || 'en'];
       const tmpCodeMap: Map<string, ExceptionItem> = new Map([
-        [errorCode, exceptionItem]
+        [errorCode, exceptionItem],
       ]);
       assert(ErrorCodeUtils.getI18NDesc(tmpCodeMap, errorCode, locale) === tDesc);
       try {
@@ -64,14 +64,14 @@ describe('test/app.test.ts', () => {
       assert(error.code === errorCode);
       assert(error.desc === tDesc);
       assert(error.detailUrl === exceptionItem.detailUrl);
-    })
+    });
   });
 
   describe('app test for ts and yaml', () => {
     it('should run app', async () => {
       try {
         const {
-          main
+          main,
         } = await import('./fixtures/exception_with_ts_yaml/bootstrap');
         const app = await main();
 

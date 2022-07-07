@@ -16,8 +16,8 @@ describe('test/app.test.ts', () => {
               path: path.resolve(__dirname, `${pluginPrefix}/plugin_a/meta.js`),
               extname: '.js',
               filename: 'meta.js',
-            }
-          }
+            },
+          },
         },
         'plugin-b': {
           enable: true,
@@ -27,8 +27,8 @@ describe('test/app.test.ts', () => {
               path: path.resolve(__dirname, `${pluginPrefix}/plugin_b/meta.js`),
               extname: '.js',
               filename: 'meta.js',
-            }
-          }
+            },
+          },
         },
         'plugin-c': {
           enable: true,
@@ -38,17 +38,17 @@ describe('test/app.test.ts', () => {
               path: path.resolve(__dirname, `${pluginPrefix}/plugin_c/meta.js`),
               extname: '.js',
               filename: 'meta.js',
-            }
-          }
-        }
-      }
+            },
+          },
+        },
+      };
       const pluginList = await PluginFactory.createFromConfig(mockPluginConfig);
       expect(pluginList.length).toEqual(3);
       pluginList.forEach(plugin => {
         expect(plugin).toBeInstanceOf(ArtusPlugin);
         expect(plugin.enable).toBeTruthy();
       });
-      expect(pluginList.map((plugin) => plugin.name)).toStrictEqual(['plugin-c', 'plugin-b', 'plugin-a']);
+      expect(pluginList.map(plugin => plugin.name)).toStrictEqual(['plugin-c', 'plugin-b', 'plugin-a']);
     });
 
     it('should not load plugin with wrong order', async () => {
@@ -61,8 +61,8 @@ describe('test/app.test.ts', () => {
               path: path.resolve(__dirname, `${pluginPrefix}/plugin_a/meta.js`),
               extname: '.js',
               filename: 'meta.js',
-            }
-          }
+            },
+          },
         },
         'plugin-b': {
           enable: true,
@@ -72,8 +72,8 @@ describe('test/app.test.ts', () => {
               path: path.resolve(__dirname, `${pluginPrefix}/plugin_b/meta.js`),
               extname: '.js',
               filename: 'meta.js',
-            }
-          }
+            },
+          },
         },
         'plugin-c': {
           enable: true,
@@ -83,8 +83,8 @@ describe('test/app.test.ts', () => {
               path: path.resolve(__dirname, `${pluginPrefix}/plugin_c/meta.js`),
               extname: '.js',
               filename: 'meta.js',
-            }
-          }
+            },
+          },
         },
         'plugin-wrong-a': {
           enable: true,
@@ -94,8 +94,8 @@ describe('test/app.test.ts', () => {
               path: path.resolve(__dirname, `${pluginPrefix}/plugin_wrong_a/meta.js`),
               extname: '.js',
               filename: 'meta.js',
-            }
-          }
+            },
+          },
         },
         'plugin-wrong-b': {
           enable: true,
@@ -105,12 +105,12 @@ describe('test/app.test.ts', () => {
               path: path.resolve(__dirname, `${pluginPrefix}/plugin_wrong_b/meta.js`),
               extname: '.js',
               filename: 'meta.js',
-            }
-          }
-        }
-      }
+            },
+          },
+        },
+      };
       expect(async () => {
-        await PluginFactory.createFromConfig(mockPluginConfig)
+        await PluginFactory.createFromConfig(mockPluginConfig);
       }).rejects.toThrowError(new Error(`There is a cycle in the dependencies, wrong plugin is plugin-wrong-a,plugin-wrong-b.`));
     });
 
@@ -124,12 +124,12 @@ describe('test/app.test.ts', () => {
               path: path.resolve(__dirname, `${pluginPrefix}/plugin_a/meta.js`),
               extname: '.js',
               filename: 'meta.js',
-            }
-          }
-        }
-      }
+            },
+          },
+        },
+      };
       expect(async () => {
-        await PluginFactory.createFromConfig(mockPluginConfig)
+        await PluginFactory.createFromConfig(mockPluginConfig);
       }).rejects.toThrowError(new Error(`Plugin plugin-a need have dependence: plugin-b.`));
     });
 
@@ -143,8 +143,8 @@ describe('test/app.test.ts', () => {
               path: path.resolve(__dirname, `${pluginPrefix}/plugin_a/meta.js`),
               extname: '.js',
               filename: 'meta.js',
-            }
-          }
+            },
+          },
         },
         'plugin-b': {
           enable: false,
@@ -154,8 +154,8 @@ describe('test/app.test.ts', () => {
               path: path.resolve(__dirname, `${pluginPrefix}/plugin_b/meta.js`),
               extname: '.js',
               filename: 'meta.js',
-            }
-          }
+            },
+          },
         },
         'plugin-c': {
           enable: true,
@@ -165,12 +165,12 @@ describe('test/app.test.ts', () => {
               path: path.resolve(__dirname, `${pluginPrefix}/plugin_c/meta.js`),
               extname: '.js',
               filename: 'meta.js',
-            }
-          }
-        }
-      }
+            },
+          },
+        },
+      };
       expect(async () => {
-        await PluginFactory.createFromConfig(mockPluginConfig)
+        await PluginFactory.createFromConfig(mockPluginConfig);
       }).rejects.toThrowError(new Error(`Plugin plugin-a need have dependence: plugin-b.`));
     });
 
@@ -184,10 +184,10 @@ describe('test/app.test.ts', () => {
               path: path.resolve(__dirname, `${pluginPrefix}/plugin_d/meta.js`),
               extname: '.js',
               filename: 'meta.js',
-            }
-          }
-        }
-      }
+            },
+          },
+        },
+      };
 
       // mock warn
       const originWarn = console.warn;

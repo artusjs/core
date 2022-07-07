@@ -12,26 +12,26 @@ async function main() {
         extname: '.ts',
         filename: 'app.ts',
         loader: 'lifecycle-hook-unit',
-        source: 'app'
+        source: 'app',
       },
       {
         path: path.resolve(rootDir, './config/config.default'),
         extname: '.ts',
         filename: 'config.default.ts',
         loader: 'config',
-        source: 'app'
+        source: 'app',
       },
       {
         path: path.resolve(rootDir, './config/config.production'),
         extname: '.ts',
         filename: 'config.production.ts',
         loader: 'config',
-        source: 'app'
+        source: 'app',
       },
-    ]
+    ],
   });
   return app;
-};
+}
 
 
 export {

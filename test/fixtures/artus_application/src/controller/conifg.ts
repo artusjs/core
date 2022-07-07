@@ -6,13 +6,13 @@ import { WithContext } from '../../../../../src/decorator';
 export default class Hello {
   @HttpMethod({
     method: HTTPMethodEnum.GET,
-    path: '/config'
+    path: '/config',
   })
   async index(@WithContext() ctx: Context) {
     const { params: { config } } = ctx.input;
     return {
       message: `get conifg succeed`,
-      config
+      config,
     };
   }
-};
+}

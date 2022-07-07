@@ -12,8 +12,8 @@ export default ({
       filename: 'test_clazz.ts',
       loader: 'test-custom-loader',
       _loaderState: {
-        hello: 'loaderState'
-      }
-    }
-  ]
+        hello: 'loaderState',
+      },
+    },
+  ],
 }) as Manifest;
