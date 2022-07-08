@@ -108,10 +108,11 @@ export class Scanner {
     for (const plugin of pluginSortedList) {
       if (!plugin.enable) continue;
       this.setPluginMeta(plugin);
-      await this.walk(
-        plugin.importPath,
-        this.formatWalkOptions('plugin', plugin.importPath, plugin.name, plugin.metadata.configDir)
-      );
+      const pluginOpts = this.formatWalkOptions('plugin', plugin.importPath, plugin.name, plugin.metadata.configDir);
+      if (plugin?.metadata?.excluded) {
+        pluginOpts.excluded = DEFAULT_EXCLUDES.concat(plugin.metadata.excluded);
+      }
+      await this.walk(plugin.importPath, pluginOpts);
     }
 
     // 3. scan all file in app

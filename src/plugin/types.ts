@@ -5,6 +5,7 @@ export enum PluginType {
 
 export interface PluginMetadata {
   name: string;
+  excluded?: string[];
   dependencies?: PluginDependencyItem[];
   type?: PluginType;
   configDir?: string
