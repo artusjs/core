@@ -100,7 +100,6 @@ export class Scanner {
       await this.walk(frameworkDir, frameworkOptions);
     }
 
-
     // 2. scan all file in plugin
     if (this.tmpConfigStore.has(env)) {
       const configList = this.tmpConfigStore.get(env) ?? [];
