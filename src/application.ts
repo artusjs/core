@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { Container } from '@artus/injection';
-import { ArtusInjectEnum } from './constant';
+import { ArtusInjectEnum, ARTUS_SERVER_ENV, ARTUS_DEFAULT_CONFIG_ENV } from './constant';
 import { ArtusStdError, ExceptionHandler } from './exception';
 import { HookFunction, LifecycleManager } from './lifecycle';
 import { LoaderFactory, Manifest } from './loader';
@@ -104,5 +104,33 @@ export class ArtusApplication implements Application {
 
   createException(code: string): ArtusStdError {
     return this.exceptionHandler.create(code);
+  }
+
+  protected addLoaderListener() {
+    this.loaderFactory
+      .addLoaderListener('config', {
+        before: () => this.lifecycleManager.emitHook('configWillLoad'),
+        after: () => {
+          this.container.set({
+            id: ArtusInjectEnum.Config,
+            value: this.configurationHandler.getMergedConfig(this.env),
+          });
+          this.lifecycleManager.emitHook('configDidLoad');
+        },
+      })
+      .addLoaderListener('framework-config', {
+        after: () =>
+          this.container.set({
+            id: ArtusInjectEnum.Frameworks,
+            value: this.configurationHandler.getFrameworkConfig(),
+          }),
+      })
+      .addLoaderListener('package-json', {
+        after: () =>
+          this.container.set({
+            id: ArtusInjectEnum.Packages,
+            value: this.configurationHandler.getPackages(),
+          }),
+      });
   }
 }

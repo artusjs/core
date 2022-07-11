@@ -41,6 +41,7 @@ export const DEFAULT_EXCLUDES = [
   'jest.config.*',
   'meta.*',
   'LICENSE',
+  'pnpm-lock.yaml',
 ];
 
 export const FRAMEWORK_PATTERN = 'framework.*';
