@@ -68,5 +68,6 @@ export class FrameworkHandler {
     if (!find) {
       throw new Error(`load framework import path ${frameworkDir} can't find meta file.`);
     }
+    return metadata;
   }
 }
