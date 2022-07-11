@@ -1,7 +1,8 @@
 import path from 'path';
 import ConfigurationHandler, { ConfigObject } from '../configuration';
 import { ManifestItem } from '../types';
-
+import { exisis } from '../utils/fs';
+import { loadMetaFile } from '../utils/load_meta_file';
 export interface FrameworkConfig {
   path?: string,
   package?: string
@@ -31,6 +32,41 @@ export class FrameworkHandler {
       return baseFrameworkPath;
     } catch (err) {
       throw new Error(`load framework faild: ${err}, framework config: ${JSON.stringify(config)}`);
+    }
+  }
+  static async checkAndLoadMetadata(frameworkDir: string){
+    // check import path
+    if (!await exisis(frameworkDir)) {
+      throw new Error(`load framework import path ${frameworkDir} is not exists.`);
+    }
+
+    let find = false;
+    const fileNameList = [
+      'meta.yaml',
+      'meta.yml',
+      'meta.json',
+    ];
+    let metadata;
+    for (const fileName of fileNameList) {
+      const metaFilePath = path.resolve(frameworkDir, fileName);
+      try {
+        if (!await exisis(metaFilePath)) {
+          continue;
+        }
+        metadata = await loadMetaFile({
+          path: metaFilePath,
+          extname: path.extname(metaFilePath),
+          filename: fileName,
+        });
+        find = true;
+        break;
+      } catch (e) {
+        throw new Error(`load framework metadata <${frameworkDir}> failed, err: ${e}`);
+      }
+    }
+
+    if (!find) {
+      throw new Error(`load framework import path ${frameworkDir} can't find meta file.`);
     }
   }
 }

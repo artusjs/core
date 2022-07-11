@@ -80,7 +80,7 @@ export class ScanUtils {
   static isExclude(filename: string, extname: string,
     excluded: string[], extensions: string[]): boolean {
     let result = false;
-    if (!result && excluded) {
+    if (excluded) {
       result = isMatch(filename, excluded);
     }
 
