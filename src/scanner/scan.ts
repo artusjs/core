@@ -12,6 +12,7 @@ import {
   LOADER_NAME_META,
 } from '../constant';
 import { LoaderFactory, Manifest, ManifestItem } from '../loader';
+import { Metadata } from '../types';
 import { ScannerOptions, WalkOptions } from './types';
 import ConfigurationHandler, { ConfigObject } from '../configuration';
 import { FrameworkConfig, FrameworkHandler } from '../framework';
@@ -94,9 +95,8 @@ export class Scanner {
     // 1. scan all file in framework
     const frameworkDirs = await this.getFrameworkDirs(config.framework, root, env);
     for (const frameworkDir of frameworkDirs) {
-      let frameworkOptions = this.formatWalkOptions('framework', frameworkDir);
       const frameworkMetadata = await FrameworkHandler.checkAndLoadMetadata(frameworkDir);
-      frameworkOptions = this.amendOptions(frameworkOptions, frameworkMetadata);
+      const frameworkOptions = this.formatWalkOptions('framework', frameworkDir, frameworkDir, frameworkMetadata);
       await this.walk(frameworkDir, frameworkOptions);
     }
 
@@ -111,8 +111,7 @@ export class Scanner {
     for (const plugin of pluginSortedList) {
       if (!plugin.enable) continue;
       this.setPluginMeta(plugin);
-      let pluginOpts = this.formatWalkOptions('plugin', plugin.importPath, plugin.name, plugin.metadata.configDir);
-      pluginOpts = this.amendOptions(pluginOpts, plugin?.metadata || {}); // plugin takes priority
+      const pluginOpts = this.formatWalkOptions('plugin', plugin.importPath, plugin.name, plugin.metadata as Metadata);
       await this.walk(plugin.importPath, pluginOpts);
     }
 
@@ -152,7 +151,7 @@ export class Scanner {
     const container = new Container(ArtusInjectEnum.DefaultContainerName);
     container.set({ type: ConfigurationHandler });
     const loaderFactory = LoaderFactory.create(container);
-    const configItemList: (ManifestItem|null)[] = await Promise.all(configFileList.map(async filename => {
+    const configItemList: (ManifestItem | null)[] = await Promise.all(configFileList.map(async filename => {
       const extname = path.extname(filename);
       if (ScanUtils.isExclude(filename, extname, this.options.excluded, this.options.extensions)) {
         return null;
@@ -217,7 +216,7 @@ export class Scanner {
     return await this.getFrameworkDirs(configInFramework.framework, frameworkBaseDir, env, dirs);
   }
 
-  private formatWalkOptions(source: string, baseDir: string, unitName?: string, configDir?: string): WalkOptions {
+  private formatWalkOptions(source: string, baseDir: string, unitName?: string, metadata?: Metadata): WalkOptions {
     const commonOptions = {
       extensions: this.options.extensions,
       excluded: this.options.excluded,
@@ -225,17 +224,22 @@ export class Scanner {
     };
 
     unitName ??= baseDir;
-    configDir ??= this.options.configDir;
+    const configDir = this.options.configDir;
 
-    return Object.assign({}, commonOptions, {
+    let result: WalkOptions = Object.assign({}, commonOptions, {
       source,
       baseDir,
       unitName,
       configDir,
     });
+    // metadata takes priority
+    if (metadata) {
+      result = this.amendOptions(result, metadata);
+    }
+    return result;
   }
 
-  private amendOptions(walkOptions: WalkOptions, metadata): WalkOptions{
+  private amendOptions(walkOptions: WalkOptions, metadata): WalkOptions {
     // plugin/framework excluded take priority over user app's
     if (metadata?.excluded) {
       walkOptions.excluded = DEFAULT_EXCLUDES.concat(metadata.excluded);
@@ -244,11 +248,11 @@ export class Scanner {
     }
 
     // plugin/framework extensions take priority over user app's
-    if (metadata?.extensions) {
-      walkOptions.extensions = DEFAULT_EXTENSIONS.concat(metadata.extensions);
-    } else {
-      walkOptions.extensions = DEFAULT_EXTENSIONS;
-    }
+    // if (metadata?.extensions) {
+    //   walkOptions.extensions = DEFAULT_EXTENSIONS.concat(metadata.extensions);
+    // } else {
+    //   walkOptions.extensions = DEFAULT_EXTENSIONS;
+    // }
 
     // plugin/framework configDir take priority over user app's
     if (metadata?.configDir) {

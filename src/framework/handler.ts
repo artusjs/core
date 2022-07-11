@@ -1,6 +1,6 @@
 import path from 'path';
 import ConfigurationHandler, { ConfigObject } from '../configuration';
-import { ManifestItem } from '../types';
+import { ManifestItem, Metadata } from '../types';
 import { exisis } from '../utils/fs';
 import { loadMetaFile } from '../utils/load_meta_file';
 export interface FrameworkConfig {
@@ -34,7 +34,7 @@ export class FrameworkHandler {
       throw new Error(`load framework faild: ${err}, framework config: ${JSON.stringify(config)}`);
     }
   }
-  static async checkAndLoadMetadata(frameworkDir: string){
+  static async checkAndLoadMetadata(frameworkDir: string): Promise<Metadata>{
     // check import path
     if (!await exisis(frameworkDir)) {
       throw new Error(`load framework import path ${frameworkDir} is not exists.`);

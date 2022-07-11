@@ -1,14 +1,12 @@
+import { Metadata } from '../types';
 export enum PluginType {
   simple = 'simple',
   module = 'module',
 }
 
-export interface PluginMetadata {
-  name: string;
-  excluded?: string[];
+export interface PluginMetadata extends Metadata {
   dependencies?: PluginDependencyItem[];
   type?: PluginType;
-  configDir?: string
 }
 
 export interface PluginDependencyItem {
