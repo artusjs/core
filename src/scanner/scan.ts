@@ -16,6 +16,7 @@ import ConfigurationHandler, { ConfigObject } from '../configuration';
 import { FrameworkConfig, FrameworkHandler } from '../framework';
 import { BasePlugin, PluginFactory } from '../plugin';
 import { ScanUtils } from './utils';
+import { PluginMetadata } from '../plugin/types';
 
 export class Scanner {
   private moduleExtensions = ['.js', '.json', '.node'];
@@ -32,7 +33,7 @@ export class Scanner {
       configDir: DEFAULT_CONFIG_DIR,
       loaderListGenerator: (defaultLoaderList: string[]) => defaultLoaderList,
       ...options,
-      excluded: DEFAULT_EXCLUDES.concat(options.excluded ?? []),
+      exclude: DEFAULT_EXCLUDES.concat(options.exclude ?? []),
       extensions: [...new Set(this.moduleExtensions.concat(options.extensions ?? [], ['.yaml']))],
     };
   }
@@ -110,7 +111,7 @@ export class Scanner {
       this.setPluginMeta(plugin);
       await this.walk(
         plugin.importPath,
-        this.formatWalkOptions('plugin', plugin.importPath, plugin.name, plugin.metadata.configDir)
+        this.formatWalkOptions('plugin', plugin.importPath, plugin.name, plugin.metadata)
       );
     }
 
@@ -152,7 +153,7 @@ export class Scanner {
     const loaderFactory = LoaderFactory.create(container);
     const configItemList: (ManifestItem|null)[] = await Promise.all(configFileList.map(async filename => {
       const extname = path.extname(filename);
-      if (ScanUtils.isExclude(filename, extname, this.options.excluded, this.options.extensions)) {
+      if (ScanUtils.isExclude(filename, extname, this.options.exclude, this.options.extensions)) {
         return null;
       }
       let loader = await loaderFactory.findLoaderName({
@@ -215,22 +216,19 @@ export class Scanner {
     return await this.getFrameworkDirs(configInFramework.framework, frameworkBaseDir, env, dirs);
   }
 
-  private formatWalkOptions(source: string, baseDir: string, unitName?: string, configDir?: string): WalkOptions {
-    const commonOptions = {
-      extensions: this.options.extensions,
-      excluded: this.options.excluded,
+  private formatWalkOptions(source: string, baseDir: string, unitName?: string, metaInfo?: Partial<PluginMetadata>): WalkOptions {
+    return {
       itemMap: this.itemMap,
-    };
-
-    unitName ??= baseDir;
-    configDir ??= this.options.configDir;
-
-    return Object.assign({}, commonOptions, {
       source,
       baseDir,
-      unitName,
-      configDir,
-    });
+      unitName: unitName ?? baseDir,
+      extensions: this.options.extensions,
+
+      // Meta of Plugin first, then use scanner options as default
+      // TODO: Only support plugin meta now, need cover framework meta later
+      exclude: metaInfo.exclude ?? this.options.exclude,
+      configDir: metaInfo.configDir ?? this.options.configDir,
+    };
   }
 
   private getItemsFromMap(relative: boolean, appRoot: string): ManifestItem[] {
