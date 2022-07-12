@@ -217,18 +217,24 @@ export class Scanner {
   }
 
   private formatWalkOptions(source: string, baseDir: string, unitName?: string, metaInfo?: Partial<PluginMetadata>): WalkOptions {
-    return {
+    const opts: WalkOptions = {
       itemMap: this.itemMap,
       source,
       baseDir,
       unitName: unitName ?? baseDir,
       extensions: this.options.extensions,
-
-      // Meta of Plugin first, then use scanner options as default
-      // TODO: Only support plugin meta now, need cover framework meta later
-      exclude: metaInfo.exclude ?? this.options.exclude,
-      configDir: metaInfo.configDir ?? this.options.configDir,
+      exclude: this.options.exclude,
+      configDir: this.options.configDir,
     };
+
+    if (source === 'plugin') {
+      // TODO: Only support plugin meta now, need cover framework meta later
+      // Meta of Plugin first, then use default exclude from constant
+      opts.exclude = metaInfo.exclude ?? DEFAULT_EXCLUDES;
+      opts.configDir = metaInfo.configDir ?? this.options.configDir;
+    }
+
+    return opts;
   }
 
   private getItemsFromMap(relative: boolean, appRoot: string): ManifestItem[] {
