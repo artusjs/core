@@ -229,8 +229,7 @@ export class Scanner {
 
     if (source === 'plugin') {
       // TODO: Only support plugin meta now, need cover framework meta later
-      // Meta of Plugin first, then use default exclude from constant
-      opts.exclude = metaInfo.exclude ?? DEFAULT_EXCLUDES;
+      opts.exclude = DEFAULT_EXCLUDES.concat(metaInfo.exclude ?? []);
       opts.configDir = metaInfo.configDir ?? this.options.configDir;
     }
 
