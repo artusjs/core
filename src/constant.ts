@@ -43,6 +43,8 @@ export const DEFAULT_EXCLUDES = [
   'LICENSE'
 ];
 
+export const DEFAULT_EXTENSIONS = ['.js', '.json', '.node', '.yaml'];
+
 export const FRAMEWORK_PATTERN = 'framework.*';
 export const PLUGIN_CONFIG_PATTERN = 'plugin.*';
 export const CONFIG_PATTERN = 'config.*';

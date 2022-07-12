@@ -35,5 +35,11 @@ export interface TriggerType {
   initContext(...args): Promise<BaseContext>;
   startPipeline(...args): Promise<void>;
 }
+export interface Metadata {
+  name: string;
+  exclude?: string[];
+  extensions?: string[];
+  configDir?: string
+}
 
 export * from './loader/types';

@@ -1,1 +1,2 @@
 name: redis
+exclude: ['not_to_be_scanned_file.ts', 'not_to_be_scanned_dir']

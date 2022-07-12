@@ -7,10 +7,12 @@ import {
   ARTUS_DEFAULT_CONFIG_ENV,
   DEFAULT_CONFIG_DIR,
   DEFAULT_EXCLUDES,
+  DEFAULT_EXTENSIONS,
   DEFAULT_LOADER_LIST_WITH_ORDER,
   LOADER_NAME_META,
 } from '../constant';
 import { LoaderFactory, Manifest, ManifestItem } from '../loader';
+import { Metadata } from '../types';
 import { ScannerOptions, WalkOptions } from './types';
 import ConfigurationHandler, { ConfigObject } from '../configuration';
 import { FrameworkConfig, FrameworkHandler } from '../framework';
@@ -18,7 +20,6 @@ import { BasePlugin, PluginFactory } from '../plugin';
 import { ScanUtils } from './utils';
 
 export class Scanner {
-  private moduleExtensions = ['.js', '.json', '.node'];
   private options: ScannerOptions;
   private itemMap: Map<string, ManifestItem[]> = new Map();
   private tmpConfigStore: Map<string, ConfigObject[]> = new Map();
@@ -32,8 +33,8 @@ export class Scanner {
       configDir: DEFAULT_CONFIG_DIR,
       loaderListGenerator: (defaultLoaderList: string[]) => defaultLoaderList,
       ...options,
-      excluded: DEFAULT_EXCLUDES.concat(options.excluded ?? []),
-      extensions: [...new Set(this.moduleExtensions.concat(options.extensions ?? [], ['.yaml']))],
+      exclude: [...new Set(DEFAULT_EXCLUDES.concat(options.exclude ?? []))],
+      extensions: [...new Set(DEFAULT_EXTENSIONS.concat(options.extensions ?? []))],
     };
   }
 
@@ -94,9 +95,10 @@ export class Scanner {
     // 1. scan all file in framework
     const frameworkDirs = await this.getFrameworkDirs(config.framework, root, env);
     for (const frameworkDir of frameworkDirs) {
-      await this.walk(frameworkDir, this.formatWalkOptions('framework', frameworkDir));
+      const frameworkMetadata = await FrameworkHandler.checkAndLoadMetadata(frameworkDir);
+      const frameworkOptions = this.formatWalkOptions('framework', frameworkDir, frameworkDir, frameworkMetadata);
+      await this.walk(frameworkDir, frameworkOptions);
     }
-
 
     // 2. scan all file in plugin
     if (this.tmpConfigStore.has(env)) {
@@ -108,10 +110,8 @@ export class Scanner {
     for (const plugin of pluginSortedList) {
       if (!plugin.enable) continue;
       this.setPluginMeta(plugin);
-      await this.walk(
-        plugin.importPath,
-        this.formatWalkOptions('plugin', plugin.importPath, plugin.name, plugin.metadata.configDir)
-      );
+      const pluginOpts = this.formatWalkOptions('plugin', plugin.importPath, plugin.name, plugin.metadata as Metadata);
+      await this.walk(plugin.importPath, pluginOpts);
     }
 
     // 3. scan all file in app
@@ -150,9 +150,9 @@ export class Scanner {
     const container = new Container(ArtusInjectEnum.DefaultContainerName);
     container.set({ type: ConfigurationHandler });
     const loaderFactory = LoaderFactory.create(container);
-    const configItemList: (ManifestItem|null)[] = await Promise.all(configFileList.map(async filename => {
+    const configItemList: (ManifestItem | null)[] = await Promise.all(configFileList.map(async filename => {
       const extname = path.extname(filename);
-      if (ScanUtils.isExclude(filename, extname, this.options.excluded, this.options.extensions)) {
+      if (ScanUtils.isExclude(filename, extname, this.options.exclude, this.options.extensions)) {
         return null;
       }
       let loader = await loaderFactory.findLoaderName({
@@ -215,22 +215,51 @@ export class Scanner {
     return await this.getFrameworkDirs(configInFramework.framework, frameworkBaseDir, env, dirs);
   }
 
-  private formatWalkOptions(source: string, baseDir: string, unitName?: string, configDir?: string): WalkOptions {
+  private formatWalkOptions(source: string, baseDir: string, unitName?: string, metadata?: Metadata): WalkOptions {
     const commonOptions = {
       extensions: this.options.extensions,
-      excluded: this.options.excluded,
+      exclude: this.options.exclude,
       itemMap: this.itemMap,
     };
 
     unitName ??= baseDir;
-    configDir ??= this.options.configDir;
+    const configDir = this.options.configDir;
 
-    return Object.assign({}, commonOptions, {
+    let result: WalkOptions = Object.assign({}, commonOptions, {
       source,
       baseDir,
       unitName,
       configDir,
     });
+    // metadata takes priority
+    if (metadata) {
+      result = this.amendOptions(result, metadata);
+    }
+    return result;
+  }
+
+  private amendOptions(walkOptions: WalkOptions, metadata): WalkOptions {
+    // plugin/framework exclude take priority over user app's
+    if (metadata?.exclude) {
+      walkOptions.exclude = DEFAULT_EXCLUDES.concat(metadata.exclude);
+    } else {
+      walkOptions.exclude = DEFAULT_EXCLUDES;
+    }
+
+    // plugin/framework extensions take priority over user app's
+    // if (metadata?.extensions) {
+    //   walkOptions.extensions = DEFAULT_EXTENSIONS.concat(metadata.extensions);
+    // } else {
+    //   walkOptions.extensions = DEFAULT_EXTENSIONS;
+    // }
+
+    // plugin/framework configDir take priority over user app's
+    if (metadata?.configDir) {
+      walkOptions.configDir = metadata.configDir;
+    } else {
+      walkOptions.configDir = DEFAULT_CONFIG_DIR;
+    }
+    return walkOptions;
   }
 
   private getItemsFromMap(relative: boolean, appRoot: string): ManifestItem[] {
