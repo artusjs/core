@@ -37,7 +37,7 @@ export interface TriggerType {
 }
 export interface Metadata {
   name: string;
-  excluded?: string[];
+  exclude?: string[];
   extensions?: string[];
   configDir?: string
 }

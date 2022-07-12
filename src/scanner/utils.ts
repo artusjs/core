@@ -32,7 +32,7 @@ export class ScanUtils {
     for (const item of items) {
       const realPath = path.resolve(root, item);
       const extname = path.extname(realPath);
-      if (this.isExclude(item, extname, options.excluded, options.extensions)) {
+      if (this.isExclude(item, extname, options.exclude, options.extensions)) {
         continue;
       }
       const itemStat = await fs.stat(realPath);
@@ -78,10 +78,10 @@ export class ScanUtils {
   }
 
   static isExclude(filename: string, extname: string,
-    excluded: string[], extensions: string[]): boolean {
+    exclude: string[], extensions: string[]): boolean {
     let result = false;
-    if (excluded) {
-      result = isMatch(filename, excluded);
+    if (exclude) {
+      result = isMatch(filename, exclude);
     }
 
     if (!result && extname) {

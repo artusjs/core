@@ -33,7 +33,7 @@ export class Scanner {
       configDir: DEFAULT_CONFIG_DIR,
       loaderListGenerator: (defaultLoaderList: string[]) => defaultLoaderList,
       ...options,
-      excluded: [...new Set(DEFAULT_EXCLUDES.concat(options.excluded ?? []))],
+      exclude: [...new Set(DEFAULT_EXCLUDES.concat(options.exclude ?? []))],
       extensions: [...new Set(DEFAULT_EXTENSIONS.concat(options.extensions ?? []))],
     };
   }
@@ -152,7 +152,7 @@ export class Scanner {
     const loaderFactory = LoaderFactory.create(container);
     const configItemList: (ManifestItem | null)[] = await Promise.all(configFileList.map(async filename => {
       const extname = path.extname(filename);
-      if (ScanUtils.isExclude(filename, extname, this.options.excluded, this.options.extensions)) {
+      if (ScanUtils.isExclude(filename, extname, this.options.exclude, this.options.extensions)) {
         return null;
       }
       let loader = await loaderFactory.findLoaderName({
@@ -218,7 +218,7 @@ export class Scanner {
   private formatWalkOptions(source: string, baseDir: string, unitName?: string, metadata?: Metadata): WalkOptions {
     const commonOptions = {
       extensions: this.options.extensions,
-      excluded: this.options.excluded,
+      exclude: this.options.exclude,
       itemMap: this.itemMap,
     };
 
@@ -239,11 +239,11 @@ export class Scanner {
   }
 
   private amendOptions(walkOptions: WalkOptions, metadata): WalkOptions {
-    // plugin/framework excluded take priority over user app's
-    if (metadata?.excluded) {
-      walkOptions.excluded = DEFAULT_EXCLUDES.concat(metadata.excluded);
+    // plugin/framework exclude take priority over user app's
+    if (metadata?.exclude) {
+      walkOptions.exclude = DEFAULT_EXCLUDES.concat(metadata.exclude);
     } else {
-      walkOptions.excluded = DEFAULT_EXCLUDES;
+      walkOptions.exclude = DEFAULT_EXCLUDES;
     }
 
     // plugin/framework extensions take priority over user app's
