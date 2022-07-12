@@ -5,7 +5,7 @@ export interface ScannerOptions {
   extensions: string[];
   needWriteFile: boolean;
   useRelativePath: boolean;
-  exclude: string[];
+  excluded: string[];
   configDir: string;
   envs?: string[];
   loaderListGenerator: (defaultLoaderList: string[]) => (string | typeof BaseLoader)[];
@@ -16,7 +16,7 @@ export interface WalkOptions {
   baseDir: string;
   configDir: string;
   extensions: string[];
-  exclude: string[];
+  excluded: string[];
   itemMap: Map<string, ManifestItem[]>;
   unitName?: string;
 }
