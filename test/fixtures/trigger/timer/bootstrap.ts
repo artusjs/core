@@ -11,21 +11,21 @@ async function main() {
         extname: '.ts',
         filename: 'app.ts',
         loader: 'lifecycle-hook-unit',
-        source: 'app'
+        source: 'app',
       },
       {
         path: path.resolve(__dirname, './timer_trigger'),
         extname: '.ts',
         filename: 'timer_trigger.ts',
         loader: 'module',
-        source: 'app'
-      }
-    ]
+        source: 'app',
+      },
+    ],
   });
   await app.run();
 
   return app;
-};
+}
 
 function getTaskExecution() {
   return execution;
@@ -33,5 +33,5 @@ function getTaskExecution() {
 
 export {
   main,
-  getTaskExecution
+  getTaskExecution,
 };

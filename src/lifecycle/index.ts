@@ -4,7 +4,7 @@ import {
   CONSTRUCTOR_PARAMS,
   CONSTRUCTOR_PARAMS_APP,
   CONSTRUCTOR_PARAMS_CONTAINER,
-  HOOK_NAME_META_PREFIX
+  HOOK_NAME_META_PREFIX,
 } from '../constant';
 
 export type HookFunction = <T = unknown>(hookProps : {
@@ -20,7 +20,7 @@ export class LifecycleManager {
     'didLoad', // 文件加载完成
     'willReady', // 插件启动完毕
     'didReady', // 应用启动完成
-    'beforeClose' // 应用即将关闭
+    'beforeClose', // 应用即将关闭
   ];
   hookFnMap: Map<string, HookFunction[]> = new Map();
   private app: Application;
@@ -32,7 +32,7 @@ export class LifecycleManager {
   }
 
   insertHook(existHookName: string, newHookName: string) {
-    const startIndex = this.hookList.findIndex((val) => val === existHookName);
+    const startIndex = this.hookList.findIndex(val => val === existHookName);
     this.hookList.splice(startIndex, 0, newHookName);
   }
 
@@ -45,7 +45,7 @@ export class LifecycleManager {
       this.hookFnMap.get(hookName)?.push(hookFn);
     } else {
       this.hookFnMap.set(hookName, [
-        hookFn
+        hookFn,
       ]);
     }
   }
@@ -55,9 +55,9 @@ export class LifecycleManager {
     const constructorParams = Reflect.getMetadata(CONSTRUCTOR_PARAMS, extClazz) ?? [];
     const paramsMap = {
       [CONSTRUCTOR_PARAMS_APP]: this.app,
-      [CONSTRUCTOR_PARAMS_CONTAINER]: this.container
+      [CONSTRUCTOR_PARAMS_CONTAINER]: this.container,
     };
-    const extClazzInstance = new extClazz(...constructorParams.map((param) => paramsMap[param]));
+    const extClazzInstance = new extClazz(...constructorParams.map(param => paramsMap[param]));
     for (const fnMetaKey of fnMetaKeys) {
       if (typeof fnMetaKey !== 'string' || !fnMetaKey.startsWith(HOOK_NAME_META_PREFIX)) {
         continue;
@@ -80,8 +80,8 @@ export class LifecycleManager {
       await hookFn({
         app: this.app,
         lifecycleManager: this,
-        payload
+        payload,
       });
     }
   }
-};
+}

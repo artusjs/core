@@ -4,7 +4,7 @@ import { LifecycleHookUnit, LifecycleHook, WithApplication } from '../../../../s
 import { Context, Input, Next } from '@artus/pipeline';
 import { ApplicationLifecycle } from '../../../../src/types';
 
-export let event = new EventEmitter();
+export const event = new EventEmitter();
 
 @LifecycleHookUnit()
 export default class MyLifecycle implements ApplicationLifecycle {
@@ -19,7 +19,8 @@ export default class MyLifecycle implements ApplicationLifecycle {
     this.app.trigger.use(async (ctx: Context, next: Next) => {
       const { input: { params: { type, payload } } } = ctx;
       if (type !== 'e1') {
-        return await next();
+        await next();
+        return;
       }
       const { output: { data } } = ctx;
       data.type = Array.from(type).reverse().join('');
@@ -29,7 +30,8 @@ export default class MyLifecycle implements ApplicationLifecycle {
     this.app.trigger.use(async (ctx: Context, next: Next) => {
       const { input: { params: { type, payload } } } = ctx;
       if (type !== 'e2') {
-        return await next();
+        await next();
+        return;
       }
       const { output: { data } } = ctx;
       data.type = Array.from(type).reverse().join('');

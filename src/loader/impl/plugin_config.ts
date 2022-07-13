@@ -18,7 +18,7 @@ class PluginConfigLoader extends ConfigLoader implements Loader {
 
   async load(item: ManifestItem) {
     const { env } = await this.getConfigFileMeta(item);
-    let configObj = await this.loadConfigFile(item);
+    const configObj = await this.loadConfigFile(item);
     for (const pluginName of Object.keys(configObj)) {
       const pluginConfigItem: PluginConfigItem = configObj[pluginName];
       if (pluginConfigItem.package) {
@@ -34,7 +34,7 @@ class PluginConfigLoader extends ConfigLoader implements Loader {
       }
     }
     this.configurationHandler.setConfig(env, {
-      plugin: configObj
+      plugin: configObj,
     });
   }
 }

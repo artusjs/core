@@ -11,7 +11,7 @@ export class BaseLogger implements Logger {
   protected get loggerOpts(): LoggerOptions {
     return this.appConfig?.logger ?? {};
   }
-  
+
   protected checkLoggerLevel(level: LoggerLevel) {
     const targetLevel = this.loggerOpts.level ?? LoggerLevel.INFO;
     if (LOGGER_LEVEL_MAP[level] < LOGGER_LEVEL_MAP[targetLevel]) {

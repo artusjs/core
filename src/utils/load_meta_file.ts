@@ -6,7 +6,7 @@ type ParserFunction = <T = Record<string, any>>(content: string) => T;
 
 const YamlParser: ParserFunction = <T = Record<string, any>>(content: string) => {
   return yaml.load(content, {
-    json: true
+    json: true,
   }) as T;
 };
 const JsonParser: ParserFunction = <T = Record<string, any>>(content: string) => {
@@ -23,7 +23,7 @@ export const loadMetaFile = async <T = Record<string, any>>(item: ManifestItem):
     throw new Error(`[Artus-Loader] Unsupported file extension: ${item.extname} in ${item.path}`);
   }
   const content = await readFile(item.path, {
-    encoding: 'utf-8'
+    encoding: 'utf-8',
   });
   if (!content) {
     throw new Error(`[Artus-Loader] File content is empty in ${item.path}.`);

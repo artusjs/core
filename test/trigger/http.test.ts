@@ -6,7 +6,7 @@ describe('test/trigger/http.test.ts', () => {
   it('should run succeed', async () => {
     const {
       main,
-      isListening
+      isListening,
     } = await import('../fixtures/trigger/http/bootstrap');
     const app = await main();
     const testResponse = await axios.get('http://127.0.0.1:3001');

@@ -9,7 +9,7 @@ export default class EventTrigger extends Trigger {
     // first of all
     this.use(async (ctx: Context, next: Next) => {
       await next();
-      await this.respond(ctx)
+      await this.respond(ctx);
     });
   }
 

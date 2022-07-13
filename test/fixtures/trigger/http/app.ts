@@ -31,7 +31,7 @@ export default class MyLifecycle implements ApplicationLifecycle {
         const ctx = await this.app.trigger.initContext(input);
         await this.app.trigger.startPipeline(ctx);
       })
-      .listen(3001)
+      .listen(3001);
   }
 
   @LifecycleHook()

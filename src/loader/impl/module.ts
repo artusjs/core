@@ -15,7 +15,7 @@ class ModuleLoader implements Loader {
     const moduleClazz = await compatibleRequire(item.path);
     const opts: Partial<InjectableDefinition> = {
       path: item.path,
-      type: moduleClazz
+      type: moduleClazz,
     };
     if (item.id) {
       opts.id = item.id;

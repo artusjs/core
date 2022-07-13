@@ -21,7 +21,7 @@ export function isClass(arg: any): boolean {
     fnStr.substring(0, 5) === 'class' ||
     Boolean(~fnStr.indexOf('classCallCheck(')) ||
     Boolean(
-      ~fnStr.indexOf('TypeError("Cannot call a class as a function")')
+      ~fnStr.indexOf('TypeError("Cannot call a class as a function")'),
     )
   );
 }

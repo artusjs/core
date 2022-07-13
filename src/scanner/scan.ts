@@ -50,7 +50,7 @@ export class Scanner {
           throw new Error(`Loader ${loaderClazz.name} must have a @DefineLoader() decorator.`);
         }
         return [loaderName, []];
-      })
+      }),
     );
   }
 
@@ -89,7 +89,7 @@ export class Scanner {
   private async scanManifestByEnv(root: string, env: string): Promise<Manifest> {
     // 0. init clean itemMap
     await this.initItemMap();
-  
+
     const config = await this.getAllConfig(root, env);
 
     // 1. scan all file in framework
@@ -160,7 +160,7 @@ export class Scanner {
         filename,
         baseDir,
         root,
-        configDir
+        configDir,
       });
       if (loader === 'framework-config') {
         // SEEME: framework-config is a special loader, cannot be used when scan, need refactor later
@@ -202,7 +202,7 @@ export class Scanner {
     config: FrameworkConfig,
     root: string,
     env: string,
-    dirs: string[] = []
+    dirs: string[] = [],
   ): Promise<string[]> {
     if (!config || (!config.path && !config.package)) {
       return dirs;
@@ -213,7 +213,8 @@ export class Scanner {
 
     // scan recurse
     const configInFramework = await this.getAllConfig(frameworkBaseDir, env);
-    return await this.getFrameworkDirs(configInFramework.framework, frameworkBaseDir, env, dirs);
+    const frameworkDirs = await this.getFrameworkDirs(configInFramework.framework, frameworkBaseDir, env, dirs);
+    return frameworkDirs;
   }
 
   private formatWalkOptions(source: string, baseDir: string, unitName?: string, metaInfo?: Partial<PluginMetadata>): WalkOptions {
@@ -248,7 +249,7 @@ export class Scanner {
     ));
   }
 
-  private async writeFile(filename: string = 'manifest.json', data: string) {
+  private async writeFile(filename = 'manifest.json', data: string) {
     await fs.writeFile(filename, data);
   }
 }

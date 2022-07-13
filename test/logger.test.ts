@@ -61,21 +61,21 @@ describe('test/logger.test.ts', () => {
       app.logger.log({
         level: LoggerLevel.TRACE,
         message: 'trace', 
-        splat: [ 0, {} ]
+        splat: [ 0, {} ],
       });
       expect(console.trace).toBeCalledTimes(0);
 
       app.logger.log({
         level: LoggerLevel.DEBUG,
         message: 'debug',
-        splat: [ 1, {} ]
+        splat: [ 1, {} ],
       });
       expect(console.debug).toBeCalledTimes(0);
 
       app.logger.log({
         level: LoggerLevel.INFO,
         message: 'info',
-        splat: [ 2, {} ]
+        splat: [ 2, {} ],
       });
       expect(console.info).toBeCalledTimes(1);
       expect(console.info).toBeCalledWith('info', 2, {});
@@ -83,7 +83,7 @@ describe('test/logger.test.ts', () => {
       app.logger.log({
         level: LoggerLevel.WARN,
         message: 'warn',
-        splat: [ 3, {} ]
+        splat: [ 3, {} ],
       });
       expect(console.warn).toBeCalledTimes(1);
       expect(console.warn).toBeCalledWith('warn', 3, {});
@@ -91,12 +91,12 @@ describe('test/logger.test.ts', () => {
       app.logger.log({
         level: LoggerLevel.ERROR,
         message: 'error',
-        splat: [ 4, {} ]
+        splat: [ 4, {} ],
       });
       app.logger.log({
         level: LoggerLevel.ERROR,
         message: err,
-        splat: [ 5, {} ]
+        splat: [ 5, {} ],
       });
       expect(console.error).toBeCalledTimes(2);
       expect(console.error).toBeCalledWith('error', 4, {});
@@ -163,7 +163,7 @@ describe('test/logger.test.ts', () => {
       const app = await _getAppWithConfig({
         logger: {
           level: LoggerLevel.TRACE,
-        }
+        },
       });
 
       app.logger.trace('trace', 0, {});
@@ -192,13 +192,13 @@ describe('test/logger.test.ts', () => {
       const app = await _getAppWithConfig({
         logger: {
           level: LoggerLevel.TRACE,
-        }
+        },
       });
 
       app.logger.log({
         level: LoggerLevel.TRACE,
         message: 'trace', 
-        splat: [ 0, {} ]
+        splat: [ 0, {} ],
       });
       expect(console.trace).toBeCalledTimes(1);
       expect(console.trace).toBeCalledWith('trace', 0, {});
@@ -206,7 +206,7 @@ describe('test/logger.test.ts', () => {
       app.logger.log({
         level: LoggerLevel.DEBUG,
         message: 'debug',
-        splat: [ 1, {} ]
+        splat: [ 1, {} ],
       });
       expect(console.debug).toBeCalledTimes(1);
       expect(console.debug).toBeCalledWith('debug', 1, {});
@@ -214,7 +214,7 @@ describe('test/logger.test.ts', () => {
       app.logger.log({
         level: LoggerLevel.INFO,
         message: 'info',
-        splat: [ 2, {} ]
+        splat: [ 2, {} ],
       });
       expect(console.info).toBeCalledTimes(1);
       expect(console.info).toBeCalledWith('info', 2, {});
@@ -222,7 +222,7 @@ describe('test/logger.test.ts', () => {
       app.logger.log({
         level: LoggerLevel.WARN,
         message: 'warn',
-        splat: [ 3, {} ]
+        splat: [ 3, {} ],
       });
       expect(console.warn).toBeCalledTimes(1);
       expect(console.warn).toBeCalledWith('warn', 3, {});
@@ -230,12 +230,12 @@ describe('test/logger.test.ts', () => {
       app.logger.log({
         level: LoggerLevel.ERROR,
         message: 'error',
-        splat: [ 4, {} ]
+        splat: [ 4, {} ],
       });
       app.logger.log({
         level: LoggerLevel.ERROR,
         message: err,
-        splat: [ 5, {} ]
+        splat: [ 5, {} ],
       });
       expect(console.error).toBeCalledTimes(2);
       expect(console.error).toBeCalledWith('error', 4, {});
@@ -247,7 +247,7 @@ describe('test/logger.test.ts', () => {
       const app = await _getAppWithConfig({
         logger: {
           level: LoggerLevel.TRACE,
-        }
+        },
       }, manifest);
 
       const testClazz = app.getContainer().get(TestLoggerClazz);
@@ -280,7 +280,7 @@ describe('test/logger.test.ts', () => {
       const app = await _getAppWithConfig({
         logger: {
           level: LoggerLevel.TRACE,
-        }
+        },
       }, manifest);
 
       const testClazz = app.getContainer().get(TestLoggerClazz);
@@ -315,7 +315,7 @@ describe('test/logger.test.ts', () => {
 
       app.logger.log({
         level: LoggerLevel.INFO,
-        message: err
+        message: err,
       });
 
       expect(console.info).toBeCalledTimes(1);

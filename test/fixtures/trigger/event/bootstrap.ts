@@ -11,21 +11,21 @@ async function main() {
         extname: '.ts',
         filename: 'app.ts',
         loader: 'lifecycle-hook-unit',
-        source: 'app'
+        source: 'app',
       },
       {
         path: path.resolve(__dirname, './event_trigger'),
         extname: '.ts',
         filename: 'event_trigger.ts',
         loader: 'module',
-        source: 'app'
-      }
-    ]
+        source: 'app',
+      },
+    ],
   });
   await app.run();
 
   return app;
-};
+}
 
 function pub(e: 'e1' | 'e2', p: any) {
   event.emit(e, p);
@@ -33,5 +33,5 @@ function pub(e: 'e1' | 'e2', p: any) {
 
 export {
   main,
-  pub
+  pub,
 };

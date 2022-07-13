@@ -46,28 +46,28 @@ export class LoaderFactory {
         after: () => {
           this.container.set({
             id: ArtusInjectEnum.Config,
-            value: this.configurationHandler.getMergedConfig()
+            value: this.configurationHandler.getMergedConfig(),
           });
           this.lifecycleManager.emitHook('configDidLoad');
-        }
+        },
       },
       'framework-config': {
         after: () => this.container.set({
           id: ArtusInjectEnum.Frameworks,
-          value: this.configurationHandler.getFrameworkConfig()
-        })
+          value: this.configurationHandler.getFrameworkConfig(),
+        }),
       },
       'package-json': {
         after: () => this.container.set({
           id: ArtusInjectEnum.Packages,
-          value: this.configurationHandler.getPackages()
-        })
-      }
+          value: this.configurationHandler.getPackages(),
+        }),
+      },
     }, root);
   }
 
   async loadItemList(itemList: ManifestItem[] = [], hookMap?: Record<string, LoaderHookUnit>, root?: string): Promise<void> {
-    let prevLoader: string = '';
+    let prevLoader = '';
     for (const item of itemList) {
       item.path = root ? path.join(root, item.path) : item.path;
       const curLoader = item.loader ?? DEFAULT_LOADER;

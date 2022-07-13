@@ -9,12 +9,12 @@ interface TestLoaderState {
 @DefineLoader('test-custom-loader')
 export default class TestCustomLoader implements Loader {
   static async is(opts: LoaderFindOptions) {
-    return opts.filename === 'test_clazz.ts'
+    return opts.filename === 'test_clazz.ts';
   }
 
   static async onFind(_opts: LoaderFindOptions): Promise<TestLoaderState> {
     return {
-      hello: 'loaderState'
+      hello: 'loaderState',
     };
   }
 

@@ -12,7 +12,7 @@ export function LifecycleHookUnit(): ClassDecorator {
     // Ready to remove?
     Reflect.defineMetadata(HOOK_FILE_LOADER, { loader: 'lifecycle-hook-unit' }, target);
   };
-};
+}
 
 export function LifecycleHook(hookName?: string): PropertyDecorator {
   return (target: any, propertyKey: string | symbol) => {
@@ -21,7 +21,7 @@ export function LifecycleHook(hookName?: string): PropertyDecorator {
     }
     Reflect.defineMetadata(`${HOOK_NAME_META_PREFIX}${propertyKey}`, hookName ?? propertyKey, target.constructor);
   };
-};
+}
 
 const WithConstructorParams = (tag: string): ParameterDecorator => {
   return (target: any, _propertyKey: string | symbol, parameterIndex: number) => {
@@ -33,7 +33,7 @@ const WithConstructorParams = (tag: string): ParameterDecorator => {
       Reflect.defineMetadata(CONSTRUCTOR_PARAMS, paramsMd, target); // for constructor
     }
   };
-}
+};
 
 export function WithApplication(): ParameterDecorator {
   return WithConstructorParams(CONSTRUCTOR_PARAMS_APP);

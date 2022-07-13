@@ -15,7 +15,7 @@ export default class ConfigurationHandler {
   static getEnvFromFilename(filename: string): string {
     let [_, env, extname] = filename.split('.');
     if (!extname) {
-        env = ARTUS_DEFAULT_CONFIG_ENV.DEFAULT;
+      env = ARTUS_DEFAULT_CONFIG_ENV.DEFAULT;
     }
     return env;
   }

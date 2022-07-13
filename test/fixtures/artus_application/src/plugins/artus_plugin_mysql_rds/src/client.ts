@@ -5,10 +5,10 @@ export interface MysqlConfig {
 }
 
 @Injectable({
-  id: 'ARTUS_MYSQL'
+  id: 'ARTUS_MYSQL',
 })
 export default class Client {
-  private clientName: string = '';
+  private clientName = '';
 
   async init(config: MysqlConfig) {
     this.clientName = config.clientName;
@@ -17,4 +17,4 @@ export default class Client {
   async getClient(): Promise<string> {
     return this.clientName;
   }
-};
+}

@@ -14,6 +14,6 @@ export default ({
       path: path.resolve(rootDir, './test_service_b.ts'),
       extname: '.ts',
       filename: 'test_service_b.ts',
-    }
-  ]
+    },
+  ],
 }) as Manifest;

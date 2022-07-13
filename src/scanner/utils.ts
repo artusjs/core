@@ -6,7 +6,7 @@ import { Container } from '@artus/injection';
 import {
   ArtusInjectEnum,
   DEFAULT_LOADER,
-  PLUGIN_META
+  PLUGIN_META,
 } from '../constant';
 import { LoaderFactory, ManifestItem } from '../loader';
 import { WalkOptions } from './types';
@@ -56,14 +56,14 @@ export class ScanUtils {
           filename,
           root,
           baseDir,
-          configDir
+          configDir,
         });
         const item: ManifestItem = {
           path: options.extensions.includes(extname) ? path.resolve(root, filenameWithoutExt) : realPath,
           extname,
           filename,
           loader: loaderName,
-          source
+          source,
         };
         if (loaderState) {
           item._loaderState = loaderState;

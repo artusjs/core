@@ -6,7 +6,7 @@ import { WithContext } from '../../../../../src/decorator';
 export default class Hello {
   @HttpMethod({
     method: HTTPMethodEnum.GET,
-    path: '/home'
+    path: '/home',
   })
   async index(@WithContext() ctx: Context) {
     const { params: { config } } = ctx.input;
@@ -15,7 +15,7 @@ export default class Hello {
 
   @HttpMethod({
     method: HTTPMethodEnum.GET,
-    path: '/get_name2'
+    path: '/get_name2',
   })
   async name2(@WithContext() ctx: Context) {
     const { params: { config } } = ctx.input;
@@ -24,10 +24,10 @@ export default class Hello {
 
   @HttpMethod({
     method: HTTPMethodEnum.GET,
-    path: '/get_name3'
+    path: '/get_name3',
   })
   async name3(@WithContext() ctx: Context) {
     const { params: { config } } = ctx.input;
     return { title: `Hello Artus ${config.name3}` };
   }
-};
+}

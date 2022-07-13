@@ -5,6 +5,6 @@ export const DefineLogger = (injectableOpts: InjectableOption = {}): ClassDecora
   return Injectable({
     id: ArtusInjectEnum.Logger,
     scope: ScopeEnum.SINGLETON,
-    ...injectableOpts
+    ...injectableOpts,
   });
 };

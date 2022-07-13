@@ -15,7 +15,7 @@ export class ArtusApplication implements Application {
   protected container: Container;
   protected lifecycleManager: LifecycleManager;
   protected loaderFactory: LoaderFactory;
-  protected defaultClazzLoaded: boolean = false;
+  protected defaultClazzLoaded = false;
 
   constructor(opts?: ApplicationInitOptions) {
     this.container = new Container(opts?.containerName ?? ArtusInjectEnum.DefaultContainerName);
@@ -97,7 +97,7 @@ export class ArtusApplication implements Application {
     this.lifecycleManager.registerHook(hookName, hookFn);
   }
 
-  async close(exit: boolean = false) {
+  async close(exit = false) {
     try {
       await this.lifecycleManager.emitHook('beforeClose');
     } catch (e) {
@@ -116,5 +116,3 @@ export class ArtusApplication implements Application {
     return this.exceptionHandler.create(code);
   }
 }
-
-export { Application };
