@@ -14,6 +14,8 @@ describe('test/scanner.test.ts', () => {
     // console.log('manifest', manifest);
     expect(manifest.items.length).toBe(11);
 
+    expect(manifest.items.find(item => item.filename === 'not_to_be_scanned_file.ts')).toBeFalsy();
+
     expect(manifest.items.filter(item => item.loader === 'plugin-config').length).toBe(0);
     expect(manifest.items.filter(item => item.loader === 'plugin-meta').length).toBe(1);
     expect(manifest.items.filter(item => item.loader === 'exception').length).toBe(1);
