@@ -111,7 +111,7 @@ export class Scanner {
       this.setPluginMeta(plugin);
       await this.walk(
         plugin.importPath,
-        this.formatWalkOptions('plugin', plugin.importPath, plugin.name, plugin.metadata)
+        this.formatWalkOptions('plugin', plugin.importPath, plugin.name, plugin.metadata),
       );
     }
 
