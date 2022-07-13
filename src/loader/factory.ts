@@ -17,7 +17,7 @@ import LoaderEventEmitter, { LoaderEventListener } from './loader_event';
 export class LoaderFactory {
   private container: Container;
   private static loaderClazzMap: Map<string, LoaderConstructor> = new Map();
-  private loaderEvent: LoaderEventEmitter;
+  private loaderEmitter: LoaderEventEmitter;
 
   static register(clazz: LoaderConstructor) {
     const loaderName = Reflect.getMetadata(LOADER_NAME_META, clazz);
@@ -26,7 +26,7 @@ export class LoaderFactory {
 
   constructor(container: Container) {
     this.container = container;
-    this.loaderEvent = new LoaderEventEmitter();
+    this.loaderEmitter = new LoaderEventEmitter();
   }
 
   static create(container: Container): LoaderFactory {
@@ -42,7 +42,12 @@ export class LoaderFactory {
   }
 
   addLoaderListener(eventName: string, listener: LoaderEventListener) {
-    this.loaderEvent.addListener(eventName, listener);
+    this.loaderEmitter.addListener(eventName, listener);
+    return this;
+  }
+
+  removeLoaderListener(eventName: string, stage?: 'before' | 'after') {
+    this.loaderEmitter.removeListener(eventName, stage);
     return this;
   }
 
@@ -65,15 +70,15 @@ export class LoaderFactory {
       const curLoader = item.loader ?? DEFAULT_LOADER;
       if (item.loader !== prevLoader) {
         if (prevLoader) {
-          await this.loaderEvent.emitAfter(prevLoader);
+          await this.loaderEmitter.emitAfter(prevLoader);
         }
-        await this.loaderEvent.emitBefore(curLoader);
+        await this.loaderEmitter.emitBefore(curLoader);
         prevLoader = curLoader;
       }
       await this.loadItem(item);
     }
     if (prevLoader) {
-      await this.loaderEvent.emitAfter(prevLoader);
+      await this.loaderEmitter.emitAfter(prevLoader);
     }
   }
 

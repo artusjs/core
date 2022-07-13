@@ -20,7 +20,7 @@ export default class LoaderEventEmitter {
     }
   }
 
-  removeListener(eventName: string, stage: keyof LoaderEventListener) {
+  removeListener(eventName: string, stage?: keyof LoaderEventListener) {
     if (!this.listeners[eventName]) {
       return;
     }

@@ -35,4 +35,3 @@ export interface TriggerType {
   initContext(...args): Promise<BaseContext>;
   startPipeline(...args): Promise<void>;
 }
-
