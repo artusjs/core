@@ -64,7 +64,7 @@ export class LoaderFactory {
   }
 
   async loadItemList(itemList: ManifestItem[] = [], root?: string): Promise<void> {
-    let prevLoader: string = '';
+    let prevLoader = '';
     for (const item of itemList) {
       item.path = root ? path.join(root, item.path) : item.path;
       const curLoader = item.loader ?? DEFAULT_LOADER;

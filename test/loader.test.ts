@@ -32,7 +32,7 @@ describe('test/loader.test.ts', () => {
           get(_target, properName: string) {
             return container.get(properName);
           },
-        }
+        },
       );
       assert((container.get('testServiceA') as any).testMethod(appProxy) === 'Hello Artus');
     });
