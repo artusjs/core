@@ -22,7 +22,7 @@ export enum ARTUS_DEFAULT_CONFIG_ENV {
   DEV = 'development',
   PROD = 'production',
   DEFAULT = 'default',
-};
+}
 
 export const HOOK_NAME_META_PREFIX = 'hookName:';
 export const CONSTRUCTOR_PARAMS = 'constructor:params';
@@ -40,7 +40,7 @@ export const DEFAULT_EXCLUDES = [
   '*.d.ts',
   'jest.config.*',
   'meta.*',
-  'LICENSE'
+  'LICENSE',
 ];
 
 export const FRAMEWORK_PATTERN = 'framework.*';

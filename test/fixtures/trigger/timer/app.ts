@@ -3,16 +3,16 @@ import { LifecycleHookUnit, LifecycleHook, WithApplication } from '../../../../s
 import { Context, Input } from '@artus/pipeline';
 import { ApplicationLifecycle } from '../../../../src/types';
 
-let timers: any[] = [];
-export let execution = {
+const timers: any[] = [];
+export const execution = {
   task1: {
     count: 0,
     cost: 0,
   },
   task2: {
     count: 0,
-    cost: 0
-  }
+    cost: 0,
+  },
 };
 
 @LifecycleHookUnit()

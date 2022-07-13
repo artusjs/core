@@ -1,4 +1,4 @@
-import { Injectable } from "@artus/injection"
+import { Injectable } from "@artus/injection";
 import { ArtusApplication } from '../../../../../../../src';
 import { server } from './lifecycle';
 

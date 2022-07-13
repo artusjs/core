@@ -9,7 +9,6 @@ export default class Trigger implements TriggerType {
   private pipeline: Pipeline;
 
   @Inject(ArtusInjectEnum.Application)
-  // @ts-ignore
   private app: Application;
 
   constructor() {

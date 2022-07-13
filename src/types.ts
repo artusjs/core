@@ -36,4 +36,3 @@ export interface TriggerType {
   startPipeline(...args): Promise<void>;
 }
 
-export * from './loader/types';

@@ -5,10 +5,10 @@ export interface RedisConfig {
 }
 
 @Injectable({
-  id: 'ARTUS_REDIS'
+  id: 'ARTUS_REDIS',
 })
 export default class Client {
-  private clientName: string = '';
+  private clientName = '';
 
   async init(config: RedisConfig) {
     this.clientName = config.clientName;
@@ -17,4 +17,4 @@ export default class Client {
   async getClient(): Promise<string> {
     return this.clientName;
   }
-};
+}

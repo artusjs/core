@@ -1,16 +1,15 @@
 import 'reflect-metadata';
 import { Context, Next } from '@artus/pipeline';
-import { Constructable } from '@artus/injection';
+import { Constructable , Injectable, ScopeEnum } from '@artus/injection';
 import { CONSTRUCTOR_PARAMS, CONSTRUCTOR_PARAMS_CONTEXT } from '../../../../../src/constant';
 import { HttpTrigger } from '../../abstract/foo';
-import { Injectable, ScopeEnum } from '@artus/injection';
 
 export const enum HTTPMethodEnum {
   GET = 'GET',
   POST = 'POST',
   DELETE = ' DELETE',
   PUT = 'PUT',
-};
+}
 
 export type ControllerParams = {
   path?: string
@@ -24,7 +23,7 @@ export type HttpParams = {
 export type ControllerMeta = {
   prefix: string,
   clazz: Constructable
-}
+};
 
 export const controllerMap = new Set<ControllerMeta>();
 
@@ -72,9 +71,9 @@ export function registerController(trigger: HttpTrigger) {
           const target = instance[key];
           const params: any = Reflect.getMetadata(CONSTRUCTOR_PARAMS, target) ?? [];
           const paramsMap = {
-            [CONSTRUCTOR_PARAMS_CONTEXT]: ctx
+            [CONSTRUCTOR_PARAMS_CONTEXT]: ctx,
           };
-          ctx.output.data.content = await target.call(instance, ...params.map((param) => paramsMap[param]));
+          ctx.output.data.content = await target.call(instance, ...params.map(param => paramsMap[param]));
         }
         await next();
       });

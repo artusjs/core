@@ -21,7 +21,7 @@ class PluginMetaLoader implements Loader {
     const pluginMeta: PluginMetadata = await loadMetaFile<PluginMetadata>(item);
     this.container.set({
       id: `pluginMeta_${pluginMeta.name}`,
-      value: pluginMeta
+      value: pluginMeta,
     });
   }
 }

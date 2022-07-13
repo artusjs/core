@@ -2,12 +2,9 @@
 
 export {
   Inject,
-  Injectable
+  Injectable,
 } from '@artus/injection';
 
-export {
-  ArtusInjectEnum
-} from './constant';
 export * from './loader';
 export * from './logger';
 export * from './lifecycle';
@@ -24,7 +21,3 @@ export { ConfigurationHandler };
 
 import Trigger from './trigger';
 export { Trigger };
-
-export type {
-  Manifest
-} from './loader/types';

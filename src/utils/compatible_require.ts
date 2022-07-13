@@ -5,7 +5,7 @@ import assert from 'assert';
  * @param path
  */
 export default async function compatibleRequire(path: string): Promise<any> {
-  let requiredModule = await import(path);
+  const requiredModule = await import(path);
 
   assert(requiredModule, `module '${path}' exports is undefined`);
 

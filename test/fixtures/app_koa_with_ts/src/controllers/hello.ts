@@ -4,11 +4,10 @@ import HelloService from '../services/hello';
 
 // TODO: 待实现 Controller/Route 装饰器
 @Injectable({
-  scope: ScopeEnum.EXECUTION
+  scope: ScopeEnum.EXECUTION,
 })
 export default class HelloController {
   @Inject(HelloService)
-  // @ts-ignore
   helloService: HelloService;
 
   async index () {
@@ -16,8 +15,8 @@ export default class HelloController {
       status: 200,
       content: 'Hello Artus',
       headers: {
-        ...this.helloService?.getTestHeaders()
-      }
+        ...this.helloService?.getTestHeaders(),
+      },
     };
   }
 }

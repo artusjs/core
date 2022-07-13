@@ -8,11 +8,11 @@ const koaApp = new Koa();
 
 @LifecycleHookUnit()
 export default class MyLifecycle implements ApplicationLifecycle {
-  testStr: string = 'Hello Artus';
+  testStr = 'Hello Artus';
 
   @LifecycleHook()
   willReady() {
-    koaApp.use((ctx) => {
+    koaApp.use(ctx => {
       ctx.status = 200;
       ctx.body = this.testStr;
     });

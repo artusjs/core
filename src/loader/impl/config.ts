@@ -37,8 +37,8 @@ class ConfigLoader implements Loader {
   }
 
   protected static isConfigDir(opts: LoaderFindOptions): boolean {
-      const { configDir, baseDir, root } = opts;
-      return path.join(baseDir, configDir) === root;
+    const { configDir, baseDir, root } = opts;
+    return path.join(baseDir, configDir) === root;
   }
 
   async load(item: ManifestItem) {
@@ -46,7 +46,7 @@ class ConfigLoader implements Loader {
     let configObj = await this.loadConfigFile(item);
     if (namespace) {
       configObj = {
-        [namespace]: configObj
+        [namespace]: configObj,
       };
     }
     this.configurationHandler.setConfig(env, configObj);
@@ -59,12 +59,12 @@ class ConfigLoader implements Loader {
       env = ARTUS_DEFAULT_CONFIG_ENV.DEFAULT;
     }
     const meta: ConfigFileMeta = {
-      env
+      env,
     };
     if (namespace !== 'config') {
       meta.namespace = namespace;
     }
-    return meta
+    return meta;
   }
 
   protected async loadConfigFile(item: ManifestItem): Promise<Record<string, any>> {

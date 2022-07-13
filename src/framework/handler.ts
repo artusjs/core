@@ -1,6 +1,6 @@
 import path from 'path';
 import ConfigurationHandler, { ConfigObject } from '../configuration';
-import { ManifestItem } from '../types';
+import { ManifestItem } from '../loader/types';
 
 export interface FrameworkConfig {
   path?: string,
@@ -27,7 +27,7 @@ export class FrameworkHandler {
     }
 
     try {
-      let baseFrameworkPath = config.path ?? path.dirname(require.resolve(config.package ?? '', { paths: [root] }));
+      const baseFrameworkPath = config.path ?? path.dirname(require.resolve(config.package ?? '', { paths: [root] }));
       return baseFrameworkPath;
     } catch (err) {
       throw new Error(`load framework faild: ${err}, framework config: ${JSON.stringify(config)}`);

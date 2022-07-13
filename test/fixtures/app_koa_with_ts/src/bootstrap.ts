@@ -12,46 +12,46 @@ async function main() {
         extname: '.ts',
         filename: 'app.ts',
         loader: 'lifecycle-hook-unit',
-        source: 'app'
+        source: 'app',
       },
       {
         path: path.resolve(__dirname, './koa_app'),
         extname: '.ts',
         filename: 'koaApp.ts',
         loader: 'module',
-        source: 'app'
+        source: 'app',
       },
       {
         path: path.resolve(__dirname, './http_trigger'),
         extname: '.ts',
         filename: 'httpTrigger.ts',
         loader: 'module',
-        source: 'app'
+        source: 'app',
       },
       {
         path: path.resolve(__dirname, './controllers/hello'),
         extname: '.ts',
         filename: 'hello.ts',
         loader: 'module',
-        source: 'app'
+        source: 'app',
       },
       {
         path: path.resolve(__dirname, './services/hello'),
         extname: '.ts',
         filename: 'hello.ts',
         loader: 'module',
-        source: 'app'
-      }
-    ]
+        source: 'app',
+      },
+    ],
   });
   await app.run();
 
   return app;
-};
+}
 
 const isListening = () => server.listening;
 
 export {
   main,
-  isListening
+  isListening,
 };

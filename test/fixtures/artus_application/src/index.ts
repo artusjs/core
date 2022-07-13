@@ -1,15 +1,13 @@
 import path from 'path';
 import { Manifest, ArtusApplication, ArtusInjectEnum } from "../../../../src";
 import { AbstractBar } from '../../frameworks/bar/src';
-import { Inject, Injectable } from "@artus/injection"
+import { Inject, Injectable } from "@artus/injection";
 
 @Injectable()
 export default class MyArtusApplication {
   @Inject('ABSTRACT_BAR')
-  // @ts-ignore
   private bar: AbstractBar;
   @Inject(ArtusInjectEnum.Application)
-  // @ts-ignore
   public artus: ArtusApplication;
 
   static async instance(manifest: Manifest): Promise<MyArtusApplication> {

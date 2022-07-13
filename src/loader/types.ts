@@ -30,17 +30,17 @@ interface LoaderFindResult {
 interface LoaderHookUnit {
   before?: Function,
   after?: Function,
-};
+}
 
 interface LoaderConstructor {
   new(container: Container): Loader;
   is?(opts: LoaderFindOptions): Promise<boolean>;
   onFind?(opts: LoaderFindOptions): Promise<any>;
-};
+}
 interface Loader {
   state?: any;
   load(item: ManifestItem): Promise<void>;
-};
+}
 
 export {
   Manifest,

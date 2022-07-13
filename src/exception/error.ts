@@ -12,22 +12,22 @@ export const ErrorCodeUtils = {
       return exceptionItem.desc;
     }
     return exceptionItem.desc[currentLocale];
-   }
+  },
 };
 
 export class ArtusStdError extends Error {
-  name: string = 'ArtusStdError';
+  name = 'ArtusStdError';
   private _code: string;
   private _codeMap: Map<string, ExceptionItem>;
   
   constructor (code: string, codeMap: Map<string, ExceptionItem>) {
-      super(`[${code}] This is Artus standard error, Please check on https://github.com/artusjs/error-code`);
-      this._code = code;
-      this._codeMap = codeMap
+    super(`[${code}] This is Artus standard error, Please check on https://github.com/artusjs/error-code`);
+    this._code = code;
+    this._codeMap = codeMap;
   }
   
   get code(): string {
-      return this._code;
+    return this._code;
   }
   
   get desc(): string {

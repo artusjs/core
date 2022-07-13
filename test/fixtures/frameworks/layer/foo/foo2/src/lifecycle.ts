@@ -1,5 +1,4 @@
-import { Server } from 'http';
-import http from 'http';
+import http, { Server } from 'http';
 import { LifecycleHookUnit, LifecycleHook, WithApplication } from '../../../../../../../src/decorator';
 import { ApplicationLifecycle } from '../../../../../../../src/types';
 import { Input } from '@artus/pipeline';

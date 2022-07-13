@@ -7,10 +7,6 @@ import { isMatch } from '../../utils';
 
 @DefineLoader('framework-config')
 class FrameworkConfigLoader extends ConfigLoader implements Loader {
-  constructor(container) {
-    super(container);
-  }
-
   static async is(opts: LoaderFindOptions): Promise<boolean> {
     if (this.isConfigDir(opts)) {
       return isMatch(opts.filename, FRAMEWORK_PATTERN);
