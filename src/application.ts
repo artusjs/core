@@ -15,12 +15,13 @@ export class ArtusApplication implements Application {
   protected container: Container;
   protected lifecycleManager: LifecycleManager;
   protected loaderFactory: LoaderFactory;
-  protected defaultClazzLoaded = false;
 
   constructor(opts?: ApplicationInitOptions) {
     this.container = new Container(opts?.containerName ?? ArtusInjectEnum.DefaultContainerName);
     this.lifecycleManager = new LifecycleManager(this, this.container);
     this.loaderFactory = LoaderFactory.create(this.container);
+
+    this.loadDefaultClass();
 
     process.on('SIGINT', () => this.close(true));
     process.on('SIGTERM', () => this.close(true));
@@ -59,25 +60,19 @@ export class ArtusApplication implements Application {
     return this.container;
   }
 
-  async loadDefaultClass() {
+  loadDefaultClass() {
     // load Artus default clazz
+    this.container.set({ id: Container, value: this.container });
     this.container.set({ id: ArtusInjectEnum.Application, value: this });
     this.container.set({ id: ArtusInjectEnum.LifecycleManager, value: this.lifecycleManager });
 
-    // SEEME: 暂时使用 set 进行注入，后续考虑更改为 Loader
     this.container.set({ type: ConfigurationHandler });
     this.container.set({ type: ArtusLogger });
     this.container.set({ type: Trigger });
     this.container.set({ type: ExceptionHandler });
-
-    this.defaultClazzLoaded = true;
   }
 
   async load(manifest: Manifest, root: string = process.cwd()) {
-    if (!this.defaultClazzLoaded) {
-      await this.loadDefaultClass();
-    }
-
     // Load user manifest
     this.manifest = manifest;
 

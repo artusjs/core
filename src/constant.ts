@@ -62,3 +62,5 @@ export const DEFAULT_LOADER_LIST_WITH_ORDER = [
 ];
 
 export const DEFAULT_CONFIG_DIR = 'src/config';
+
+export const SHOULD_OVERWRITE_VALUE = 'shouldOverwrite';

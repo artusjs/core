@@ -2,6 +2,7 @@ import { Container, InjectableDefinition } from '@artus/injection';
 import { DefineLoader } from '../decorator';
 import { ManifestItem, Loader } from '../types';
 import compatibleRequire from '../../utils/compatible_require';
+import { SHOULD_OVERWRITE_VALUE } from '../../constant';
 
 @DefineLoader('module')
 class ModuleLoader implements Loader {
@@ -21,7 +22,9 @@ class ModuleLoader implements Loader {
       opts.id = item.id;
     }
 
-    if(!this.container.hasValue(opts)) {
+    const shouldOverwriteValue = Reflect.getMetadata(SHOULD_OVERWRITE_VALUE, moduleClazz);
+
+    if(shouldOverwriteValue || !this.container.hasValue(opts)) {
       this.container.set(opts);
     }
   }
