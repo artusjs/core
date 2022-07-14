@@ -6,7 +6,7 @@ import { Container } from '@artus/injection';
 import {
   ArtusInjectEnum,
   DEFAULT_LOADER,
-  PLUGIN_META,
+  PLUGIN_META_FILENAME,
 } from '../constant';
 import { LoaderFactory, ManifestItem } from '../loader';
 import { WalkOptions } from './types';
@@ -39,7 +39,7 @@ export class ScanUtils {
       if (itemStat.isDirectory()) {
         // ignore plugin dir
         // TODO:  怎么判断是否是插件文件夹
-        if (this.exist(realPath, PLUGIN_META)) {
+        if (this.exist(realPath, [PLUGIN_META_FILENAME])) {
           continue;
         }
         await ScanUtils.walk(realPath, options);

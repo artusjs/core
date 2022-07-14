@@ -1,0 +1,12 @@
+{
+    "name": "plugin-a",
+    "dependencies": [
+        {
+            "name": "plugin-b"
+        },
+        {
+            "name": "plugin-c",
+            "optional": true
+        }
+    ]
+}

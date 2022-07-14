@@ -1,0 +1,13 @@
+{
+  "ARTUS:GLOBAL_TEST": {
+      "desc": "全局测试错误，仅用于单元测试",
+      "detailUrl": "https://github.com/artusjs/spec"
+  },
+  "ARTUS:GLOBAL_TEST_I18N": {
+      "desc": {
+          "zh": "全局测试错误，仅用于单元测试",
+          "en": "This is a test exception, only valid in unit-test"
+      },
+      "detailUrl": "https://github.com/artusjs/spec"
+  }
+}

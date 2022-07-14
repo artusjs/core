@@ -4,7 +4,7 @@ import { ManifestItem, Loader, LoaderFindOptions } from '../types';
 import { ExceptionItem } from '../../exception/types';
 import { ExceptionHandler } from '../../exception';
 import { loadMetaFile } from '../../utils/load_meta_file';
-import { EXCEPTION_FILE } from '../../constant';
+import { EXCEPTION_FILENAME } from '../../constant';
 import { isMatch } from '../../utils';
 
 @DefineLoader('exception')
@@ -16,7 +16,7 @@ class ExceptionLoader implements Loader {
   }
 
   static async is(opts: LoaderFindOptions) {
-    return isMatch(opts.filename, EXCEPTION_FILE);
+    return isMatch(opts.filename, EXCEPTION_FILENAME);
   }
 
   async load(item: ManifestItem) {
