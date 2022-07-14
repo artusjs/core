@@ -28,11 +28,7 @@ export class ArtusPlugin extends BasePlugin {
       if (!await exisis(metaFilePath)) {
         throw new Error(`load plugin <${this.name}> import path ${this.importPath} can't find meta file.`);
       }
-      this.metadata = await loadMetaFile({
-        path: metaFilePath,
-        extname: path.extname(metaFilePath),
-        filename: PLUGIN_META_FILENAME,
-      });
+      this.metadata = await loadMetaFile(metaFilePath);
       this.metaFilePath = metaFilePath;
     } catch (e) {
       throw new Error(`load plugin <${this.name}> failed, err: ${e}`);

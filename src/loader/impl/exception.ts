@@ -22,7 +22,7 @@ class ExceptionLoader implements Loader {
   async load(item: ManifestItem) {
     const exceptionHandler = this.container.get(ExceptionHandler);
     try {
-      const codeMap: Record<string, ExceptionItem> = await loadMetaFile<Record<string, ExceptionItem>>(item);
+      const codeMap: Record<string, ExceptionItem> = await loadMetaFile<Record<string, ExceptionItem>>(item.path);
       for (const [errCode, exceptionItem] of Object.entries(codeMap)) {
         exceptionHandler.registerCode(errCode, exceptionItem);
       }

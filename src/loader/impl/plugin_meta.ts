@@ -19,7 +19,7 @@ class PluginMetaLoader implements Loader {
   }
 
   async load(item: ManifestItem) {
-    const pluginMeta: PluginMetadata = await loadMetaFile<PluginMetadata>(item);
+    const pluginMeta: PluginMetadata = await loadMetaFile<PluginMetadata>(item.path);
     this.container.set({
       id: `pluginMeta_${pluginMeta.name}`,
       value: pluginMeta,

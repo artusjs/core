@@ -38,7 +38,6 @@ export class ScanUtils {
       const itemStat = await fs.stat(realPath);
       if (itemStat.isDirectory()) {
         // ignore plugin dir
-        // TODO:  怎么判断是否是插件文件夹
         if (this.exist(realPath, [PLUGIN_META_FILENAME])) {
           continue;
         }
