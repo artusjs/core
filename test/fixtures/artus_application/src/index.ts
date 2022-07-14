@@ -13,7 +13,7 @@ export default class MyArtusApplication {
   static async instance(manifest: Manifest): Promise<MyArtusApplication> {
     const app = new ArtusApplication();
     await app.load(manifest, path.join(__dirname, '..'));
-    const instance = app.getContainer().get(MyArtusApplication);
+    const instance = app.container.get(MyArtusApplication);
     return instance;
   }
 

@@ -17,6 +17,8 @@ export interface ApplicationInitOptions {
 }
 
 export interface Application {
+  container: Container;
+
   manifest?: Manifest;
   config?: Record<string, any>;
 
@@ -25,9 +27,6 @@ export interface Application {
   load(manifest: Manifest): Promise<this>;
   run(): Promise<void>;
   registerHook(hookName: string, hookFn: HookFunction): void;
-
-  // 兜底方法，不建议使用
-  getContainer(): Container;
 }
 
 export interface TriggerType {

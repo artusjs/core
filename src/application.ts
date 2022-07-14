@@ -11,8 +11,8 @@ import { ArtusLogger, Logger } from './logger';
 
 export class ArtusApplication implements Application {
   public manifest?: Manifest;
+  public container: Container;
 
-  protected container: Container;
   protected lifecycleManager: LifecycleManager;
   protected loaderFactory: LoaderFactory;
   protected defaultClazzLoaded = false;
@@ -52,11 +52,6 @@ export class ArtusApplication implements Application {
 
   get configurationHandler(): ConfigurationHandler {
     return this.container.get(ConfigurationHandler);
-  }
-
-  // 兜底方法，不建议对外部使用
-  getContainer(): Container {
-    return this.container;
   }
 
   async loadDefaultClass() {
