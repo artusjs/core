@@ -1,0 +1,6 @@
+{
+  "APP:TEST_ERROR": {
+      "desc": "这是一个测试用的错误",
+      "detailUrl": "https://github.com/artusjs"
+  }
+}

@@ -66,7 +66,6 @@
     "@artus/injection": "^0.3.1",
     "@artus/pipeline": "^0.2.2",
     "deepmerge": "^4.2.2",
-    "js-yaml": "^4.1.0",
     "minimatch": "^5.0.1"
   },
   "ci": {
