@@ -9,7 +9,12 @@ export class BaseLogger implements Logger {
   private container!: Container;
 
   protected get loggerOpts(): LoggerOptions {
-    const appConfig: Record<string, any> = this.container.get(ArtusInjectEnum.Config);
+    let appConfig: Record<string, any> = {};
+    try {
+      appConfig = this.container.get(ArtusInjectEnum.Config);
+    } catch(e) {
+      // do nothing
+    }
     return appConfig?.logger ?? {};
   }
 
