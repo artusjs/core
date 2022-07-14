@@ -23,6 +23,10 @@ export default class Trigger implements TriggerType {
   async initContext(input: Input = new Input(), output = new Output()): Promise<Context> {
     const ctx = new Context(input, output);
     ctx.container = new ExecutionContainer(ctx, this.app.container);
+    ctx.container.set({
+      id: ExecutionContainer,
+      value: ctx.container,
+    });
     return ctx;
   }
 
