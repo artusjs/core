@@ -1,5 +1,4 @@
 import { DefaultContext } from 'koa';
-import { Server } from 'http';
 import { Container } from '@artus/injection';
 import { Context, Input } from '@artus/pipeline';
 
@@ -9,8 +8,6 @@ import { ApplicationLifecycle } from '../../../../src/types';
 
 import KoaApplication from './koa_app';
 import HelloController from './controllers/hello';
-
-export let server: Server;
 
 @LifecycleHookUnit()
 export default class MyLifecycle implements ApplicationLifecycle {
@@ -48,6 +45,6 @@ export default class MyLifecycle implements ApplicationLifecycle {
 
   @LifecycleHook()
   beforeClose() {
-    server?.close();
+    this.koaApp.close();
   }
 }

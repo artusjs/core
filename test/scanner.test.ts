@@ -12,7 +12,7 @@ describe('test/scanner.test.ts', () => {
     expect(manifest).toBeDefined();
     expect(manifest.items).toBeDefined();
     // console.log('manifest', manifest);
-    expect(manifest.items.length).toBe(11);
+    expect(manifest.items.length).toBe(12);
 
     expect(manifest.items.find(item => item.filename === 'not_to_be_scanned_file.ts')).toBeFalsy();
 
@@ -21,17 +21,17 @@ describe('test/scanner.test.ts', () => {
     expect(manifest.items.filter(item => item.loader === 'exception').length).toBe(1);
     expect(manifest.items.filter(item => item.loader === 'lifecycle-hook-unit').length).toBe(2);
     expect(manifest.items.filter(item => item.loader === 'config').length).toBe(1);
-    expect(manifest.items.filter(item => item.loader === 'module').length).toBe(5);
+    expect(manifest.items.filter(item => item.loader === 'module').length).toBe(6);
 
     expect(manifest.items.filter(item => item.unitName === 'redis').length).toBe(2);
     expect(manifest.items.filter(item => item.unitName === 'mysql').length).toBe(0);
-    expect(manifest.items.filter(item => item.source === 'app').length).toBe(9);
+    expect(manifest.items.filter(item => item.source === 'app').length).toBe(10);
 
     const { dev: devManifest } = scanResults;
     // console.log('devManifest', devManifest);
     expect(devManifest).toBeDefined();
     expect(devManifest.items).toBeDefined();
-    expect(devManifest.items.length).toBe(12);
+    expect(devManifest.items.length).toBe(13);
     expect(devManifest.items.filter(item => item.loader === 'plugin-meta').length).toBe(2);
     expect(devManifest.items.find(item => item.unitName === 'testDuplicate')).toBeDefined();
   });

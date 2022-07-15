@@ -97,7 +97,8 @@ export class ArtusApplication implements Application {
     try {
       bootstrap = await this.container.getAsync(ArtusInjectEnum.Bootstrap);
     } catch (error) {
-      this.logger.warn('Bootstrap is not implemented, server will not start');
+      // TODO: need use this.logger to log warn message, depends on artusjs/core#139
+      // this.logger.warn('Bootstrap is not implemented, server will not start');
     }
     if (bootstrap) {
       await bootstrap.run();
