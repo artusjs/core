@@ -1,17 +1,14 @@
 import { Constructable, Container } from '@artus/injection';
 import { Application } from '../types';
 import {
-  CONSTRUCTOR_PARAMS,
-  CONSTRUCTOR_PARAMS_APP,
-  CONSTRUCTOR_PARAMS_CONTAINER,
   HOOK_NAME_META_PREFIX,
 } from '../constant';
 
-export type HookFunction = <T = unknown>(hookProps : {
+export type HookFunction = <T = unknown>(hookProps: {
   app: Application,
   lifecycleManager: LifecycleManager,
   payload?: T
-}) => void|Promise<void>;
+}) => void | Promise<void>;
 
 export class LifecycleManager {
   hookList: string[] = [
@@ -52,12 +49,7 @@ export class LifecycleManager {
 
   registerHookUnit(extClazz: Constructable<any>) {
     const fnMetaKeys = Reflect.getMetadataKeys(extClazz);
-    const constructorParams = Reflect.getMetadata(CONSTRUCTOR_PARAMS, extClazz) ?? [];
-    const paramsMap = {
-      [CONSTRUCTOR_PARAMS_APP]: this.app,
-      [CONSTRUCTOR_PARAMS_CONTAINER]: this.container,
-    };
-    const extClazzInstance = new extClazz(...constructorParams.map(param => paramsMap[param]));
+    const extClazzInstance = this.container.get(extClazz);
     for (const fnMetaKey of fnMetaKeys) {
       if (typeof fnMetaKey !== 'string' || !fnMetaKey.startsWith(HOOK_NAME_META_PREFIX)) {
         continue;

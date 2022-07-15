@@ -54,12 +54,12 @@ export const EXCEPTION_FILENAME = 'exception.json';
 export const DEFAULT_LOADER_LIST_WITH_ORDER = [
   'exception',
   'plugin-config',
-  'lifecycle-hook-unit',
-  'config',
   'plugin-meta',
-  'module',
   'framework-config',
   'package-json',
+  'module',
+  'lifecycle-hook-unit',
+  'config',
 ];
 
 export const DEFAULT_CONFIG_DIR = 'src/config';

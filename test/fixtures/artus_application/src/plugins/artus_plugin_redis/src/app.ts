@@ -1,18 +1,15 @@
 import { Server } from 'http';
-import { LifecycleHookUnit, LifecycleHook, WithApplication } from '../../../../../../../src/decorator';
+import { LifecycleHookUnit, LifecycleHook } from '../../../../../../../src/decorator';
 import { ApplicationLifecycle } from '../../../../../../../src/types';
-import { ArtusApplication } from '../../../../../../../src';
+import { ArtusApplication, Inject, ArtusInjectEnum } from '../../../../../../../src';
 import Client, { RedisConfig } from './client';
 
 export let server: Server;
 
 @LifecycleHookUnit()
 export default class MyLifecycle implements ApplicationLifecycle {
+  @Inject(ArtusInjectEnum.Application)
   app: ArtusApplication;
-
-  constructor(@WithApplication() app: ArtusApplication) {
-    this.app = app;
-  }
 
   @LifecycleHook()
   async willReady() {
