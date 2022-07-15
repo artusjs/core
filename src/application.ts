@@ -92,12 +92,11 @@ export class ArtusApplication implements Application {
   async run() {
     await this.lifecycleManager.emitHook('willReady');
 
-    // 通知协议实现层启动服务器
+    // Notify protocol-implementer that the server can be started
     let bootstrap: Bootstrap;
     try {
       bootstrap = await this.container.getAsync(ArtusInjectEnum.Bootstrap);
     } catch (error) {
-      // 如果没有实现 Bootstrap 接口，则不启动服务器
       this.logger.warn('Bootstrap is not implemented, server will not start');
     }
     if (bootstrap) {
