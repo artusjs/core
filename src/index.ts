@@ -5,6 +5,7 @@ export {
   Injectable,
 } from '@artus/injection';
 
+export * from './bootstrap';
 export * from './loader';
 export * from './logger';
 export * from './lifecycle';

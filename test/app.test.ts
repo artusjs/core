@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import axios from 'axios';
 import assert from 'assert';
+import KoaApplication from './fixtures/app_koa_with_ts/src/koa_app';
 
 describe('test/app.test.ts', () => {
   describe('app koa with ts', () => {
@@ -17,8 +18,7 @@ describe('test/app.test.ts', () => {
       try {
         const {
           main,
-          isListening,
-        } = await import('./fixtures/app_koa_with_ts/src/bootstrap');
+        } = await import('./fixtures/app_koa_with_ts/src/index');
         const app = await main();
         const testResponse = await axios.get('http://127.0.0.1:3000', {
           headers: {
@@ -29,7 +29,9 @@ describe('test/app.test.ts', () => {
         expect(testResponse.data).toBe('Hello Artus');
         expect(testResponse.headers?.['x-hello-artus']).toBe('true');
         await app.close();
-        expect(isListening()).toBeFalsy();
+
+        const koaApp = app.getContainer().get(KoaApplication);
+        expect(koaApp.isListening()).toBeFalsy();
       } catch (error) {
         throw error;
       }

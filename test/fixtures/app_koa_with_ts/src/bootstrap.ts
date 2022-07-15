@@ -1,57 +1,13 @@
-import 'reflect-metadata';
-import path from 'path';
-import { ArtusApplication } from '../../../../src';
-import { server } from './app';
+import { Inject } from '@artus/injection';
+import KoaApplication from './koa_app';
+import { Bootstrap, DefineBootstrap } from '../../../../src/bootstrap';
 
-async function main() {
-  const app: ArtusApplication = new ArtusApplication();
-  await app.load({
-    items: [
-      {
-        path: path.resolve(__dirname, './app'),
-        extname: '.ts',
-        filename: 'app.ts',
-        loader: 'lifecycle-hook-unit',
-        source: 'app',
-      },
-      {
-        path: path.resolve(__dirname, './koa_app'),
-        extname: '.ts',
-        filename: 'koaApp.ts',
-        loader: 'module',
-        source: 'app',
-      },
-      {
-        path: path.resolve(__dirname, './http_trigger'),
-        extname: '.ts',
-        filename: 'httpTrigger.ts',
-        loader: 'module',
-        source: 'app',
-      },
-      {
-        path: path.resolve(__dirname, './controllers/hello'),
-        extname: '.ts',
-        filename: 'hello.ts',
-        loader: 'module',
-        source: 'app',
-      },
-      {
-        path: path.resolve(__dirname, './services/hello'),
-        extname: '.ts',
-        filename: 'hello.ts',
-        loader: 'module',
-        source: 'app',
-      },
-    ],
-  });
-  await app.run();
+@DefineBootstrap()
+export default class KoaBootstrap implements Bootstrap {
+  @Inject()
+  koaApp: KoaApplication;
 
-  return app;
+  async run(): Promise<void> {
+    this.koaApp.start(3000);
+  }
 }
-
-const isListening = () => server.listening;
-
-export {
-  main,
-  isListening,
-};

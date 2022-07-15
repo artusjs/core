@@ -12,6 +12,7 @@ export enum ArtusInjectEnum {
   Logger = 'artus#logger',
   Packages = 'artus#packages',
   Trigger = 'artus#trigger',
+  Bootstrap = 'artus#bootstrap',
 }
 
 export const ARTUS_EXCEPTION_DEFAULT_LOCALE = 'en';

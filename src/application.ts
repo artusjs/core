@@ -8,6 +8,7 @@ import { Application, ApplicationInitOptions, TriggerType } from './types';
 import Trigger from './trigger';
 import ConfigurationHandler from './configuration';
 import { ArtusLogger, Logger } from './logger';
+import { Bootstrap } from './bootstrap';
 
 export class ArtusApplication implements Application {
   public manifest?: Manifest;
@@ -89,7 +90,20 @@ export class ArtusApplication implements Application {
   }
 
   async run() {
-    await this.lifecycleManager.emitHook('willReady'); // 通知协议实现层启动服务器
+    await this.lifecycleManager.emitHook('willReady');
+
+    // 通知协议实现层启动服务器
+    let bootstrap: Bootstrap;
+    try {
+      bootstrap = await this.container.getAsync(ArtusInjectEnum.Bootstrap);
+    } catch (error) {
+      // 如果没有实现 Bootstrap 接口，则不启动服务器
+      this.logger.warn('Bootstrap is not implemented, server will not start');
+    }
+    if (bootstrap) {
+      await bootstrap.run();
+    }
+
     await this.lifecycleManager.emitHook('didReady');
   }
 

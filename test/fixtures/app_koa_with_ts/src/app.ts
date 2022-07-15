@@ -46,11 +46,6 @@ export default class MyLifecycle implements ApplicationLifecycle {
     });
   }
 
-  @LifecycleHook('willReady')
-  startKoaServer() {
-    server = this.koaApp.listen(3000);
-  }
-
   @LifecycleHook()
   beforeClose() {
     server?.close();
