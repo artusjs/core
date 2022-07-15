@@ -1,18 +1,15 @@
 import http, { Server } from 'http';
-import { LifecycleHookUnit, LifecycleHook, WithApplication } from '../../../../../../../src/decorator';
+import { LifecycleHookUnit, LifecycleHook } from '../../../../../../../src/decorator';
 import { ApplicationLifecycle } from '../../../../../../../src/types';
 import { Input } from '@artus/pipeline';
-import { ArtusApplication } from '../../../../../../../src';
+import { ArtusApplication, Inject, ArtusInjectEnum } from '../../../../../../../src';
 
 export let server: Server;
 
 @LifecycleHookUnit()
 export default class MyLifecycle implements ApplicationLifecycle {
+  @Inject(ArtusInjectEnum.Application)
   app: ArtusApplication;
-
-  constructor(@WithApplication() app: ArtusApplication) {
-    this.app = app;
-  }
 
   @LifecycleHook()
   willReady() {
