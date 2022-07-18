@@ -24,16 +24,16 @@ describe('test/app.test.ts', () => {
         } = await import('./fixtures/app_koa_with_ts/src/bootstrap');
 
         // Check Artus Default Class Inject to Contianer
-        expect(() => app.getContainer().get(ArtusInjectEnum.Application)).not.toThrow();
-        expect(() => app.getContainer().get(ArtusInjectEnum.LifecycleManager)).not.toThrow();
-        expect(() => app.getContainer().get(ArtusInjectEnum.Logger)).not.toThrow();
-        expect(() => app.getContainer().get(ArtusInjectEnum.Trigger)).not.toThrow();
-        expect(() => app.getContainer().get(ExceptionHandler)).not.toThrow();
-        expect(() => app.getContainer().get(ConfigurationHandler)).not.toThrow();
+        expect(() => app.container.get(ArtusInjectEnum.Application)).not.toThrow();
+        expect(() => app.container.get(ArtusInjectEnum.LifecycleManager)).not.toThrow();
+        expect(() => app.container.get(ArtusInjectEnum.Logger)).not.toThrow();
+        expect(() => app.container.get(ArtusInjectEnum.Trigger)).not.toThrow();
+        expect(() => app.container.get(ExceptionHandler)).not.toThrow();
+        expect(() => app.container.get(ConfigurationHandler)).not.toThrow();
 
         await main();
 
-        expect(app.getContainer().get(ArtusInjectEnum.Trigger)).toBeInstanceOf(HttpTrigger);
+        expect(app.container.get(ArtusInjectEnum.Trigger)).toBeInstanceOf(HttpTrigger);
         
         const testResponse = await axios.get('http://127.0.0.1:3000', {
           headers: {
