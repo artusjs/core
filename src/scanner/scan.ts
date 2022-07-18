@@ -34,7 +34,7 @@ export class Scanner {
       loaderListGenerator: (defaultLoaderList: string[]) => defaultLoaderList,
       ...options,
       exclude: DEFAULT_EXCLUDES.concat(options.exclude ?? []),
-      extensions: [...new Set(this.moduleExtensions.concat(options.extensions ?? [], ['.yaml']))],
+      extensions: [...new Set(this.moduleExtensions.concat(options.extensions ?? []))],
     };
   }
 

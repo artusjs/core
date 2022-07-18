@@ -27,7 +27,7 @@ export default class Hello {
     const app: ArtusApplication = ctx.input.params.app;
     let client;
     try {
-      client = app.getContainer().get('ARTUS_REDIS');
+      client = app.container.get('ARTUS_REDIS');
     } catch {
 
     }

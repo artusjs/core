@@ -4,7 +4,7 @@ type PluginMap = Map<string, BasePlugin>;
 
 export class BasePlugin implements Plugin {
   static getPath(packageName: string): string {
-    return path.resolve(require.resolve(`${packageName}/package.json`), '..');
+    return path.resolve(require.resolve(packageName), '..');
   }
 
   public name: string;
