@@ -64,6 +64,7 @@ export class ArtusApplication implements Application {
     this.container.set({ type: ArtusLogger });
     this.container.set({ type: Trigger });
     this.container.set({ type: ExceptionHandler });
+    this.container.set({ id: Container, value: this.container });
 
     this.defaultClazzLoaded = true;
   }

@@ -54,6 +54,5 @@ describe('test/framework.test.ts', () => {
 
     await app.artus.close();
     assert(!app.isListening());
-
   });
 });

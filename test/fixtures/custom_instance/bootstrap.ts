@@ -1,21 +1,17 @@
 import {
   ArtusApplication,
-  ApplicationLifecycle, LifecycleHookUnit, LifecycleHook,
-  WithApplication, WithContainer,
+  ApplicationLifecycle, LifecycleHookUnit, LifecycleHook, ArtusInjectEnum,
 } from '../../../src/index';
 
-import { Container } from '@artus/injection';
+import { Container, Inject } from '@artus/injection';
 import Custom from './custom';
 
 @LifecycleHookUnit()
 export default class MyLifecycle implements ApplicationLifecycle {
+  @Inject(ArtusInjectEnum.Application)
   app: ArtusApplication;
+  @Inject()
   container: Container;
-
-  constructor(@WithApplication() app: ArtusApplication, @WithContainer() container) {
-    this.app = app;
-    this.container = container;
-  }
 
   @LifecycleHook()
   configDidLoad() {
