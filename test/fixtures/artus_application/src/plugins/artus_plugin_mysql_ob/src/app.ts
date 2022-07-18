@@ -16,7 +16,7 @@ export default class MyLifecycle implements ApplicationLifecycle {
 
   @LifecycleHook()
   async willReady() {
-    const mysql = this.app.getContainer().get('ARTUS_MYSQL') as Client;
+    const mysql = this.app.container.get('ARTUS_MYSQL') as Client;
     await mysql.init(this.app.config.mysql as MysqlConfig);
   }
 }

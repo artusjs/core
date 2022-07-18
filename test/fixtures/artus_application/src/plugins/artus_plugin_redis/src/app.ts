@@ -16,7 +16,7 @@ export default class MyLifecycle implements ApplicationLifecycle {
 
   @LifecycleHook()
   async willReady() {
-    const redis = this.app.getContainer().get('ARTUS_REDIS') as Client;
+    const redis = this.app.container.get('ARTUS_REDIS') as Client;
     await redis.init(this.app.config.redis as RedisConfig);
   }
 }

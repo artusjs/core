@@ -63,7 +63,7 @@ describe('test/loader.test.ts', () => {
   describe('custom instance', () => {
     it('should not overide custom instance', async () => {
       const app = await createApp();
-      expect(app.getContainer().get(Custom).getName()).toBe('foo');
+      expect(app.container.get(Custom).getName()).toBe('foo');
     });
   });
 });

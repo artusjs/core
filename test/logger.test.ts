@@ -12,7 +12,7 @@ interface AppConfigWithLoggerOptions extends Record<string, any> {
 const _getAppWithConfig = async (config: AppConfigWithLoggerOptions = {}, manifest: Manifest = { items: [] }) => {
   const app = new ArtusApplication();
   await app.load(manifest);
-  app.getContainer().set({
+  app.container.set({
     id: ArtusInjectEnum.Config,
     value: config,
   });
@@ -107,7 +107,7 @@ describe('test/logger.test.ts', () => {
       const { default: manifest } = await import('./fixtures/logger/src');
       const app = await _getAppWithConfig({}, manifest);
 
-      const testClazz = app.getContainer().get(TestLoggerClazz);
+      const testClazz = app.container.get(TestLoggerClazz);
 
       testClazz.testTrace('trace', 0, {});
       expect(console.trace).toBeCalledTimes(0);
@@ -134,7 +134,7 @@ describe('test/logger.test.ts', () => {
       const { default: manifest } = await import('./fixtures/logger/src');
       const app = await _getAppWithConfig({}, manifest);
 
-      const testClazz = app.getContainer().get(TestLoggerClazz);
+      const testClazz = app.container.get(TestLoggerClazz);
 
       testClazz.testLog(LoggerLevel.TRACE, 'trace', 0, {});
       expect(console.trace).toBeCalledTimes(0);
@@ -250,7 +250,7 @@ describe('test/logger.test.ts', () => {
         },
       }, manifest);
 
-      const testClazz = app.getContainer().get(TestLoggerClazz);
+      const testClazz = app.container.get(TestLoggerClazz);
 
       testClazz.testTrace('trace', 0, {});
       expect(console.trace).toBeCalledTimes(1);
@@ -283,7 +283,7 @@ describe('test/logger.test.ts', () => {
         },
       }, manifest);
 
-      const testClazz = app.getContainer().get(TestLoggerClazz);
+      const testClazz = app.container.get(TestLoggerClazz);
 
       testClazz.testLog(LoggerLevel.TRACE, 'trace', 0, {});
       expect(console.trace).toBeCalledTimes(1);
@@ -327,7 +327,7 @@ describe('test/logger.test.ts', () => {
     it('should log message with custom method', async () => {
       const { manifestWithCustomLogger: manifest } = await import('./fixtures/logger/src');
       const app = await _getAppWithConfig({}, manifest);
-      const testClazz = app.getContainer().get(TestCustomLoggerClazz);
+      const testClazz = app.container.get(TestCustomLoggerClazz);
 
       app.logger.info('info', 0, {});
       expect(console.info).toBeCalledTimes(1);
