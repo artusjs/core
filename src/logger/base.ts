@@ -1,15 +1,21 @@
-import { Inject } from '@artus/injection';
+import { Container, Inject } from '@artus/injection';
 import { ArtusInjectEnum } from '../constant';
 import { LoggerLevel, LOGGER_LEVEL_MAP } from './level';
 import { Logger, LoggerOptions, LogOptions } from './types';
 
 export class BaseLogger implements Logger {
 
-  @Inject(ArtusInjectEnum.Config)
-  private appConfig!: Record<string, any>;
+  @Inject()
+  private container!: Container;
 
   protected get loggerOpts(): LoggerOptions {
-    return this.appConfig?.logger ?? {};
+    let appConfig: Record<string, any> = {};
+    try {
+      appConfig = this.container.get(ArtusInjectEnum.Config);
+    } catch(e) {
+      // do nothing
+    }
+    return appConfig?.logger ?? {};
   }
 
   protected checkLoggerLevel(level: LoggerLevel) {

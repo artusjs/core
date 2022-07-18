@@ -3,8 +3,9 @@ import path from 'path';
 import { ArtusApplication } from '../../../../src';
 import { server } from './app';
 
+export const app: ArtusApplication = new ArtusApplication();
+
 async function main() {
-  const app: ArtusApplication = new ArtusApplication();
   await app.load({
     items: [
       {
