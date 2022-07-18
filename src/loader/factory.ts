@@ -75,7 +75,9 @@ export class LoaderFactory {
         await this.loaderEmitter.emitBefore(curLoader);
         prevLoader = curLoader;
       }
-      await this.loadItem(item);
+      await this.loaderEmitter.emitBeforeEach(curLoader, item);
+      const result = await this.loadItem(item);
+      await this.loaderEmitter.emitAfterEach(curLoader, result);
     }
     if (prevLoader) {
       await this.loaderEmitter.emitAfter(prevLoader);
@@ -86,7 +88,7 @@ export class LoaderFactory {
     const loaderName = item.loader || DEFAULT_LOADER;
     const loader = this.getLoader(loaderName);
     loader.state = item._loaderState;
-    await loader.load(item);
+    return loader.load(item);
   }
 
   async findLoader(opts: LoaderFindOptions): Promise<LoaderFindResult> {

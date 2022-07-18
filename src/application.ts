@@ -15,12 +15,15 @@ export class ArtusApplication implements Application {
 
   protected lifecycleManager: LifecycleManager;
   protected loaderFactory: LoaderFactory;
+  protected env: string;
 
   constructor(opts?: ApplicationInitOptions) {
     this.container = new Container(opts?.containerName ?? ArtusInjectEnum.DefaultContainerName);
     this.lifecycleManager = new LifecycleManager(this, this.container);
     this.loaderFactory = LoaderFactory.create(this.container);
+    this.env = opts?.env ?? process.env[ARTUS_SERVER_ENV] ?? ARTUS_DEFAULT_CONFIG_ENV.DEV;
 
+    this.addLoaderListener();
     this.loadDefaultClass();
 
     process.on('SIGINT', () => this.close(true));

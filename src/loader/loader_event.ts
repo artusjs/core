@@ -1,6 +1,12 @@
+import { ManifestItem } from './types';
+
 export interface LoaderEventListener {
   before?: CallableFunction;
   after?: CallableFunction;
+
+  beforeEach?: (item: ManifestItem) => void;
+
+  afterEach?: (loadContent: any) => void;
 }
 
 export default class LoaderEventEmitter {
@@ -33,22 +39,28 @@ export default class LoaderEventEmitter {
   }
 
   async emitBefore(eventName, ...args) {
-    const { before = [] } = this.listeners[eventName] ?? {};
-    if (!before || before.length === 0) {
-      return;
-    }
-    for (const listener of before) {
-      await listener(...args);
-    }
+    await this.emit(eventName, 'before', ...args);
   }
 
   async emitAfter(eventName, ...args) {
-    const { after = [] } = this.listeners[eventName] ?? {};
-    if (!after || after.length === 0) {
+    await this.emit(eventName, 'after', ...args);
+  }
+
+  async emitBeforeEach(eventName, ...args) {
+    await this.emit(eventName, 'beforeEach', ...args);
+  }
+
+  async emitAfterEach(eventName, ...args) {
+    await this.emit(eventName, 'afterEach', ...args);
+  }
+
+  async emit(eventName: string, stage: string, ...args) {
+    const stages = (this.listeners[eventName] ?? {})[stage];
+    if (!stages || stages.length === 0) {
       return;
     }
 
-    for (const listener of after) {
+    for (const listener of stages) {
       await listener(...args);
     }
   }
