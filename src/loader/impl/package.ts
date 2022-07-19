@@ -22,6 +22,7 @@ class PackageLoader implements Loader {
     const originConfigObj = await compatibleRequire(item.path);
     const configHandler = this.container.get(ConfigurationHandler);
     configHandler.addPackage(item.source || 'app', originConfigObj);
+    return originConfigObj;
   }
 }
 

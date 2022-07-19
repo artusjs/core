@@ -11,7 +11,7 @@ interface ManifestItem<LoaderState = unknown> extends Record<string, any> {
   filename: string;
   loader?: string;
   source?: string;
-  unitName?: string
+  unitName?: string;
   _loaderState?: LoaderState;
 }
 
@@ -28,18 +28,18 @@ interface LoaderFindResult {
 }
 
 interface LoaderHookUnit {
-  before?: Function,
-  after?: Function,
+  before?: Function;
+  after?: Function;
 }
 
 interface LoaderConstructor {
-  new(container: Container): Loader;
+  new (container: Container): Loader;
   is?(opts: LoaderFindOptions): Promise<boolean>;
   onFind?(opts: LoaderFindOptions): Promise<any>;
 }
 interface Loader {
   state?: any;
-  load(item: ManifestItem): Promise<void>;
+  load(item: ManifestItem): Promise<any>;
 }
 
 export {
@@ -51,4 +51,3 @@ export {
   LoaderFindOptions,
   LoaderFindResult,
 };
-

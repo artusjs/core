@@ -28,7 +28,7 @@
   ],
   "scripts": {
     "build": "tsc -p ./tsconfig.build.json",
-    "test": "jest --detectOpenHandles",
+    "test": "jest --coverage --detectOpenHandles",
     "ci": "npm run lint && npm run test",
     "lint:fix": "eslint . --ext .ts --fix",
     "lint": "eslint . --ext .ts"

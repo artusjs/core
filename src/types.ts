@@ -14,6 +14,7 @@ export interface ApplicationLifecycle {
 
 export interface ApplicationInitOptions {
   containerName?: string;
+  env: string;
 }
 
 export interface Application {
@@ -34,4 +35,3 @@ export interface TriggerType {
   initContext(...args): Promise<BaseContext>;
   startPipeline(...args): Promise<void>;
 }
-

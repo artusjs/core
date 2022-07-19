@@ -6,9 +6,9 @@ import compatibleRequire from '../utils/compatible_require';
 import { DefineConfigHandle } from './decorator';
 
 export type ConfigObject = Record<string, any>;
-export type FrameworkObject = { path: string, env: string };
+export type FrameworkObject = { path: string; env: string };
 export type PackageObject = ConfigObject;
-export type FrameworkOptions = { env: string, unitName: string };
+export type FrameworkOptions = { env: string; unitName: string };
 
 @Injectable()
 export default class ConfigurationHandler {
@@ -31,6 +31,14 @@ export default class ConfigurationHandler {
     return mergeConfig(defaultConfig, envConfig);
   }
 
+  getAllConfig(): ConfigObject {
+    const defaultConfig = this.configStore.get(ARTUS_DEFAULT_CONFIG_ENV.DEFAULT) ?? {};
+    const keys = Array.from(this.configStore.keys()).filter(
+      key => key !== ARTUS_DEFAULT_CONFIG_ENV.DEFAULT,
+    );
+    return mergeConfig(defaultConfig, ...keys.map(key => this.configStore.get(key) ?? {}));
+  }
+
   setConfig(env: string, config: ConfigObject) {
     const storedConfig = this.configStore.get(env) ?? {};
     this.configStore.set(env, mergeConfig(storedConfig, config));
@@ -48,13 +56,15 @@ export default class ConfigurationHandler {
   getFrameworkConfig(
     env?: string,
     key = 'app',
-    frameworkMap = new Map<string, FrameworkObject>()): Map<string, FrameworkObject> {
+    frameworkMap = new Map<string, FrameworkObject>(),
+  ): Map<string, FrameworkObject> {
     if (!this.frameworks.has(key)) {
       return frameworkMap;
     }
     const currentEnv = env ?? process.env[ARTUS_SERVER_ENV] ?? ARTUS_DEFAULT_CONFIG_ENV.DEV;
     const list = this.frameworks.get(key) as unknown as FrameworkObject[];
-    const defaultConfig = list.filter(item => item.env === ARTUS_DEFAULT_CONFIG_ENV.DEFAULT)[0] ?? {};
+    const defaultConfig =
+      list.filter(item => item.env === ARTUS_DEFAULT_CONFIG_ENV.DEFAULT)[0] ?? {};
     const envConfig = list.filter(item => item.env === currentEnv)[0] ?? {};
     const config = mergeConfig(defaultConfig, envConfig) as unknown as FrameworkObject;
     frameworkMap.set(key, config);

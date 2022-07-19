@@ -18,6 +18,7 @@ class LifecycleLoader implements Loader {
     const extClazz: Constructable<ApplicationLifecycle> = await compatibleRequire(item.path);
     const lifecycleManager: LifecycleManager = this.container.get(ArtusInjectEnum.LifecycleManager);
     lifecycleManager.registerHookUnit(extClazz);
+    return extClazz;
   }
 }
 

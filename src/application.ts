@@ -21,6 +21,7 @@ export class ArtusApplication implements Application {
     this.lifecycleManager = new LifecycleManager(this, this.container);
     this.loaderFactory = LoaderFactory.create(this.container);
 
+    this.addLoaderListener();
     this.loadDefaultClass();
 
     process.on('SIGINT', () => this.close(true));
@@ -104,5 +105,33 @@ export class ArtusApplication implements Application {
 
   createException(code: string): ArtusStdError {
     return this.exceptionHandler.create(code);
+  }
+
+  protected addLoaderListener() {
+    this.loaderFactory
+      .addLoaderListener('config', {
+        before: () => this.lifecycleManager.emitHook('configWillLoad'),
+        after: () => {
+          this.container.set({
+            id: ArtusInjectEnum.Config,
+            value: this.configurationHandler.getAllConfig(),
+          });
+          this.lifecycleManager.emitHook('configDidLoad');
+        },
+      })
+      .addLoaderListener('framework-config', {
+        after: () =>
+          this.container.set({
+            id: ArtusInjectEnum.Frameworks,
+            value: this.configurationHandler.getFrameworkConfig(),
+          }),
+      })
+      .addLoaderListener('package-json', {
+        after: () =>
+          this.container.set({
+            id: ArtusInjectEnum.Packages,
+            value: this.configurationHandler.getPackages(),
+          }),
+      });
   }
 }

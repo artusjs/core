@@ -24,6 +24,7 @@ class PluginMetaLoader implements Loader {
       id: `pluginMeta_${pluginMeta.name}`,
       value: pluginMeta,
     });
+    return pluginMeta;
   }
 }
 

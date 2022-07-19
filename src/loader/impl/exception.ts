@@ -22,12 +22,16 @@ class ExceptionLoader implements Loader {
   async load(item: ManifestItem) {
     const exceptionHandler = this.container.get(ExceptionHandler);
     try {
-      const codeMap: Record<string, ExceptionItem> = await loadMetaFile<Record<string, ExceptionItem>>(item.path);
+      const codeMap: Record<string, ExceptionItem> = await loadMetaFile<
+      Record<string, ExceptionItem>
+      >(item.path);
       for (const [errCode, exceptionItem] of Object.entries(codeMap)) {
         exceptionHandler.registerCode(errCode, exceptionItem);
       }
+      return codeMap;
     } catch (error) {
       console.warn(`[Artus-Exception] Parse CodeMap ${item.path} failed: ${error.message}`);
+      return void 0;
     }
   }
 }
