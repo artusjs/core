@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { Container } from '@artus/injection';
-import { ArtusInjectEnum, ARTUS_SERVER_ENV, ARTUS_DEFAULT_CONFIG_ENV } from './constant';
+import { ArtusInjectEnum } from './constant';
 import { ArtusStdError, ExceptionHandler } from './exception';
 import { HookFunction, LifecycleManager } from './lifecycle';
 import { LoaderFactory, Manifest } from './loader';
@@ -15,13 +15,11 @@ export class ArtusApplication implements Application {
 
   protected lifecycleManager: LifecycleManager;
   protected loaderFactory: LoaderFactory;
-  protected env: string;
 
   constructor(opts?: ApplicationInitOptions) {
     this.container = new Container(opts?.containerName ?? ArtusInjectEnum.DefaultContainerName);
     this.lifecycleManager = new LifecycleManager(this, this.container);
     this.loaderFactory = LoaderFactory.create(this.container);
-    this.env = opts?.env ?? process.env[ARTUS_SERVER_ENV] ?? ARTUS_DEFAULT_CONFIG_ENV.DEV;
 
     this.addLoaderListener();
     this.loadDefaultClass();
@@ -116,7 +114,7 @@ export class ArtusApplication implements Application {
         after: () => {
           this.container.set({
             id: ArtusInjectEnum.Config,
-            value: this.configurationHandler.getMergedConfig(this.env),
+            value: this.configurationHandler.getAllConfig(),
           });
           this.lifecycleManager.emitHook('configDidLoad');
         },
