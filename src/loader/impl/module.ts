@@ -24,9 +24,10 @@ class ModuleLoader implements Loader {
 
     const shouldOverwriteValue = Reflect.getMetadata(SHOULD_OVERWRITE_VALUE, moduleClazz);
 
-    if(shouldOverwriteValue || !this.container.hasValue(opts)) {
+    if (shouldOverwriteValue || !this.container.hasValue(opts)) {
       this.container.set(opts);
     }
+    return moduleClazz;
   }
 }
 

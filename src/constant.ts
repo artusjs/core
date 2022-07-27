@@ -33,7 +33,7 @@ export const HOOK_FILE_LOADER = 'appHook:fileLoader';
 export const HOOK_CONFIG_HANDLE = 'appHook:configHandle::';
 
 export const DEFAULT_EXCLUDES = [
-  'test',
+  'test/',
   'node_modules',
   '.*',
   'tsconfig*.json',
@@ -41,6 +41,7 @@ export const DEFAULT_EXCLUDES = [
   'jest.config.*',
   'meta.*',
   'LICENSE',
+  'pnpm-lock.yaml',
 ];
 
 export const FRAMEWORK_PATTERN = 'framework.*';

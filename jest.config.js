@@ -1,13 +1,15 @@
 /** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
 module.exports = {
   transform: {
-      '^.+\\.jsx?$': 'babel-jest',
-      '^.+\\.tsx?$': 'ts-jest',
+    '^.+\\.jsx?$': 'babel-jest',
+    '^.+\\.tsx?$': 'ts-jest',
   },
   preset: 'ts-jest',
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   testEnvironment: 'node',
   testPathIgnorePatterns: [
     '/test/fixtures/app-koa-with-ts/src/controllers'
-  ]
+  ],
+  coverageReporters: ['json', 'json-summary', 'lcov', 'text', 'clover', 'text-summary', 'cobertura'],
+  collectCoverageFrom: ['<rootDir>/src/**/*.ts'],
 };

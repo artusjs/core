@@ -16,11 +16,12 @@ class FrameworkConfigLoader extends ConfigLoader implements Loader {
 
   async load(item: ManifestItem) {
     const { env } = await this.getConfigFileMeta(item);
-    const configObj = await this.loadConfigFile(item) as FrameworkObject;
+    const configObj = (await this.loadConfigFile(item)) as FrameworkObject;
     this.configurationHandler.addFramework(item.source || 'app', configObj, {
       env,
       unitName: item.unitName || '',
     });
+    return configObj;
   }
 }
 

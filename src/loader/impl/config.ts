@@ -50,6 +50,7 @@ class ConfigLoader implements Loader {
       };
     }
     this.configurationHandler.setConfig(env, configObj);
+    return configObj;
   }
 
   protected async getConfigFileMeta(item: ManifestItem): Promise<ConfigFileMeta> {
@@ -70,7 +71,7 @@ class ConfigLoader implements Loader {
   protected async loadConfigFile(item: ManifestItem): Promise<Record<string, any>> {
     const originConfigObj = await compatibleRequire(item.path);
     let configObj = originConfigObj;
-    if(typeof originConfigObj === 'function') {
+    if (typeof originConfigObj === 'function') {
       const app = this.container.get(ArtusInjectEnum.Application);
       configObj = originConfigObj(app);
     }
