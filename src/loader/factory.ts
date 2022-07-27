@@ -84,7 +84,7 @@ export class LoaderFactory {
     }
   }
 
-  async loadItem(item: ManifestItem): Promise<any> {
+  loadItem(item: ManifestItem): Promise<any> {
     const loaderName = item.loader || DEFAULT_LOADER;
     const loader = this.getLoader(loaderName);
     loader.state = item._loaderState;
