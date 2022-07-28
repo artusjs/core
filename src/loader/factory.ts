@@ -77,7 +77,7 @@ export class LoaderFactory {
       }
       await this.loaderEmitter.emitBeforeEach(curLoader, item);
       const result = await this.loadItem(item);
-      await this.loaderEmitter.emitAfterEach(curLoader, result);
+      await this.loaderEmitter.emitAfterEach(curLoader, item, result);
     }
     if (prevLoader) {
       await this.loaderEmitter.emitAfter(prevLoader);

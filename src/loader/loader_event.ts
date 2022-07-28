@@ -6,15 +6,15 @@ export interface LoaderEventListener {
 
   beforeEach?: (item: ManifestItem) => void;
 
-  afterEach?: (loadContent: any) => void;
+  afterEach?: (item: ManifestItem, loadContent: any) => void;
 }
 
 export default class LoaderEventEmitter {
-  private listeners: Record<string, Record<'before' | 'after', CallableFunction[]>> = {};
+  private listeners: Record<string, Record<keyof LoaderEventListener, CallableFunction[]>> = {};
 
   addListener(eventName, listener: LoaderEventListener) {
     if (!this.listeners[eventName]) {
-      this.listeners[eventName] = { before: [], after: [] };
+      this.listeners[eventName] = { before: [], after: [], beforeEach: [], afterEach: [] };
     }
 
     if (listener.before) {
@@ -23,6 +23,14 @@ export default class LoaderEventEmitter {
 
     if (listener.after) {
       this.listeners[eventName].after.push(listener.after);
+    }
+
+    if (listener.beforeEach) {
+      this.listeners[eventName].beforeEach.push(listener.beforeEach);
+    }
+
+    if (listener.afterEach) {
+      this.listeners[eventName].afterEach.push(listener.afterEach);
     }
   }
 
