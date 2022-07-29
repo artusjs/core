@@ -119,15 +119,16 @@ export class LoaderFactory {
     const { root, filename } = opts;
 
     // require file for find loader
-    const targetClazz = await compatibleRequire(path.join(root, filename));
-    if (!targetClazz) {
+    let targetClazz = await compatibleRequire(path.join(root, filename), false);
+    if (!targetClazz.default) {
       // The file is not export with default class
       return null;
     }
+    targetClazz = targetClazz.default;
 
     // get loader from reflect metadata
     const loaderMd = Reflect.getMetadata(HOOK_FILE_LOADER, targetClazz);
-    if (!Array.isArray(loaderMd) && loaderMd?.loader) {
+    if (loaderMd?.loader) {
       return loaderMd.loader;
     }
 
