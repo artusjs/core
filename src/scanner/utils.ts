@@ -46,6 +46,10 @@ export class ScanUtils {
       }
 
       if (itemStat.isFile()) {
+        if (!extname) {
+          // Exclude file without extname
+          continue;
+        }
         const filename = path.basename(realPath);
         const filenameWithoutExt = path.basename(realPath, extname);
         const loaderFindResult = await ScanUtils.loaderFactory.findLoader({

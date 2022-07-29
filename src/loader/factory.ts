@@ -120,7 +120,7 @@ export class LoaderFactory {
 
     // require file for find loader
     let targetClazz = await compatibleRequire(path.join(root, filename), false);
-    if (!targetClazz.default) {
+    if (!targetClazz?.default) {
       // The file is not export with default class
       return null;
     }
