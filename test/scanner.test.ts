@@ -31,7 +31,8 @@ describe('test/scanner.test.ts', () => {
     // console.log('devManifest', devManifest);
     expect(devManifest).toBeDefined();
     expect(devManifest.items).toBeDefined();
-    expect(devManifest.items.length).toBe(11);
+    expect(devManifest.items.length).toBe(12);
+    expect(devManifest.items.filter(item => item.loader === 'config').length).toBe(2);
     expect(devManifest.items.filter(item => item.loader === 'plugin-meta').length).toBe(2);
     expect(devManifest.items.find(item => item.unitName === 'testDuplicate')).toBeDefined();
   });

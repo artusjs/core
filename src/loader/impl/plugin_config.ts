@@ -4,6 +4,7 @@ import { PluginConfigItem } from '../../plugin/types';
 import { isMatch } from '../../utils';
 import { DefineLoader } from '../decorator';
 import { ManifestItem, Loader, LoaderFindOptions } from '../types';
+import { getConfigMetaFromFilename } from '../utils/config_file_meta';
 import ConfigLoader from './config';
 
 @DefineLoader('plugin-config')
@@ -16,7 +17,7 @@ class PluginConfigLoader extends ConfigLoader implements Loader {
   }
 
   async load(item: ManifestItem) {
-    const { env } = await this.getConfigFileMeta(item);
+    const { env } = getConfigMetaFromFilename(item.filename);
     const configObj = await this.loadConfigFile(item);
     for (const pluginName of Object.keys(configObj)) {
       const pluginConfigItem: PluginConfigItem = configObj[pluginName];
