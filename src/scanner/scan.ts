@@ -17,6 +17,7 @@ import { FrameworkConfig, FrameworkHandler } from '../framework';
 import { BasePlugin, PluginFactory } from '../plugin';
 import { ScanUtils } from './utils';
 import { PluginMetadata } from '../plugin/types';
+import { getConfigMetaFromFilename } from '../loader/utils/config_file_meta';
 
 export class Scanner {
   private moduleExtensions = ['.js', '.json', '.node'];
@@ -90,16 +91,17 @@ export class Scanner {
     // 0. init clean itemMap
     await this.initItemMap();
 
+    // 1. Pre-Scan all config files
     const config = await this.getAllConfig(root, env);
 
-    // 1. scan all file in framework
+    // 2. scan all file in framework
     const frameworkDirs = await this.getFrameworkDirs(config.framework, root, env);
     for (const frameworkDir of frameworkDirs) {
       await this.walk(frameworkDir, this.formatWalkOptions('framework', frameworkDir));
     }
 
 
-    // 2. scan all file in plugin
+    // 3. scan all file in plugin
     if (this.tmpConfigStore.has(env)) {
       const configList = this.tmpConfigStore.get(env) ?? [];
       configList.forEach(config => this.configHandle.setConfig(env, config));
@@ -115,11 +117,11 @@ export class Scanner {
       );
     }
 
-    // 3. scan all file in app
+    // 4. scan all file in app
     await this.walk(root, this.formatWalkOptions('app', root, ''));
 
     const result: Manifest = {
-      items: this.getItemsFromMap(this.options.useRelativePath, root),
+      items: this.getItemsFromMap(this.options.useRelativePath, root, env),
       relative: this.options.useRelativePath,
     };
     return result;
@@ -237,16 +239,28 @@ export class Scanner {
     return opts;
   }
 
-  private getItemsFromMap(relative: boolean, appRoot: string): ManifestItem[] {
+  private getItemsFromMap(relative: boolean, appRoot: string, env: string): ManifestItem[] {
     let items: ManifestItem[] = [];
     for (const [, unitItems] of this.itemMap) {
       items = items.concat(unitItems);
     }
     relative && items.forEach(item => (item.path = path.relative(appRoot, item.path)));
-    return items.filter(item => (
+    return items.filter(item => {
       // remove PluginConfig to avoid re-merge on application running
-      item.loader !== 'plugin-config'
-    ));
+      if (item.loader === 'plugin-config') {
+        return false;
+      }
+
+      // remove other env config
+      if (item.loader === 'config' || item.loader === 'framework-config') {
+        const { env: filenameEnv } = getConfigMetaFromFilename(item.filename);
+        if (env !== filenameEnv && filenameEnv !== ARTUS_DEFAULT_CONFIG_ENV.DEFAULT) {
+          return false;
+        }
+      }
+
+      return true;
+    });
   }
 
   private async writeFile(filename = 'manifest.json', data: string) {
