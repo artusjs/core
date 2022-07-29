@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { CLASS_CONSTRUCTOR, Container } from '@artus/injection';
+import { isInjectable, Container } from '@artus/injection';
 import { ArtusInjectEnum, DEFAULT_LOADER, HOOK_FILE_LOADER, LOADER_NAME_META } from '../constant';
 import {
   Manifest,
@@ -133,7 +133,7 @@ export class LoaderFactory {
     }
 
     // default loder with @Injectable
-    const injectableMd = Reflect.getMetadata(CLASS_CONSTRUCTOR, targetClazz);
+    const injectableMd = isInjectable(targetClazz);
     if (injectableMd) {
       return DEFAULT_LOADER;
     }
