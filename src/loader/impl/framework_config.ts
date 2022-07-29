@@ -4,6 +4,7 @@ import { ManifestItem, Loader, LoaderFindOptions } from '../types';
 import { FRAMEWORK_PATTERN } from '../../constant';
 import ConfigLoader from './config';
 import { isMatch } from '../../utils';
+import { getConfigMetaFromFilename } from '../utils/config_file_meta';
 
 @DefineLoader('framework-config')
 class FrameworkConfigLoader extends ConfigLoader implements Loader {
@@ -15,7 +16,7 @@ class FrameworkConfigLoader extends ConfigLoader implements Loader {
   }
 
   async load(item: ManifestItem) {
-    const { env } = await this.getConfigFileMeta(item);
+    const { env } = getConfigMetaFromFilename(item.filename);
     const configObj = (await this.loadConfigFile(item)) as FrameworkObject;
     this.configurationHandler.addFramework(item.source || 'app', configObj, {
       env,
