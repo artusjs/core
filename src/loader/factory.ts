@@ -13,6 +13,7 @@ import ConfigurationHandler from '../configuration';
 import { LifecycleManager } from '../lifecycle';
 import compatibleRequire from '../utils/compatible_require';
 import LoaderEventEmitter, { LoaderEventListener } from './loader_event';
+import { isClass } from '../utils/is';
 
 export class LoaderFactory {
   private container: Container;
@@ -119,12 +120,11 @@ export class LoaderFactory {
     const { root, filename } = opts;
 
     // require file for find loader
-    let targetClazz = await compatibleRequire(path.join(root, filename), false);
-    if (!targetClazz?.default) {
+    const targetClazz = await compatibleRequire(path.join(root, filename));
+    if (!isClass(targetClazz)) {
       // The file is not export with default class
       return null;
     }
-    targetClazz = targetClazz.default;
 
     // get loader from reflect metadata
     const loaderMd = Reflect.getMetadata(HOOK_FILE_LOADER, targetClazz);
