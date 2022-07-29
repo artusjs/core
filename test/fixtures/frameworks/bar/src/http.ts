@@ -33,6 +33,9 @@ export function HttpController(options?: ControllerParams): ClassDecorator {
   const prefix = options?.path ?? '';
   return (target: any) => {
     controllerMap.add({ prefix, clazz: target });
+    Injectable({
+      scope: ScopeEnum.EXECUTION,
+    })(target);
   };
 }
 
