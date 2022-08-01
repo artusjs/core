@@ -46,17 +46,22 @@ export class ScanUtils {
       }
 
       if (itemStat.isFile()) {
+        if (!extname) {
+          // Exclude file without extname
+          continue;
+        }
         const filename = path.basename(realPath);
         const filenameWithoutExt = path.basename(realPath, extname);
-        const {
-          loaderName,
-          loaderState,
-        } = await ScanUtils.loaderFactory.findLoader({
+        const loaderFindResult = await ScanUtils.loaderFactory.findLoader({
           filename,
           root,
           baseDir,
           configDir,
         });
+        if (!loaderFindResult) {
+          continue;
+        }
+        const { loaderName, loaderState } = loaderFindResult;
         const item: ManifestItem = {
           path: options.extensions.includes(extname) ? path.resolve(root, filenameWithoutExt) : realPath,
           extname,

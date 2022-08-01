@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { Container } from '@artus/injection';
+import { isInjectable, Container } from '@artus/injection';
 import { ArtusInjectEnum, DEFAULT_LOADER, HOOK_FILE_LOADER, LOADER_NAME_META } from '../constant';
 import {
   Manifest,
@@ -13,6 +13,7 @@ import ConfigurationHandler from '../configuration';
 import { LifecycleManager } from '../lifecycle';
 import compatibleRequire from '../utils/compatible_require';
 import LoaderEventEmitter, { LoaderEventListener } from './loader_event';
+import { isClass } from '../utils/is';
 
 export class LoaderFactory {
   private container: Container;
@@ -91,8 +92,12 @@ export class LoaderFactory {
     return loader.load(item);
   }
 
-  async findLoader(opts: LoaderFindOptions): Promise<LoaderFindResult> {
+  async findLoader(opts: LoaderFindOptions): Promise<LoaderFindResult|null> {
     const loaderName = await this.findLoaderName(opts);
+    if (!loaderName) {
+      return null;
+    }
+
     const loaderClazz = LoaderFactory.loaderClazzMap.get(loaderName);
     if (!loaderClazz) {
       throw new Error(`Cannot find loader '${loaderName}'`);
@@ -106,7 +111,7 @@ export class LoaderFactory {
     return result;
   }
 
-  async findLoaderName(opts: LoaderFindOptions): Promise<string> {
+  async findLoaderName(opts: LoaderFindOptions): Promise<string|null> {
     for (const [loaderName, LoaderClazz] of LoaderFactory.loaderClazzMap.entries()) {
       if (await LoaderClazz.is?.(opts)) {
         return loaderName;
@@ -114,14 +119,25 @@ export class LoaderFactory {
     }
     const { root, filename } = opts;
 
-    // get loader from reflect metadata
-    const target = await compatibleRequire(path.join(root, filename));
-    const metadata = Reflect.getMetadata(HOOK_FILE_LOADER, target);
-    if (metadata?.loader) {
-      return metadata.loader;
+    // require file for find loader
+    const targetClazz = await compatibleRequire(path.join(root, filename));
+    if (!isClass(targetClazz)) {
+      // The file is not export with default class
+      return null;
     }
 
-    // default loder
-    return DEFAULT_LOADER;
+    // get loader from reflect metadata
+    const loaderMd = Reflect.getMetadata(HOOK_FILE_LOADER, targetClazz);
+    if (loaderMd?.loader) {
+      return loaderMd.loader;
+    }
+
+    // default loder with @Injectable
+    const injectableMd = isInjectable(targetClazz);
+    if (injectableMd) {
+      return DEFAULT_LOADER;
+    }
+
+    return null;
   }
 }
