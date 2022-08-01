@@ -95,7 +95,8 @@ export class Scanner {
     const config = await this.getAllConfig(root, env);
 
     // 2. scan all file in framework
-    const frameworkDirs = await this.getFrameworkDirs(config.framework, root, env);
+    const frameworkConfig = this.options.framework ?? config.framework;
+    const frameworkDirs = await this.getFrameworkDirs(frameworkConfig, root, env);
     for (const frameworkDir of frameworkDirs) {
       await this.walk(frameworkDir, this.formatWalkOptions('framework', frameworkDir));
     }
@@ -107,7 +108,8 @@ export class Scanner {
       configList.forEach(config => this.configHandle.setConfig(env, config));
     }
     const { plugin } = this.configHandle.getMergedConfig(env);
-    const pluginSortedList = await PluginFactory.createFromConfig(plugin || {});
+    const pluginConfig = this.options.plugin ?? plugin ?? {};
+    const pluginSortedList = await PluginFactory.createFromConfig(pluginConfig);
     for (const plugin of pluginSortedList) {
       if (!plugin.enable) continue;
       this.setPluginMeta(plugin);
@@ -153,7 +155,7 @@ export class Scanner {
     const container = new Container(ArtusInjectEnum.DefaultContainerName);
     container.set({ type: ConfigurationHandler });
     const loaderFactory = LoaderFactory.create(container);
-    const configItemList: (ManifestItem|null)[] = await Promise.all(configFileList.map(async filename => {
+    const configItemList: (ManifestItem | null)[] = await Promise.all(configFileList.map(async filename => {
       const extname = path.extname(filename);
       if (ScanUtils.isExclude(filename, extname, this.options.exclude, this.options.extensions)) {
         return null;
