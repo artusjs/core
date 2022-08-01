@@ -26,8 +26,6 @@ export enum ARTUS_DEFAULT_CONFIG_ENV {
 
 export const HOOK_NAME_META_PREFIX = 'hookName:';
 export const CONSTRUCTOR_PARAMS = 'constructor:params';
-export const CONSTRUCTOR_PARAMS_APP = 'constructor:params:app';
-export const CONSTRUCTOR_PARAMS_CONTAINER = 'constructor:params:container';
 export const CONSTRUCTOR_PARAMS_CONTEXT = 'constructor:params:context';
 export const HOOK_FILE_LOADER = 'appHook:fileLoader';
 export const HOOK_CONFIG_HANDLE = 'appHook:configHandle::';
