@@ -1,9 +1,4 @@
-
-
-export {
-  Inject,
-  Injectable,
-} from '@artus/injection';
+export * from '@artus/injection';
 
 export * from './loader';
 export * from './logger';

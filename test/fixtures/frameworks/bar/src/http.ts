@@ -1,7 +1,6 @@
 import 'reflect-metadata';
 import { Context, Next } from '@artus/pipeline';
-import { Constructable , Injectable, ScopeEnum } from '@artus/injection';
-import { CONSTRUCTOR_PARAMS, CONSTRUCTOR_PARAMS_CONTEXT } from '../../../../../src/constant';
+import { Constructable, Injectable, ScopeEnum } from '@artus/injection';
 import { HttpTrigger } from '../../abstract/foo';
 
 export const enum HTTPMethodEnum {
@@ -72,11 +71,7 @@ export function registerController(trigger: HttpTrigger) {
         if (req.url === `${prefix}${path}` && req.method === method) {
           const instance: any = ctx.container.get(clazz);
           const target = instance[key];
-          const params: any = Reflect.getMetadata(CONSTRUCTOR_PARAMS, target) ?? [];
-          const paramsMap = {
-            [CONSTRUCTOR_PARAMS_CONTEXT]: ctx,
-          };
-          ctx.output.data.content = await target.call(instance, ...params.map(param => paramsMap[param]));
+          ctx.output.data.content = await target.call(instance, ctx);
         }
         await next();
       });

@@ -1,10 +1,10 @@
 import { DefaultContext } from 'koa';
 import { Server } from 'http';
-import { Container } from '@artus/injection';
+import { Container, Inject } from '@artus/injection';
 import { Context, Input } from '@artus/pipeline';
 
-import { ArtusApplication } from '../../../../src';
-import { LifecycleHookUnit, LifecycleHook, WithApplication, WithContainer } from '../../../../src/decorator';
+import { ArtusApplication, ArtusInjectEnum } from '../../../../src';
+import { LifecycleHookUnit, LifecycleHook } from '../../../../src/decorator';
 import { ApplicationLifecycle } from '../../../../src/types';
 
 import KoaApplication from './koa_app';
@@ -14,13 +14,10 @@ export let server: Server;
 
 @LifecycleHookUnit()
 export default class MyLifecycle implements ApplicationLifecycle {
+  @Inject(ArtusInjectEnum.Application)
   app: ArtusApplication;
+  @Inject()
   container: Container;
-
-  constructor(@WithApplication() app: ArtusApplication, @WithContainer() container: Container) {
-    this.app = app;
-    this.container = container;
-  }
 
   get koaApp(): KoaApplication {
     return this.container.get(KoaApplication);
