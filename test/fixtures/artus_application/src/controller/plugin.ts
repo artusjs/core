@@ -1,6 +1,5 @@
 import { HttpController, HttpMethod, HTTPMethodEnum } from '../../../frameworks/bar/src';
 import { Inject } from '@artus/injection';
-import { WithContext } from '../../../../../src/decorator';
 import { ArtusApplication } from '../../../../../src';
 import { Context } from '@artus/pipeline';
 
@@ -23,7 +22,7 @@ export default class Hello {
     method: HTTPMethodEnum.GET,
     path: '/plugin-redis',
   })
-  async getRedisClient(@WithContext() ctx: Context) {
+  async getRedisClient(ctx: Context) {
     const app: ArtusApplication = ctx.input.params.app;
     let client;
     try {

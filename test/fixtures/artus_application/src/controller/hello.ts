@@ -1,6 +1,5 @@
 import { Context } from '@artus/pipeline';
 import { HttpController, HttpMethod, HTTPMethodEnum } from '../../../frameworks/bar/src';
-import { WithContext } from '../../../../../src/decorator';
 
 @HttpController()
 export default class Hello {
@@ -8,7 +7,7 @@ export default class Hello {
     method: HTTPMethodEnum.GET,
     path: '/home',
   })
-  async index(@WithContext() ctx: Context) {
+  async index(ctx: Context) {
     const { params: { config } } = ctx.input;
     return { title: `Hello Artus ${config.name}` };
   }
@@ -17,7 +16,7 @@ export default class Hello {
     method: HTTPMethodEnum.GET,
     path: '/get_name2',
   })
-  async name2(@WithContext() ctx: Context) {
+  async name2(ctx: Context) {
     const { params: { config } } = ctx.input;
     return { title: `Hello Artus ${config.name2}` };
   }
@@ -26,7 +25,7 @@ export default class Hello {
     method: HTTPMethodEnum.GET,
     path: '/get_name3',
   })
-  async name3(@WithContext() ctx: Context) {
+  async name3(ctx: Context) {
     const { params: { config } } = ctx.input;
     return { title: `Hello Artus ${config.name3}` };
   }

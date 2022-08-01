@@ -1,6 +1,5 @@
 import { Context } from '@artus/pipeline';
 import { HttpController, HttpMethod, HTTPMethodEnum } from '../../../frameworks/bar/src';
-import { WithContext } from '../../../../../src/decorator';
 
 @HttpController()
 export default class Hello {
@@ -8,7 +7,7 @@ export default class Hello {
     method: HTTPMethodEnum.GET,
     path: '/config',
   })
-  async index(@WithContext() ctx: Context) {
+  async index(ctx: Context) {
     const { params: { config } } = ctx.input;
     return {
       message: `get conifg succeed`,
