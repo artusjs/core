@@ -1,3 +1,4 @@
+import { Injectable } from '@artus/injection';
 import {
   HOOK_NAME_META_PREFIX,
   HOOK_FILE_LOADER,
@@ -5,8 +6,8 @@ import {
 
 export function LifecycleHookUnit(): ClassDecorator {
   return (target: any) => {
-    // Ready to remove?
     Reflect.defineMetadata(HOOK_FILE_LOADER, { loader: 'lifecycle-hook-unit' }, target);
+    Injectable({ lazy: true })(target);
   };
 }
 
