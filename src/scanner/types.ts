@@ -1,4 +1,6 @@
 import { BaseLoader, ManifestItem } from "../loader";
+import { FrameworkConfig } from "../framework";
+import { PluginConfigItem } from "../plugin/types";
 
 export interface ScannerOptions {
   appName: string;
@@ -8,6 +10,8 @@ export interface ScannerOptions {
   exclude: string[];
   configDir: string;
   envs?: string[];
+  framework?: FrameworkConfig;
+  plugin?: Record<string, Partial<PluginConfigItem>>;
   loaderListGenerator: (defaultLoaderList: string[]) => (string | typeof BaseLoader)[];
 }
 
