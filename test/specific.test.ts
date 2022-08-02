@@ -22,16 +22,10 @@ describe('test/framework.test.ts', () => {
       framework: { path: path.join(__dirname, 'fixtures/frameworks/bar') },
       plugin: {
         mysql: {
-          enable: true,
           path: path.join(__dirname, 'fixtures/application_specific/src/plugins/artus_plugin_mysql_ob'),
         },
         redis: {
           enable: false,
-          path: path.join(__dirname, 'fixtures/application_specific/src/plugins/artus_plugin_redis'),
-        },
-        base: {
-          enable: true,
-          path: path.join(__dirname, 'fixtures/application_specific/src/plugins/artus_plugin_base'),
         },
       },
     });

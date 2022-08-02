@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import * as path from 'path';
 import * as fs from 'fs/promises';
+import deepmerge from 'deepmerge';
 import { Container } from '@artus/injection';
 import {
   ArtusInjectEnum,
@@ -16,7 +17,7 @@ import ConfigurationHandler, { ConfigObject } from '../configuration';
 import { FrameworkConfig, FrameworkHandler } from '../framework';
 import { BasePlugin, PluginFactory } from '../plugin';
 import { ScanUtils } from './utils';
-import { PluginMetadata } from '../plugin/types';
+import { PluginConfigItem, PluginMetadata } from '../plugin/types';
 import { getConfigMetaFromFilename } from '../loader/utils/config_file_meta';
 
 export class Scanner {
@@ -108,7 +109,7 @@ export class Scanner {
       configList.forEach(config => this.configHandle.setConfig(env, config));
     }
     const { plugin } = this.configHandle.getMergedConfig(env);
-    const pluginConfig = this.options.plugin ?? plugin ?? {};
+    const pluginConfig = deepmerge.all([plugin || {}, this.options.plugin || {}]) as Record<string, PluginConfigItem>;
     const pluginSortedList = await PluginFactory.createFromConfig(pluginConfig);
     for (const plugin of pluginSortedList) {
       if (!plugin.enable) continue;

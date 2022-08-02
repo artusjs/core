@@ -11,7 +11,7 @@ export interface ScannerOptions {
   configDir: string;
   envs?: string[];
   framework?: FrameworkConfig;
-  plugin?: Record<string, PluginConfigItem>;
+  plugin?: Record<string, Partial<PluginConfigItem>>;
   loaderListGenerator: (defaultLoaderList: string[]) => (string | typeof BaseLoader)[];
 }
 
