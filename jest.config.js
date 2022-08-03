@@ -12,4 +12,5 @@ module.exports = {
   ],
   coverageReporters: ['json', 'json-summary', 'lcov', 'text', 'clover', 'text-summary', 'cobertura'],
   collectCoverageFrom: ['<rootDir>/src/**/*.ts'],
+  transformIgnorePatterns: ["/node_modules/(?!(artus_plugin_hbase)/)", "\\.pnp\\.[^\\\/]+$"]
 };

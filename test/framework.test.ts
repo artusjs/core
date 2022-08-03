@@ -51,6 +51,8 @@ describe('test/framework.test.ts', () => {
     assert(testResponseName4.data.client === 'mysql-ob');
     const testResponseName5 = await axios.get(`http://127.0.0.1:${port}/plugin-redis`);
     assert(testResponseName5.data.message === 'plugin redis not enabled');
+    const testResponseName6 = await axios.get(`http://127.0.0.1:${port}/plugin-hbase`);
+    assert(testResponseName6.data.client === 'foo2-hbase');
 
     await app.artus.close();
     assert(!app.isListening());

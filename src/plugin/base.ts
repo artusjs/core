@@ -3,8 +3,9 @@ import path from 'path';
 type PluginMap = Map<string, BasePlugin>;
 
 export class BasePlugin implements Plugin {
-  static getPath(packageName: string): string {
-    return path.resolve(require.resolve(packageName), '..');
+  static getPath(packageName: string, paths?: string[]): string {
+    const opts = paths ? { paths } : undefined;
+    return path.resolve(require.resolve(packageName, opts), '..');
   }
 
   public name: string;
