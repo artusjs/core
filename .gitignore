@@ -115,3 +115,5 @@ lib
 
 # OSX
 .DS_Store
+
+!test/fixtures/frameworks/layer/foo/foo2/node_modules

@@ -29,7 +29,8 @@ class PluginConfigLoader extends ConfigLoader implements Loader {
           );
         }
         if (pluginConfigItem.enable) {
-          pluginConfigItem.path = ArtusPlugin.getPath(pluginConfigItem.package);
+          const loaderState = item._loaderState as { baseDir: string };
+          pluginConfigItem.path = ArtusPlugin.getPath(pluginConfigItem.package, [loaderState.baseDir]);
         }
         delete pluginConfigItem.package;
         configObj[pluginName] = pluginConfigItem;

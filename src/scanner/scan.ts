@@ -177,6 +177,9 @@ export class Scanner {
         filename,
         loader,
         source: 'config',
+        _loaderState: {
+          baseDir,
+        },
       };
     }));
     await loaderFactory.loadItemList(configItemList.filter(v => v) as ManifestItem[]);

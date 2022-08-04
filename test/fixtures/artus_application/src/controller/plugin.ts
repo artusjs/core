@@ -7,6 +7,8 @@ import { Context } from '@artus/pipeline';
 export default class Hello {
   @Inject('ARTUS_MYSQL')
   private client: any;
+  @Inject('ARTUS_HBASE')
+  private client2: any;
 
   @HttpMethod({
     method: HTTPMethodEnum.GET,
@@ -35,5 +37,15 @@ export default class Hello {
       client: await client.getClient(),
     } : { message: 'plugin redis not enabled' };
     return result;
+  }
+
+  @HttpMethod({
+    method: HTTPMethodEnum.GET,
+    path: '/plugin-hbase',
+  })
+  async getHbaseClient() {
+    return {
+      client: await this.client2.getClient(),
+    };
   }
 }
