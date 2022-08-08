@@ -53,7 +53,7 @@
     "@types/minimatch": "^3.0.5",
     "axios": "^0.26.1",
     "babel-jest": "^27.5.1",
-    "egg-ci": "^1.19.0",
+    "egg-ci": "^2.1.0",
     "eslint": "^8.19.0",
     "eslint-plugin-import": "^2.26.0",
     "jest": "^27.5.1",
@@ -69,7 +69,6 @@
     "minimatch": "^5.0.1"
   },
   "ci": {
-    "type": "github",
-    "version": "16"
+    "version": "16, 18"
   }
 }
