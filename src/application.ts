@@ -116,7 +116,7 @@ export class ArtusApplication implements Application {
             id: ArtusInjectEnum.Config,
             value: this.configurationHandler.getAllConfig(),
           });
-          this.lifecycleManager.emitHook('configDidLoad');
+          return this.lifecycleManager.emitHook('configDidLoad');
         },
       })
       .addLoaderListener('framework-config', {
