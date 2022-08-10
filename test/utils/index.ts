@@ -1,7 +1,7 @@
-import { Scanner, ArtusApplication } from '../../../src/index';
+import 'reflect-metadata';
+import { Scanner, ArtusApplication } from '../../src';
 
-export async function createApp() {
-  const baseDir = __dirname;
+export async function createApp(baseDir: string) {
   const scanner = new Scanner({
     needWriteFile: false,
     configDir: 'config',
