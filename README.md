@@ -1,5 +1,8 @@
 # @artus/core
 
+[![Node.js CI](https://github.com/artusjs/core/actions/workflows/nodejs.yml/badge.svg)](https://github.com/artusjs/core/actions/workflows/nodejs.yml)
+[![codecov](https://codecov.io/gh/artusjs/core/branch/main/graph/badge.svg)](https://codecov.io/gh/artusjs/core)
+
 Core package of Artus
 
 ## Build
@@ -19,9 +22,9 @@ pnpm run build
 `@artus/core` use `jest` for unit-test case.
 
 ```bash
-npm run build
+npm run test
 # Or
-yarn build
+yarn test
 # Or
-pnpm run build
+pnpm run test
 ```
