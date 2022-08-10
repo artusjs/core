@@ -4,8 +4,8 @@ import assert from 'assert';
 import path from 'path';
 import { Container } from '@artus/injection';
 import { LoaderFactory } from '../src';
-import { createApp } from './fixtures/custom_instance/index';
 import Custom from './fixtures/custom_instance/custom';
+import { createApp } from './utils';
 
 describe('test/loader.test.ts', () => {
   describe('module with ts', () => {
@@ -67,7 +67,7 @@ describe('test/loader.test.ts', () => {
 
   describe('custom instance', () => {
     it('should not overide custom instance', async () => {
-      const app = await createApp();
+      const app = await createApp(path.resolve(__dirname, './fixtures/custom_instance'));
       expect(app.container.get(Custom).getName()).toBe('foo');
     });
   });
