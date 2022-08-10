@@ -28,7 +28,7 @@ export default class AppLifecycle implements ApplicationLifecycle {
   }
 
   @LifecycleHook('didLoad')
-   didLoad() {
+  didLoad() {
     this.lifecycleList.add('pluginB_didLoad');
   }
 

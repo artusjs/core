@@ -24,7 +24,7 @@ describe('test/lifecycle.test.ts', () => {
       'app_willReady',
       'pluginA_didReady',
       'pluginB_didReady',
-      'app_didReady'
+      'app_didReady',
     ]);
 
     await app.close();
@@ -47,7 +47,7 @@ describe('test/lifecycle.test.ts', () => {
       'app_didReady',
       'pluginA_beforeClose',
       'pluginB_beforeClose',
-      'app_beforeClose'
+      'app_beforeClose',
     ]);
   });
 });
