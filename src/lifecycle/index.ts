@@ -68,6 +68,8 @@ export class LifecycleManager {
     if (!Array.isArray(fnList)) {
       return;
     }
+    // lifecycle hook should only trigger one time
+    this.hookFnMap.delete(hookName);
     for (const hookFn of fnList) {
       await hookFn({
         app: this.app,
