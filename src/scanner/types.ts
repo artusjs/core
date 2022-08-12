@@ -1,6 +1,7 @@
 import { BaseLoader, ManifestItem } from "../loader";
 import { FrameworkConfig } from "../framework";
 import { PluginConfigItem } from "../plugin/types";
+import { Application } from "../types";
 
 export interface ScannerOptions {
   appName: string;
@@ -13,6 +14,7 @@ export interface ScannerOptions {
   framework?: FrameworkConfig;
   plugin?: Record<string, Partial<PluginConfigItem>>;
   loaderListGenerator: (defaultLoaderList: string[]) => (string | typeof BaseLoader)[];
+  app?: Application;
 }
 
 export interface WalkOptions {

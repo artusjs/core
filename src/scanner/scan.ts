@@ -19,6 +19,8 @@ import { BasePlugin, PluginFactory } from '../plugin';
 import { ScanUtils } from './utils';
 import { PluginConfigItem, PluginMetadata } from '../plugin/types';
 import { getConfigMetaFromFilename } from '../loader/utils/config_file_meta';
+import { Application } from '../types';
+import { ArtusApplication } from '../application';
 
 export class Scanner {
   private moduleExtensions = ['.js', '.json', '.node'];
@@ -26,6 +28,7 @@ export class Scanner {
   private itemMap: Map<string, ManifestItem[]> = new Map();
   private tmpConfigStore: Map<string, ConfigObject[]> = new Map();
   private configHandle: ConfigurationHandler = new ConfigurationHandler();
+  private app: Application;
 
   constructor(options: Partial<ScannerOptions> = {}) {
     this.options = {
@@ -38,6 +41,7 @@ export class Scanner {
       exclude: DEFAULT_EXCLUDES.concat(options.exclude ?? []),
       extensions: [...new Set(this.moduleExtensions.concat(options.extensions ?? []))],
     };
+    this.app = options.app ?? new ArtusApplication();
   }
 
   private async initItemMap(): Promise<void> {
@@ -155,6 +159,10 @@ export class Scanner {
     const configFileList = await fs.readdir(root);
     const container = new Container(ArtusInjectEnum.DefaultContainerName);
     container.set({ type: ConfigurationHandler });
+    container.set({
+      id: ArtusInjectEnum.Application,
+      value: this.app,
+    });
     const loaderFactory = LoaderFactory.create(container);
     const configItemList: (ManifestItem | null)[] = await Promise.all(configFileList.map(async filename => {
       const extname = path.extname(filename);
