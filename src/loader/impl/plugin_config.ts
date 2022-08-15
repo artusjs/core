@@ -28,10 +28,8 @@ class PluginConfigLoader extends ConfigLoader implements Loader {
             `Plugin ${pluginName} config can't have both package and path at ${item.path}`,
           );
         }
-        if (pluginConfigItem.enable) {
-          const loaderState = item._loaderState as { baseDir: string };
-          pluginConfigItem.path = ArtusPlugin.getPath(pluginConfigItem.package, [loaderState.baseDir]);
-        }
+        const loaderState = item._loaderState as { baseDir: string };
+        pluginConfigItem.path = ArtusPlugin.getPath(pluginConfigItem.package, [loaderState?.baseDir]);
         delete pluginConfigItem.package;
         configObj[pluginName] = pluginConfigItem;
       }
