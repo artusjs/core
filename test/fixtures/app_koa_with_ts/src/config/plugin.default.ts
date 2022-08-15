@@ -11,6 +11,6 @@ export default {
   },
   testDuplicate: {
     enable: false,
-    package: 'unimportant-package',
+    package: '@artus/injection', // This package is unimportant, will be replaced by path in dev config
   },
 };
