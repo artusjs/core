@@ -1,4 +1,4 @@
-import { Container, InjectableDefinition } from '@artus/injection';
+import { Container, InjectableDefinition, ScopeEnum } from '@artus/injection';
 import { DefineLoader } from '../decorator';
 import { ManifestItem, Loader } from '../types';
 import compatibleRequire from '../../utils/compatible_require';
@@ -17,6 +17,7 @@ class ModuleLoader implements Loader {
     const opts: Partial<InjectableDefinition> = {
       path: item.path,
       type: moduleClazz,
+      scope: ScopeEnum.EXECUTION, // The class used with @artus/core will have default scope EXECUTION, can be overwritten by Injectable decorator
     };
     if (item.id) {
       opts.id = item.id;
