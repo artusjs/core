@@ -171,7 +171,7 @@ export class Scanner {
       if (ScanUtils.isExclude(filename, extname, this.options.exclude, this.options.extensions)) {
         return null;
       }
-      let loader = await loaderFactory.findLoaderName({
+      let { loader } = await loaderFactory.findLoaderName({
         filename,
         baseDir,
         root,

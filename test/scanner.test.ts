@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { Scanner } from '../src/scanner';
 import path from 'path';
 // import { LoaderFactory } from '../src';
@@ -64,6 +65,6 @@ describe('test/scanner.test.ts', () => {
     const scanResults = await scanner.scan(path.resolve(__dirname, './fixtures/named_export'));
     const { default: manifest } = scanResults;
     expect(manifest.items).toBeDefined();
-    expect(manifest.items.length).toBe(4);
+    expect(manifest.items.length).toBe(5);
   });
 });

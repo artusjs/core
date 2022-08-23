@@ -93,7 +93,7 @@ export class LoaderFactory {
   }
 
   async findLoader(opts: LoaderFindOptions): Promise<LoaderFindResult | null> {
-    const loaderName = await this.findLoaderName(opts);
+    const { loader: loaderName } = await this.findLoaderName(opts);
     if (!loaderName) {
       return null;
     }
@@ -111,10 +111,10 @@ export class LoaderFactory {
     return result;
   }
 
-  async findLoaderName(opts: LoaderFindOptions): Promise<string | null> {
+  async findLoaderName(opts: LoaderFindOptions): Promise<{ loader: string | null, names: string[] }> {
     for (const [loaderName, LoaderClazz] of LoaderFactory.loaderClazzMap.entries()) {
       if (await LoaderClazz.is?.(opts)) {
-        return loaderName;
+        return { loader: loaderName, names: [] };
       }
     }
     const { root, filename } = opts;
@@ -149,7 +149,6 @@ export class LoaderFactory {
       throw new Error(`Not support multiple loaders for ${path.join(root, filename)}`);
     }
 
-    console.log(12333, loaders, names);
-    return loaders[0] ?? null;
+    return { loader: loaders[0] ?? null, names };
   }
 }

@@ -1,5 +1,7 @@
-import { Injectable } from '@artus/injection';
+import { Injectable, ScopeEnum } from '@artus/injection';
 import Koa from 'koa';
 
-@Injectable()
-export default class KoaApplication extends Koa {}
+@Injectable({
+  scope: ScopeEnum.SINGLETON,
+})
+export default class KoaApplication extends Koa { }

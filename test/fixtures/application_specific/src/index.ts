@@ -1,9 +1,11 @@
 import path from 'path';
 import { Manifest, ArtusApplication, ArtusInjectEnum } from "../../../../src";
 import { AbstractBar } from '../../frameworks/bar/src';
-import { Inject, Injectable } from "@artus/injection";
+import { Inject, Injectable, ScopeEnum } from "@artus/injection";
 
-@Injectable()
+@Injectable({
+  scope: ScopeEnum.SINGLETON,
+})
 export default class MyArtusApplication {
   @Inject('ABSTRACT_BAR')
   private bar: AbstractBar;

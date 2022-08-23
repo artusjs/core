@@ -1,9 +1,12 @@
-import { Inject, Injectable } from "@artus/injection";
+import { Inject, Injectable, ScopeEnum } from "@artus/injection";
 import { AbstractFoo } from "../../abstract/foo";
 
 export interface AbstractBar extends AbstractFoo { }
 
-@Injectable({ id: 'ABSTRACT_BAR' })
+@Injectable({
+  id: 'ABSTRACT_BAR',
+  scope: ScopeEnum.SINGLETON,
+})
 export default class FrameworkBar implements AbstractBar {
   @Inject('ABSTRACT_FOO')
   private foo: AbstractFoo;

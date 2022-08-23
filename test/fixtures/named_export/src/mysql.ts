@@ -1,6 +1,8 @@
-import { Injectable } from "../../../../src";
+import { Injectable, ScopeEnum } from "../../../../src";
 
-@Injectable()
+@Injectable({
+  scope: ScopeEnum.SINGLETON,
+})
 export class Mysql {
   private name = 'mysql';
 

@@ -21,7 +21,7 @@ interface LoaderFindOptions {
   root: string;
   baseDir: string;
   configDir: string;
-  policy: ScanPolicy;
+  policy?: ScanPolicy;
 }
 
 interface LoaderFindResult {
