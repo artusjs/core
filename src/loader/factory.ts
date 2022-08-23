@@ -1,6 +1,6 @@
 import * as path from 'path';
 import { isInjectable, Container } from '@artus/injection';
-import { ArtusInjectEnum, DEFAULT_LOADER, HOOK_FILE_LOADER, LOADER_NAME_META } from '../constant';
+import { ArtusInjectEnum, DEFAULT_LOADER, HOOK_FILE_LOADER, LOADER_NAME_META, ScanPolicy } from '../constant';
 import {
   Manifest,
   ManifestItem,
@@ -93,7 +93,8 @@ export class LoaderFactory {
   }
 
   async findLoader(opts: LoaderFindOptions): Promise<LoaderFindResult | null> {
-    const { loader: loaderName } = await this.findLoaderName(opts);
+    const { loader: loaderName, names } = await this.findLoaderName(opts);
+
     if (!loaderName) {
       return null;
     }
@@ -104,6 +105,7 @@ export class LoaderFactory {
     }
     const result: LoaderFindResult = {
       loaderName,
+      loaderState: { names },
     };
     if (loaderClazz.onFind) {
       result.loaderState = await loaderClazz.onFind(opts);
@@ -117,7 +119,7 @@ export class LoaderFactory {
         return { loader: loaderName, names: [] };
       }
     }
-    const { root, filename } = opts;
+    const { root, filename, policy = ScanPolicy.All } = opts;
 
     // require file for find loader
     const allExport = await compatibleRequire(path.join(root, filename), true);
@@ -126,6 +128,14 @@ export class LoaderFactory {
       .map(([name, targetClazz]) => {
         if (!isClass(targetClazz)) {
           // The file is not export with default class
+          return null;
+        }
+
+        if (policy === ScanPolicy.NamedExport && name === 'default') {
+          return null;
+        }
+
+        if (policy === ScanPolicy.DefaultExport && name !== 'default') {
           return null;
         }
 
