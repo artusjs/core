@@ -57,6 +57,7 @@ export class ScanUtils {
           root,
           baseDir,
           configDir,
+          policy: options.policy,
         });
         if (!loaderFindResult) {
           continue;

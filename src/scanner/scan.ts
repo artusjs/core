@@ -10,6 +10,7 @@ import {
   DEFAULT_EXCLUDES,
   DEFAULT_LOADER_LIST_WITH_ORDER,
   LOADER_NAME_META,
+  ScanPolicy,
 } from '../constant';
 import { LoaderFactory, Manifest, ManifestItem } from '../loader';
 import { ScannerOptions, WalkOptions } from './types';
@@ -37,6 +38,7 @@ export class Scanner {
       useRelativePath: true,
       configDir: DEFAULT_CONFIG_DIR,
       loaderListGenerator: (defaultLoaderList: string[]) => defaultLoaderList,
+      policy: ScanPolicy.All,
       ...options,
       exclude: DEFAULT_EXCLUDES.concat(options.exclude ?? []),
       extensions: [...new Set(this.moduleExtensions.concat(options.extensions ?? []))],
@@ -174,6 +176,7 @@ export class Scanner {
         baseDir,
         root,
         configDir,
+        policy: this.options.policy,
       });
       if (loader === 'framework-config') {
         // SEEME: framework-config is a special loader, cannot be used when scan, need refactor later
@@ -242,6 +245,7 @@ export class Scanner {
       extensions: this.options.extensions,
       exclude: this.options.exclude,
       configDir: this.options.configDir,
+      policy: this.options.policy,
     };
 
     if (source === 'plugin') {

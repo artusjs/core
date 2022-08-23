@@ -92,7 +92,7 @@ export class LoaderFactory {
     return loader.load(item);
   }
 
-  async findLoader(opts: LoaderFindOptions): Promise<LoaderFindResult|null> {
+  async findLoader(opts: LoaderFindOptions): Promise<LoaderFindResult | null> {
     const loaderName = await this.findLoaderName(opts);
     if (!loaderName) {
       return null;
@@ -111,7 +111,7 @@ export class LoaderFactory {
     return result;
   }
 
-  async findLoaderName(opts: LoaderFindOptions): Promise<string|null> {
+  async findLoaderName(opts: LoaderFindOptions): Promise<string | null> {
     for (const [loaderName, LoaderClazz] of LoaderFactory.loaderClazzMap.entries()) {
       if (await LoaderClazz.is?.(opts)) {
         return loaderName;
@@ -120,24 +120,36 @@ export class LoaderFactory {
     const { root, filename } = opts;
 
     // require file for find loader
-    const targetClazz = await compatibleRequire(path.join(root, filename));
-    if (!isClass(targetClazz)) {
-      // The file is not export with default class
-      return null;
+    const allExport = await compatibleRequire(path.join(root, filename), true);
+    const names = [];
+    const loaders = Array.from(new Set(Object.entries(allExport)
+      .map(([name, targetClazz]) => {
+        if (!isClass(targetClazz)) {
+          // The file is not export with default class
+          return null;
+        }
+
+        // get loader from reflect metadata
+        const loaderMd = Reflect.getMetadata(HOOK_FILE_LOADER, targetClazz);
+        if (loaderMd?.loader) {
+          names.push(name);
+          return loaderMd.loader;
+        }
+
+        // default loder with @Injectable
+        const injectableMd = isInjectable(targetClazz);
+        if (injectableMd) {
+          names.push(name);
+          return DEFAULT_LOADER;
+        }
+      })
+      .filter(v => v)));
+
+    if (loaders.length > 1) {
+      throw new Error(`Not support multiple loaders for ${path.join(root, filename)}`);
     }
 
-    // get loader from reflect metadata
-    const loaderMd = Reflect.getMetadata(HOOK_FILE_LOADER, targetClazz);
-    if (loaderMd?.loader) {
-      return loaderMd.loader;
-    }
-
-    // default loder with @Injectable
-    const injectableMd = isInjectable(targetClazz);
-    if (injectableMd) {
-      return DEFAULT_LOADER;
-    }
-
-    return null;
+    console.log(12333, loaders, names);
+    return loaders[0] ?? null;
   }
 }
