@@ -6,7 +6,7 @@ import { server } from './lifecycle';
   id: 'ABSTRACT_FOO',
   scope: ScopeEnum.SINGLETON,
 })
-export default class FrameworkFoo extends ArtusApplication {
+export class FrameworkFoo extends ArtusApplication {
   isListening(): boolean {
     return server?.listening;
   }

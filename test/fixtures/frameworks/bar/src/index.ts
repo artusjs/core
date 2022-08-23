@@ -7,7 +7,7 @@ export interface AbstractBar extends AbstractFoo { }
   id: 'ABSTRACT_BAR',
   scope: ScopeEnum.SINGLETON,
 })
-export default class FrameworkBar implements AbstractBar {
+export class FrameworkBar implements AbstractBar {
   @Inject('ABSTRACT_FOO')
   private foo: AbstractFoo;
 

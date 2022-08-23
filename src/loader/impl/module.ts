@@ -13,22 +13,27 @@ class ModuleLoader implements Loader {
   }
 
   async load(item: ManifestItem) {
-    const moduleClazz = await compatibleRequire(item.path);
-    const opts: Partial<InjectableDefinition> = {
-      path: item.path,
-      type: moduleClazz,
-      scope: ScopeEnum.EXECUTION, // The class used with @artus/core will have default scope EXECUTION, can be overwritten by Injectable decorator
-    };
-    if (item.id) {
-      opts.id = item.id;
+    const origin = await compatibleRequire(item.path, true);
+    item._loaderState = Object.assign({ names: ['default'] }, item._loaderState);
+    const { _loaderState: state } = item as { _loaderState: { names: string[] } };
+    for (const name of state.names) {
+      const moduleClazz = origin[name];
+      const opts: Partial<InjectableDefinition> = {
+        path: item.path,
+        type: moduleClazz,
+        scope: ScopeEnum.EXECUTION, // The class used with @artus/core will have default scope EXECUTION, can be overwritten by Injectable decorator
+      };
+      if (item.id) {
+        opts.id = item.id;
+      }
+
+      const shouldOverwriteValue = Reflect.getMetadata(SHOULD_OVERWRITE_VALUE, moduleClazz);
+
+      if (shouldOverwriteValue || !this.container.hasValue(opts)) {
+        this.container.set(opts);
+      }
     }
 
-    const shouldOverwriteValue = Reflect.getMetadata(SHOULD_OVERWRITE_VALUE, moduleClazz);
-
-    if (shouldOverwriteValue || !this.container.hasValue(opts)) {
-      this.container.set(opts);
-    }
-    return moduleClazz;
   }
 }
 
