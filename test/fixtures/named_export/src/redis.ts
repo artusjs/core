@@ -19,3 +19,5 @@ export class Redis2 {
     return this.name;
   }
 }
+
+export { Redis };
