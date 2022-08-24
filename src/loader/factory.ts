@@ -123,7 +123,7 @@ export class LoaderFactory {
 
     // require file for find loader
     const allExport = await compatibleRequire(path.join(root, filename), true);
-    const names = [];
+    const names: string[] = [];
     const loaders = Array.from(new Set(Object.entries(allExport)
       .map(([name, targetClazz]) => {
         if (!isClass(targetClazz)) {
