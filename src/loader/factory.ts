@@ -93,7 +93,7 @@ export class LoaderFactory {
   }
 
   async findLoader(opts: LoaderFindOptions): Promise<LoaderFindResult | null> {
-    const { loader: loaderName, names } = await this.findLoaderName(opts);
+    const { loader: loaderName, exportNames } = await this.findLoaderName(opts);
 
     if (!loaderName) {
       return null;
@@ -105,7 +105,7 @@ export class LoaderFactory {
     }
     const result: LoaderFindResult = {
       loaderName,
-      loaderState: { names },
+      loaderState: { exportNames },
     };
     if (loaderClazz.onFind) {
       result.loaderState = await loaderClazz.onFind(opts);
@@ -113,18 +113,19 @@ export class LoaderFactory {
     return result;
   }
 
-  async findLoaderName(opts: LoaderFindOptions): Promise<{ loader: string | null, names: string[] }> {
+  async findLoaderName(opts: LoaderFindOptions): Promise<{ loader: string | null, exportNames: string[] }> {
     for (const [loaderName, LoaderClazz] of LoaderFactory.loaderClazzMap.entries()) {
       if (await LoaderClazz.is?.(opts)) {
-        return { loader: loaderName, names: [] };
+        return { loader: loaderName, exportNames: [] };
       }
     }
     const { root, filename, policy = ScanPolicy.All } = opts;
 
     // require file for find loader
     const allExport = await compatibleRequire(path.join(root, filename), true);
-    const names: string[] = [];
-    const loaders = Array.from(new Set(Object.entries(allExport)
+    const exportNames: string[] = [];
+
+    let loaders = Object.entries(allExport)
       .map(([name, targetClazz]) => {
         if (!isClass(targetClazz)) {
           // The file is not export with default class
@@ -142,23 +143,25 @@ export class LoaderFactory {
         // get loader from reflect metadata
         const loaderMd = Reflect.getMetadata(HOOK_FILE_LOADER, targetClazz);
         if (loaderMd?.loader) {
-          names.push(name);
+          exportNames.push(name);
           return loaderMd.loader;
         }
 
         // default loder with @Injectable
         const injectableMd = isInjectable(targetClazz);
         if (injectableMd) {
-          names.push(name);
+          exportNames.push(name);
           return DEFAULT_LOADER;
         }
       })
-      .filter(v => v)));
+      .filter(v => v);
+
+    loaders = Array.from(new Set(loaders));
 
     if (loaders.length > 1) {
       throw new Error(`Not support multiple loaders for ${path.join(root, filename)}`);
     }
 
-    return { loader: loaders[0] ?? null, names };
+    return { loader: loaders[0] ?? null, exportNames };
   }
 }

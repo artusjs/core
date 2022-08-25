@@ -14,9 +14,9 @@ class ModuleLoader implements Loader {
 
   async load(item: ManifestItem) {
     const origin = await compatibleRequire(item.path, true);
-    item._loaderState = Object.assign({ names: ['default'] }, item._loaderState);
-    const { _loaderState: state } = item as { _loaderState: { names: string[] } };
-    for (const name of state.names) {
+    item._loaderState = Object.assign({ exportNames: ['default'] }, item._loaderState);
+    const { _loaderState: state } = item as { _loaderState: { exportNames: string[] } };
+    for (const name of state.exportNames) {
       const moduleClazz = origin[name];
       const opts: Partial<InjectableDefinition> = {
         path: item.path,
