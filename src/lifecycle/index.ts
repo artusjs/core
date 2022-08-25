@@ -1,5 +1,5 @@
 import { Constructable, Container } from '@artus/injection';
-import { Application } from '../types';
+import { Application, ApplicationLifecycle } from '../types';
 import {
   HOOK_NAME_META_PREFIX,
 } from '../constant';
@@ -22,6 +22,7 @@ export class LifecycleManager {
   hookFnMap: Map<string, HookFunction[]> = new Map();
   private app: Application;
   private container: Container;
+  private hookUnitSet: Set<Constructable<ApplicationLifecycle>> = new Set();
 
   constructor(app: Application, container: Container) {
     this.app = app;
@@ -48,6 +49,10 @@ export class LifecycleManager {
   }
 
   registerHookUnit(extClazz: Constructable<any>) {
+    if (this.hookUnitSet.has(extClazz)) {
+      return;
+    }
+    this.hookUnitSet.add(extClazz);
     const fnMetaKeys = Reflect.getMetadataKeys(extClazz);
     const extClazzInstance = this.container.get(extClazz);
     for (const fnMetaKey of fnMetaKeys) {
