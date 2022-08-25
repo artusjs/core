@@ -14,8 +14,8 @@ class ModuleLoader implements Loader {
 
   async load(item: ManifestItem): Promise<Constructable[]> {
     const origin = await compatibleRequire(item.path, true);
-    item._loaderState = Object.assign({ exportNames: ['default'] }, item._loaderState);
-    const { _loaderState: state } = item as { _loaderState: { exportNames: string[] } };
+    item.loaderState = Object.assign({ exportNames: ['default'] }, item.loaderState);
+    const { loaderState: state } = item as { loaderState: { exportNames: string[] } };
 
     const modules: Constructable[] = [];
 

@@ -20,8 +20,8 @@ class LifecycleLoader implements Loader {
 
   async load(item: ManifestItem) {
     const origin: Constructable<ApplicationLifecycle>[] = await compatibleRequire(item.path, true);
-    item._loaderState = Object.assign({ exportNames: ['default'] }, item._loaderState);
-    const { _loaderState: state } = item as { _loaderState: { exportNames: string[] } };
+    item.loaderState = Object.assign({ exportNames: ['default'] }, item.loaderState);
+    const { loaderState: state } = item as { loaderState: { exportNames: string[] } };
 
     const lifecycleClazzList = [];
 

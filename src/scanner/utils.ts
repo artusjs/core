@@ -71,7 +71,7 @@ export class ScanUtils {
           source,
         };
         if (loaderState) {
-          item._loaderState = loaderState;
+          item.loaderState = loaderState;
         }
         unitName && (item.unitName = unitName);
         const itemList = options.itemMap.get(item.loader ?? DEFAULT_LOADER);
