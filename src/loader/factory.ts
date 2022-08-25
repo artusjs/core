@@ -1,6 +1,6 @@
 import * as path from 'path';
 import { isInjectable, Container } from '@artus/injection';
-import { ArtusInjectEnum, DEFAULT_LOADER, HOOK_FILE_LOADER, LOADER_NAME_META } from '../constant';
+import { ArtusInjectEnum, DEFAULT_LOADER, HOOK_FILE_LOADER, LOADER_NAME_META, ScanPolicy } from '../constant';
 import {
   Manifest,
   ManifestItem,
@@ -92,8 +92,9 @@ export class LoaderFactory {
     return loader.load(item);
   }
 
-  async findLoader(opts: LoaderFindOptions): Promise<LoaderFindResult|null> {
-    const loaderName = await this.findLoaderName(opts);
+  async findLoader(opts: LoaderFindOptions): Promise<LoaderFindResult | null> {
+    const { loader: loaderName, exportNames } = await this.findLoaderName(opts);
+
     if (!loaderName) {
       return null;
     }
@@ -104,6 +105,7 @@ export class LoaderFactory {
     }
     const result: LoaderFindResult = {
       loaderName,
+      loaderState: { exportNames },
     };
     if (loaderClazz.onFind) {
       result.loaderState = await loaderClazz.onFind(opts);
@@ -111,33 +113,55 @@ export class LoaderFactory {
     return result;
   }
 
-  async findLoaderName(opts: LoaderFindOptions): Promise<string|null> {
+  async findLoaderName(opts: LoaderFindOptions): Promise<{ loader: string | null, exportNames: string[] }> {
     for (const [loaderName, LoaderClazz] of LoaderFactory.loaderClazzMap.entries()) {
       if (await LoaderClazz.is?.(opts)) {
-        return loaderName;
+        return { loader: loaderName, exportNames: [] };
       }
     }
-    const { root, filename } = opts;
+    const { root, filename, policy = ScanPolicy.All } = opts;
 
     // require file for find loader
-    const targetClazz = await compatibleRequire(path.join(root, filename));
-    if (!isClass(targetClazz)) {
-      // The file is not export with default class
-      return null;
+    const allExport = await compatibleRequire(path.join(root, filename), true);
+    const exportNames: string[] = [];
+
+    let loaders = Object.entries(allExport)
+      .map(([name, targetClazz]) => {
+        if (!isClass(targetClazz)) {
+          // The file is not export with default class
+          return null;
+        }
+
+        if (policy === ScanPolicy.NamedExport && name === 'default') {
+          return null;
+        }
+
+        if (policy === ScanPolicy.DefaultExport && name !== 'default') {
+          return null;
+        }
+
+        // get loader from reflect metadata
+        const loaderMd = Reflect.getMetadata(HOOK_FILE_LOADER, targetClazz);
+        if (loaderMd?.loader) {
+          exportNames.push(name);
+          return loaderMd.loader;
+        }
+
+        // default loder with @Injectable
+        const injectableMd = isInjectable(targetClazz);
+        if (injectableMd) {
+          exportNames.push(name);
+          return DEFAULT_LOADER;
+        }
+      })
+      .filter(v => v);
+
+    loaders = Array.from(new Set(loaders));
+
+    if (loaders.length > 1) {
+      throw new Error(`Not support multiple loaders for ${path.join(root, filename)}`);
     }
 
-    // get loader from reflect metadata
-    const loaderMd = Reflect.getMetadata(HOOK_FILE_LOADER, targetClazz);
-    if (loaderMd?.loader) {
-      return loaderMd.loader;
-    }
-
-    // default loder with @Injectable
-    const injectableMd = isInjectable(targetClazz);
-    if (injectableMd) {
-      return DEFAULT_LOADER;
-    }
-
-    return null;
+    return { loader: loaders[0] ?? null, exportNames };
   }
 }

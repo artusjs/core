@@ -1,4 +1,4 @@
-import { Injectable } from "@artus/injection";
+import { Injectable, ScopeEnum } from "@artus/injection";
 
 export interface MysqlConfig {
   clientName: string
@@ -6,6 +6,7 @@ export interface MysqlConfig {
 
 @Injectable({
   id: 'ARTUS_MYSQL',
+  scope: ScopeEnum.SINGLETON,
 })
 export default class Client {
   private clientName = '';

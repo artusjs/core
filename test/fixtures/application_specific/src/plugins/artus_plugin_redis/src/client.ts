@@ -1,4 +1,4 @@
-import { Injectable } from "@artus/injection";
+import { Injectable, ScopeEnum } from "@artus/injection";
 
 export interface RedisConfig {
   clientName: string
@@ -6,6 +6,7 @@ export interface RedisConfig {
 
 @Injectable({
   id: 'ARTUS_REDIS',
+  scope: ScopeEnum.SINGLETON,
 })
 export default class Client {
   private clientName = '';

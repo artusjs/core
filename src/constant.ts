@@ -14,15 +14,21 @@ export enum ArtusInjectEnum {
   Trigger = 'artus#trigger',
 }
 
-export const ARTUS_EXCEPTION_DEFAULT_LOCALE = 'en';
-
-export const ARTUS_SERVER_ENV = 'ARTUS_SERVER_ENV';
-
 export enum ARTUS_DEFAULT_CONFIG_ENV {
   DEV = 'development',
   PROD = 'production',
   DEFAULT = 'default',
 }
+
+export enum ScanPolicy {
+  NamedExport = 'named_export',
+  DefaultExport = 'default_export',
+  All = "all",
+}
+
+export const ARTUS_EXCEPTION_DEFAULT_LOCALE = 'en';
+
+export const ARTUS_SERVER_ENV = 'ARTUS_SERVER_ENV';
 
 export const HOOK_NAME_META_PREFIX = 'hookName:';
 export const HOOK_FILE_LOADER = 'appHook:fileLoader';

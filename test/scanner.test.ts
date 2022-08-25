@@ -1,6 +1,7 @@
+import 'reflect-metadata';
 import { Scanner } from '../src/scanner';
 import path from 'path';
-import { LoaderFactory } from '../src';
+import { ScanPolicy , LoaderFactory } from '../src';
 
 
 describe('test/scanner.test.ts', () => {
@@ -57,5 +58,29 @@ describe('test/scanner.test.ts', () => {
     expect(Array.isArray(manifest.items)).toBe(true);
     expect(manifest.items.length).toBe(1);
     expect(manifest.items[0]?.loader).toBe('test-custom-loader');
+  });
+
+  it('should scan application with all injectable class', async () => {
+    const scanner = new Scanner({ needWriteFile: false, extensions: ['.ts', '.js', '.json'] });
+    const scanResults = await scanner.scan(path.resolve(__dirname, './fixtures/named_export'));
+    const { default: manifest } = scanResults;
+    expect(manifest.items).toBeDefined();
+    expect(manifest.items.length).toBe(5);
+  });
+
+  it('should scan application with named export class', async () => {
+    const scanner = new Scanner({ needWriteFile: false, extensions: ['.ts', '.js', '.json'], policy: ScanPolicy.NamedExport });
+    const scanResults = await scanner.scan(path.resolve(__dirname, './fixtures/named_export'));
+    const { default: manifest } = scanResults;
+    expect(manifest.items).toBeDefined();
+    expect(manifest.items.length).toBe(5);
+  });
+
+  it('should scan application with default export class', async () => {
+    const scanner = new Scanner({ needWriteFile: false, extensions: ['.ts', '.js', '.json'], policy: ScanPolicy.DefaultExport });
+    const scanResults = await scanner.scan(path.resolve(__dirname, './fixtures/named_export'));
+    const { default: manifest } = scanResults;
+    expect(manifest.items).toBeDefined();
+    expect(manifest.items.length).toBe(3);
   });
 });

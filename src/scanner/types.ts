@@ -2,6 +2,7 @@ import { BaseLoader, ManifestItem } from "../loader";
 import { FrameworkConfig } from "../framework";
 import { PluginConfigItem } from "../plugin/types";
 import { Application } from "../types";
+import { ScanPolicy } from "../constant";
 
 export interface ScannerOptions {
   appName: string;
@@ -10,6 +11,7 @@ export interface ScannerOptions {
   useRelativePath: boolean;
   exclude: string[];
   configDir: string;
+  policy: ScanPolicy;
   envs?: string[];
   framework?: FrameworkConfig;
   plugin?: Record<string, Partial<PluginConfigItem>>;
@@ -21,6 +23,7 @@ export interface WalkOptions {
   source: string;
   baseDir: string;
   configDir: string;
+  policy: ScanPolicy;
   extensions: string[];
   exclude: string[];
   itemMap: Map<string, ManifestItem[]>;

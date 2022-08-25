@@ -1,4 +1,4 @@
-import { Container, InjectableDefinition, ScopeEnum } from '@artus/injection';
+import { Constructable, Container, InjectableDefinition, ScopeEnum } from '@artus/injection';
 import { DefineLoader } from '../decorator';
 import { ManifestItem, Loader } from '../types';
 import compatibleRequire from '../../utils/compatible_require';
@@ -12,23 +12,34 @@ class ModuleLoader implements Loader {
     this.container = container;
   }
 
-  async load(item: ManifestItem) {
-    const moduleClazz = await compatibleRequire(item.path);
-    const opts: Partial<InjectableDefinition> = {
-      path: item.path,
-      type: moduleClazz,
-      scope: ScopeEnum.EXECUTION, // The class used with @artus/core will have default scope EXECUTION, can be overwritten by Injectable decorator
-    };
-    if (item.id) {
-      opts.id = item.id;
+  async load(item: ManifestItem): Promise<Constructable[]> {
+    const origin = await compatibleRequire(item.path, true);
+    item._loaderState = Object.assign({ exportNames: ['default'] }, item._loaderState);
+    const { _loaderState: state } = item as { _loaderState: { exportNames: string[] } };
+
+    const modules: Constructable[] = [];
+
+    for (const name of state.exportNames) {
+      const moduleClazz = origin[name];
+      const opts: Partial<InjectableDefinition> = {
+        path: item.path,
+        type: moduleClazz,
+        scope: ScopeEnum.EXECUTION, // The class used with @artus/core will have default scope EXECUTION, can be overwritten by Injectable decorator
+      };
+      if (item.id) {
+        opts.id = item.id;
+      }
+
+      const shouldOverwriteValue = Reflect.getMetadata(SHOULD_OVERWRITE_VALUE, moduleClazz);
+
+      if (shouldOverwriteValue || !this.container.hasValue(opts)) {
+        this.container.set(opts);
+      }
+
+      modules.push(moduleClazz);
     }
 
-    const shouldOverwriteValue = Reflect.getMetadata(SHOULD_OVERWRITE_VALUE, moduleClazz);
-
-    if (shouldOverwriteValue || !this.container.hasValue(opts)) {
-      this.container.set(opts);
-    }
-    return moduleClazz;
+    return modules;
   }
 }
 

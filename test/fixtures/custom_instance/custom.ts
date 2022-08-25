@@ -1,6 +1,8 @@
-import { Injectable } from "../../../src/index";
+import { Injectable, ScopeEnum } from "../../../src/index";
 
-@Injectable()
+@Injectable({
+  scope: ScopeEnum.SINGLETON,
+})
 export default class Custom {
   private name: string;
 

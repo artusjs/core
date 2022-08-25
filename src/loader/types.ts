@@ -1,4 +1,5 @@
 import { Container } from '@artus/injection';
+import { ScanPolicy } from '../constant';
 
 interface Manifest {
   items: ManifestItem[];
@@ -20,6 +21,7 @@ interface LoaderFindOptions {
   root: string;
   baseDir: string;
   configDir: string;
+  policy?: ScanPolicy;
 }
 
 interface LoaderFindResult {

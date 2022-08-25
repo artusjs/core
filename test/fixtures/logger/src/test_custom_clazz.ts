@@ -1,7 +1,9 @@
-import { Inject, Injectable } from '@artus/injection';
+import { Inject, Injectable, ScopeEnum } from '@artus/injection';
 import CustomLogger from './custom_logger';
 
-@Injectable()
+@Injectable({
+  scope: ScopeEnum.SINGLETON,
+})
 export default class TestCustomLoggerClazz {
   @Inject()
   private logger!: CustomLogger;
@@ -10,7 +12,7 @@ export default class TestCustomLoggerClazz {
     this.logger.info(message, ...args);
   }
 
-  public testError(message: string|Error, ...args: any[]) {
+  public testError(message: string | Error, ...args: any[]) {
     this.logger.error(message, ...args);
   }
 }

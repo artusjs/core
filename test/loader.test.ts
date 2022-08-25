@@ -51,7 +51,7 @@ describe('test/loader.test.ts', () => {
       const container = new Container('testDefault');
       const loaderFactory = LoaderFactory.create(container);
 
-      const loaderName = await loaderFactory.findLoaderName({
+      const { loader: loaderName } = await loaderFactory.findLoaderName({
         filename: 'test_clazz.ts',
         root: path.resolve(__dirname, './fixtures/module_with_custom_loader/src'),
         baseDir: path.resolve(__dirname, './fixtures/module_with_custom_loader/src'),
