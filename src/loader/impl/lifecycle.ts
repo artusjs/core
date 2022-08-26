@@ -14,12 +14,24 @@ class LifecycleLoader implements Loader {
     this.container = container;
   }
 
+  get lifecycleManager(): LifecycleManager {
+    return this.container.get(ArtusInjectEnum.LifecycleManager);
+  }
+
   async load(item: ManifestItem) {
-    const extClazz: Constructable<ApplicationLifecycle> = await compatibleRequire(item.path);
-    const lifecycleManager: LifecycleManager = this.container.get(ArtusInjectEnum.LifecycleManager);
-    this.container.set({ type: extClazz });
-    lifecycleManager.registerHookUnit(extClazz);
-    return extClazz;
+    const origin: Constructable<ApplicationLifecycle>[] = await compatibleRequire(item.path, true);
+    item.loaderState = Object.assign({ exportNames: ['default'] }, item.loaderState);
+    const { loaderState: state } = item as { loaderState: { exportNames: string[] } };
+
+    const lifecycleClazzList = [];
+
+    for (const name of state.exportNames) {
+      const clazz = origin[name];
+      this.container.set({ type: clazz });
+      this.lifecycleManager.registerHookUnit(clazz);
+    }
+
+    return lifecycleClazzList;
   }
 }
 

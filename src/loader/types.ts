@@ -13,7 +13,7 @@ interface ManifestItem<LoaderState = unknown> extends Record<string, any> {
   loader?: string;
   source?: string;
   unitName?: string;
-  _loaderState?: LoaderState;
+  loaderState?: LoaderState;
 }
 
 interface LoaderFindOptions {

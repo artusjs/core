@@ -188,7 +188,7 @@ export class Scanner {
         filename,
         loader,
         source: 'config',
-        _loaderState: {
+        loaderState: {
           baseDir,
         },
       };

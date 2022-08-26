@@ -11,7 +11,7 @@ export default ({
       extname: '.ts',
       filename: 'test_clazz.ts',
       loader: 'test-custom-loader',
-      _loaderState: {
+      loaderState: {
         hello: 'loaderState',
       },
     },
