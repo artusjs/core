@@ -11,10 +11,12 @@ export let server: Server;
 export default class MyLifecycle implements ApplicationLifecycle {
   @Inject(ArtusInjectEnum.Application)
   app: ArtusApplication;
+  @Inject()
+  trigger: HttpTrigger;
 
   @LifecycleHook()
   async didLoad() {
     // register controller
-    registerController(this.app.trigger as HttpTrigger);
+    registerController(this.trigger as HttpTrigger);
   }
 }

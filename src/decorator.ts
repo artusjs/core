@@ -21,4 +21,3 @@ export function LifecycleHook(hookName?: string): PropertyDecorator {
 }
 
 export * from './loader/decorator';
-export * from './trigger/decorator';

@@ -28,7 +28,8 @@
   ],
   "scripts": {
     "build": "tsc -p ./tsconfig.build.json",
-    "test": "jest --coverage --detectOpenHandles --testTimeout=15000",
+    "test": "jest --detectOpenHandles --testTimeout=15000",
+    "cov": "jest --coverage --detectOpenHandles --testTimeout=15000",
     "ci": "npm run lint && npm run test",
     "lint:fix": "eslint . --ext .ts --fix",
     "lint": "eslint . --ext .ts"

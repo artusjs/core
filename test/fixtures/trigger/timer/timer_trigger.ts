@@ -1,8 +1,7 @@
 import { Context, Next } from '@artus/pipeline';
-import { Trigger } from '../../../../src';
-import { DefineTrigger } from '../../../../src/decorator';
+import { Injectable, ScopeEnum, Trigger } from '../../../../src';
 
-@DefineTrigger()
+@Injectable({ scope: ScopeEnum.SINGLETON })
 export default class TimerTrigger extends Trigger {
   constructor() {
     super();

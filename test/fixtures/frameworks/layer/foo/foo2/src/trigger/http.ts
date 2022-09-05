@@ -1,10 +1,10 @@
 import { Stream } from 'stream';
 import { Context, Next } from '@artus/pipeline';
-import { Trigger } from '../../../../../../../../src';
-import { DefineTrigger } from '../../../../../../../../src/decorator';
+import { Injectable, ScopeEnum, Trigger } from '../../../../../../../../src';
+import { HttpTrigger } from '../../../../../abstract/foo';
 
-@DefineTrigger()
-export default class HttpTrigger extends Trigger {
+@Injectable({ id: HttpTrigger, scope: ScopeEnum.SINGLETON })
+export default class HttpTriggerImpl extends Trigger {
   constructor() {
     super();
     // first of all

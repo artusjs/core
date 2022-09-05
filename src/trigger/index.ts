@@ -1,10 +1,9 @@
-import { ExecutionContainer, Inject } from '@artus/injection';
+import { ExecutionContainer, Inject, Injectable, ScopeEnum } from '@artus/injection';
 import { Input, Context, MiddlewareInput, Pipeline, Output } from '@artus/pipeline';
 import { ArtusInjectEnum } from '../constant';
 import { Application, TriggerType } from '../types';
-import { DefineTrigger } from './decorator';
 
-@DefineTrigger()
+@Injectable({ scope: ScopeEnum.SINGLETON })
 export default class Trigger implements TriggerType {
   private pipeline: Pipeline;
 

@@ -1,9 +1,8 @@
 import { Stream } from 'stream';
 import { Context, Next } from '@artus/pipeline';
-import { Trigger } from '../../../../src';
-import { DefineTrigger } from '../../../../src/decorator';
+import { Injectable, ScopeEnum, Trigger } from '../../../../src';
 
-@DefineTrigger()
+@Injectable({ scope: ScopeEnum.SINGLETON })
 export default class HttpTrigger extends Trigger {
   constructor() {
     super();
