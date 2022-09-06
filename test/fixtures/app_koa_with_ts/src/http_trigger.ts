@@ -1,7 +1,7 @@
 import { Context, Next } from '@artus/pipeline';
 import { Injectable, ScopeEnum, Trigger } from '../../../../src';
 
-@Injectable({ id: ScopeEnum.SINGLETON })
+@Injectable({ scope: ScopeEnum.SINGLETON })
 export default class HttpTrigger extends Trigger {
   constructor() {
     super();

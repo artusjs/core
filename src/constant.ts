@@ -11,7 +11,6 @@ export enum ArtusInjectEnum {
   LifecycleManager = 'artus#lifecycle-manager',
   Logger = 'artus#logger',
   Packages = 'artus#packages',
-  Trigger = 'artus#trigger',
 }
 
 export enum ARTUS_DEFAULT_CONFIG_ENV {
