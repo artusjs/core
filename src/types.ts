@@ -23,8 +23,6 @@ export interface Application {
   manifest?: Manifest;
   config?: Record<string, any>;
 
-  get trigger(): TriggerType;
-
   load(manifest: Manifest): Promise<this>;
   run(): Promise<void>;
   registerHook(hookName: string, hookFn: HookFunction): void;

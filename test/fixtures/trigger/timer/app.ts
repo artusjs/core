@@ -2,6 +2,7 @@ import { ArtusApplication, Inject, ArtusInjectEnum } from '../../../../src';
 import { LifecycleHookUnit, LifecycleHook } from '../../../../src/decorator';
 import { Context, Input } from '@artus/pipeline';
 import { ApplicationLifecycle } from '../../../../src/types';
+import TimerTrigger from './timer_trigger';
 
 const timers: any[] = [];
 export const execution = {
@@ -19,10 +20,12 @@ export const execution = {
 export default class MyLifecycle implements ApplicationLifecycle {
   @Inject(ArtusInjectEnum.Application)
   app: ArtusApplication;
+  @Inject()
+  trigger: TimerTrigger;
 
   @LifecycleHook()
   async didLoad() {
-    this.app.trigger.use(async (ctx: Context) => {
+    this.trigger.use(async (ctx: Context) => {
       const { input: { params } } = ctx;
 
       // task 1
@@ -44,15 +47,15 @@ export default class MyLifecycle implements ApplicationLifecycle {
     timers.push(setInterval(async () => {
       const input = new Input();
       input.params = { task: '1', execution };
-      const ctx = await this.app.trigger.initContext(input);
-      await this.app.trigger.startPipeline(ctx);
+      const ctx = await this.trigger.initContext(input);
+      await this.trigger.startPipeline(ctx);
     }, 100));
 
     timers.push(setInterval(async () => {
       const input = new Input();
       input.params = { task: '2', execution };
-      const ctx = await this.app.trigger.initContext(input);
-      await this.app.trigger.startPipeline(ctx);
+      const ctx = await this.trigger.initContext(input);
+      await this.trigger.startPipeline(ctx);
     }, 200));
   }
 

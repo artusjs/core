@@ -3,6 +3,7 @@ import { LifecycleHookUnit, LifecycleHook } from '../../../../../../../src/decor
 import { ApplicationLifecycle } from '../../../../../../../src/types';
 import { Input } from '@artus/pipeline';
 import { ArtusApplication, Inject, ArtusInjectEnum } from '../../../../../../../src';
+import { HttpTrigger } from '../../../../abstract/foo';
 
 export let server: Server;
 
@@ -10,6 +11,8 @@ export let server: Server;
 export default class MyLifecycle implements ApplicationLifecycle {
   @Inject(ArtusInjectEnum.Application)
   app: ArtusApplication;
+  @Inject()
+  trigger: HttpTrigger;
 
   @LifecycleHook()
   willReady() {
@@ -19,8 +22,8 @@ export default class MyLifecycle implements ApplicationLifecycle {
       .createServer(async (req: http.IncomingMessage, res: http.ServerResponse) => {
         const input = new Input();
         input.params = { req, res, config, app: this.app };
-        const ctx = await this.app.trigger.initContext(input);
-        await this.app.trigger.startPipeline(ctx);
+        const ctx = await this.trigger.initContext(input);
+        await this.trigger.startPipeline(ctx);
       })
       .listen(port);
   }

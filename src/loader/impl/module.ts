@@ -22,7 +22,6 @@ class ModuleLoader implements Loader {
     for (const name of state.exportNames) {
       const moduleClazz = origin[name];
       const opts: Partial<InjectableDefinition> = {
-        path: item.path,
         type: moduleClazz,
         scope: ScopeEnum.EXECUTION, // The class used with @artus/core will have default scope EXECUTION, can be overwritten by Injectable decorator
       };

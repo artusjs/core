@@ -9,6 +9,7 @@ import { ApplicationLifecycle } from '../../../../src/types';
 
 import KoaApplication from './koa_app';
 import HelloController from './controllers/hello';
+import HttpTrigger from './http_trigger';
 
 export let server: Server;
 
@@ -18,6 +19,8 @@ export default class MyLifecycle implements ApplicationLifecycle {
   app: ArtusApplication;
   @Inject()
   container: Container;
+  @Inject()
+  trigger: HttpTrigger;
 
   get koaApp(): KoaApplication {
     return this.container.get(KoaApplication);
@@ -25,7 +28,7 @@ export default class MyLifecycle implements ApplicationLifecycle {
 
   @LifecycleHook()
   async didLoad() {
-    this.app.trigger.use(async (ctx: Context) => {
+    this.trigger.use(async (ctx: Context) => {
       const { koaCtx } = ctx.input.params;
       ctx.container.set({ id: 'headers', value: koaCtx.headers });
       ctx.output.data = await ctx.container.get(HelloController).index();
@@ -38,8 +41,8 @@ export default class MyLifecycle implements ApplicationLifecycle {
       const input = new Input();
       const { req, res } = koaCtx;
       input.params = { koaCtx, req, res };
-      const ctx = await this.app.trigger.initContext(input);
-      await this.app.trigger.startPipeline(ctx);
+      const ctx = await this.trigger.initContext(input);
+      await this.trigger.startPipeline(ctx);
     });
   }
 

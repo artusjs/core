@@ -4,4 +4,4 @@ export interface AbstractFoo {
   isListening: () => boolean
 }
 
-export interface HttpTrigger extends Trigger {}
+export class HttpTrigger extends Trigger { }
