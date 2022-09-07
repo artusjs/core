@@ -17,6 +17,6 @@ export default class MyLifecycle implements ApplicationLifecycle {
   @LifecycleHook()
   async didLoad() {
     // register controller
-    registerController(this.trigger as HttpTrigger);
+    registerController(this.trigger);
   }
 }

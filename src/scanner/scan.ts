@@ -102,7 +102,7 @@ export class Scanner {
     const config = await this.getAllConfig(root, env);
 
     // 2. scan all file in framework
-    const frameworkConfig = this.options.framework ?? config.framework;
+    const frameworkConfig = config.framework ?? this.options.framework;
     const frameworkDirs = await this.getFrameworkDirs(frameworkConfig, root, env);
     for (const frameworkDir of frameworkDirs) {
       await this.walk(frameworkDir, this.formatWalkOptions('framework', frameworkDir));
