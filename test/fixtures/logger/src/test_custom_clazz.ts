@@ -6,7 +6,7 @@ import CustomLogger from './custom_logger';
 })
 export default class TestCustomLoggerClazz {
   @Inject()
-  private logger!: CustomLogger;
+  private logger: CustomLogger;
 
   public testInfo(message: string, ...args: any[]) {
     this.logger.info(message, ...args);

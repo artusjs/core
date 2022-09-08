@@ -1,10 +1,33 @@
-import { BaseLogger } from './base';
-import { DefineLogger } from './decorator';
-import { LoggerLevel } from './level';
-import { LogOptions } from './types';
+import { Container, Inject, Injectable, ScopeEnum } from '@artus/injection';
+import { ArtusInjectEnum } from '../constant';
+import { LoggerLevel, LOGGER_LEVEL_MAP } from './level';
+import { LoggerOptions, LoggerType, LogOptions } from './types';
 
-@DefineLogger()
-export default class ArtusLogger extends BaseLogger {
+@Injectable({
+  scope: ScopeEnum.SINGLETON,
+})
+export default class Logger implements LoggerType {
+  @Inject()
+  protected container!: Container;
+
+  protected get loggerOpts(): LoggerOptions {
+    let appConfig: Record<string, any> = {};
+    try {
+      appConfig = this.container.get(ArtusInjectEnum.Config);
+    } catch(e) {
+      // do nothing
+    }
+    return appConfig?.logger ?? {};
+  }
+
+  protected checkLoggerLevel(level: LoggerLevel) {
+    const targetLevel = this.loggerOpts.level ?? LoggerLevel.INFO;
+    if (LOGGER_LEVEL_MAP[level] < LOGGER_LEVEL_MAP[targetLevel]) {
+      return false;
+    }
+    return true;
+  }
+
   public trace(message: string, ...args: any[]) {
     if (!this.checkLoggerLevel(LoggerLevel.TRACE)) {
       return;

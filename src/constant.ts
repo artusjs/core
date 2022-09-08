@@ -9,7 +9,6 @@ export enum ArtusInjectEnum {
   DefaultContainerName = 'artus#default_container',
   Frameworks = 'artus#framework-config',
   LifecycleManager = 'artus#lifecycle-manager',
-  Logger = 'artus#logger',
   Packages = 'artus#packages',
 }
 

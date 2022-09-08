@@ -25,7 +25,6 @@ describe('test/app.test.ts', () => {
         // Check Artus Default Class Inject to Contianer
         expect(() => app.container.get(ArtusInjectEnum.Application)).not.toThrow();
         expect(() => app.container.get(ArtusInjectEnum.LifecycleManager)).not.toThrow();
-        expect(() => app.container.get(ArtusInjectEnum.Logger)).not.toThrow();
         expect(() => app.container.get(ExceptionHandler)).not.toThrow();
         expect(() => app.container.get(ConfigurationHandler)).not.toThrow();
 

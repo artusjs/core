@@ -31,78 +31,6 @@ describe('test/logger.test.ts', () => {
   });
 
   describe('log message with default level (INFO)', () => {
-    it('should log message with app.logger', async () => {
-      const app = await _getAppWithConfig();
-
-      app.logger.trace('trace', 0, {});
-      expect(console.trace).toBeCalledTimes(0);
-
-      app.logger.debug('debug', 1, {});
-      expect(console.debug).toBeCalledTimes(0);
-
-      app.logger.info('info', 2, {});
-      expect(console.info).toBeCalledTimes(1);
-      expect(console.info).toBeCalledWith('info', 2, {});
-
-      app.logger.warn('warn', 3, {});
-      expect(console.warn).toBeCalledTimes(1);
-      expect(console.warn).toBeCalledWith('warn', 3, {});
-
-      app.logger.error('error', 4, {});
-      app.logger.error(err, 5, {});
-      expect(console.error).toBeCalledTimes(2);
-      expect(console.error).toBeCalledWith('error', 4, {});
-      expect(console.error).toBeCalledWith(err, 5, {});
-    });
-
-    it('should log message with app.logger and log method', async () => {
-      const app = await _getAppWithConfig();
-
-      app.logger.log({
-        level: LoggerLevel.TRACE,
-        message: 'trace', 
-        splat: [ 0, {} ],
-      });
-      expect(console.trace).toBeCalledTimes(0);
-
-      app.logger.log({
-        level: LoggerLevel.DEBUG,
-        message: 'debug',
-        splat: [ 1, {} ],
-      });
-      expect(console.debug).toBeCalledTimes(0);
-
-      app.logger.log({
-        level: LoggerLevel.INFO,
-        message: 'info',
-        splat: [ 2, {} ],
-      });
-      expect(console.info).toBeCalledTimes(1);
-      expect(console.info).toBeCalledWith('info', 2, {});
-
-      app.logger.log({
-        level: LoggerLevel.WARN,
-        message: 'warn',
-        splat: [ 3, {} ],
-      });
-      expect(console.warn).toBeCalledTimes(1);
-      expect(console.warn).toBeCalledWith('warn', 3, {});
-
-      app.logger.log({
-        level: LoggerLevel.ERROR,
-        message: 'error',
-        splat: [ 4, {} ],
-      });
-      app.logger.log({
-        level: LoggerLevel.ERROR,
-        message: err,
-        splat: [ 5, {} ],
-      });
-      expect(console.error).toBeCalledTimes(2);
-      expect(console.error).toBeCalledWith('error', 4, {});
-      expect(console.error).toBeCalledWith(err, 5, {});
-    });
-
     it('should log message with Logger from Contianer', async () => {
       const { default: manifest } = await import('./fixtures/logger/src');
       const app = await _getAppWithConfig({}, manifest);
@@ -159,89 +87,6 @@ describe('test/logger.test.ts', () => {
   });
 
   describe('log message with custom level (TRACE)', () => {
-    it('should log message with app.logger', async () => {
-      const app = await _getAppWithConfig({
-        logger: {
-          level: LoggerLevel.TRACE,
-        },
-      });
-
-      app.logger.trace('trace', 0, {});
-      expect(console.trace).toBeCalledTimes(1);
-      expect(console.trace).toBeCalledWith('trace', 0, {});
-
-      app.logger.debug('debug', 1, {});
-      expect(console.debug).toBeCalledTimes(1);
-      expect(console.debug).toBeCalledWith('debug', 1, {});
-
-      app.logger.info('info', 2, {});
-      expect(console.info).toBeCalledTimes(1);
-      expect(console.info).toBeCalledWith('info', 2, {});
-
-      app.logger.warn('warn', 3, {});
-      expect(console.warn).toBeCalledTimes(1);
-      expect(console.warn).toBeCalledWith('warn', 3, {});
-
-      app.logger.error('error', 4, {});
-      app.logger.error(err, 5, {});
-      expect(console.error).toBeCalledTimes(2);
-      expect(console.error).toBeCalledWith('error', 4, {});
-      expect(console.error).toBeCalledWith(err, 5, {});
-    });
-    it('should log message with app.logger and log method', async () => {
-      const app = await _getAppWithConfig({
-        logger: {
-          level: LoggerLevel.TRACE,
-        },
-      });
-
-      app.logger.log({
-        level: LoggerLevel.TRACE,
-        message: 'trace', 
-        splat: [ 0, {} ],
-      });
-      expect(console.trace).toBeCalledTimes(1);
-      expect(console.trace).toBeCalledWith('trace', 0, {});
-
-      app.logger.log({
-        level: LoggerLevel.DEBUG,
-        message: 'debug',
-        splat: [ 1, {} ],
-      });
-      expect(console.debug).toBeCalledTimes(1);
-      expect(console.debug).toBeCalledWith('debug', 1, {});
-
-      app.logger.log({
-        level: LoggerLevel.INFO,
-        message: 'info',
-        splat: [ 2, {} ],
-      });
-      expect(console.info).toBeCalledTimes(1);
-      expect(console.info).toBeCalledWith('info', 2, {});
-
-      app.logger.log({
-        level: LoggerLevel.WARN,
-        message: 'warn',
-        splat: [ 3, {} ],
-      });
-      expect(console.warn).toBeCalledTimes(1);
-      expect(console.warn).toBeCalledWith('warn', 3, {});
-
-      app.logger.log({
-        level: LoggerLevel.ERROR,
-        message: 'error',
-        splat: [ 4, {} ],
-      });
-      app.logger.log({
-        level: LoggerLevel.ERROR,
-        message: err,
-        splat: [ 5, {} ],
-      });
-      expect(console.error).toBeCalledTimes(2);
-      expect(console.error).toBeCalledWith('error', 4, {});
-      expect(console.error).toBeCalledWith(err, 5, {});
-    });
-
     it('should log message with Logger from Contianer', async () => {
       const { default: manifest } = await import('./fixtures/logger/src');
       const app = await _getAppWithConfig({
@@ -309,36 +154,15 @@ describe('test/logger.test.ts', () => {
     });
   });
 
-  describe('log message with Error and not-error level', () => {
-    it('should log message with app.logger and log method', async () => {
-      const app = await _getAppWithConfig();
-
-      app.logger.log({
-        level: LoggerLevel.INFO,
-        message: err,
-      });
-
-      expect(console.info).toBeCalledTimes(1);
-      expect(console.info).toBeCalledWith(err.stack);
-    });
-  });
-
   describe('log message with custom Logger', () => {
     it('should log message with custom method', async () => {
       const { manifestWithCustomLogger: manifest } = await import('./fixtures/logger/src');
       const app = await _getAppWithConfig({}, manifest);
       const testClazz = app.container.get(TestCustomLoggerClazz);
 
-      app.logger.info('info', 0, {});
-      expect(console.info).toBeCalledTimes(1);
-      expect(console.info).toBeCalledWith('[Custom]', 'info', 0, {});
-
       testClazz.testInfo('info', 1, {});
-      expect(console.info).toBeCalledTimes(2);
+      expect(console.info).toBeCalledTimes(1);
       expect(console.info).toBeCalledWith('[Custom]', 'info', 1, {});
-
-      expect(() => app.logger.error(err)).toThrow(new Error('Not implemented'));
-      expect(() => testClazz.testError(err)).toThrow(new Error('Not implemented'));
     });
   });
 });
