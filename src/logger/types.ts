@@ -10,7 +10,7 @@ export interface LogOptions {
   splat?: any[];
 }
 
-export interface Logger {
+export interface LoggerType {
   trace(message: string, ...args: any[]): void;
   debug(message: string, ...args: any[]): void;
   info(message: string, ...args: any[]): void;

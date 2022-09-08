@@ -1,9 +1,9 @@
 import { Container, Inject } from '@artus/injection';
 import { ArtusInjectEnum } from '../constant';
 import { LoggerLevel, LOGGER_LEVEL_MAP } from './level';
-import { Logger, LoggerOptions, LogOptions } from './types';
+import { LoggerType, LoggerOptions, LogOptions } from './types';
 
-export class BaseLogger implements Logger {
+export class BaseLogger implements LoggerType {
 
   @Inject()
   private container!: Container;

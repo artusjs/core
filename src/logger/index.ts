@@ -1,7 +1,5 @@
-import ArtusLogger from './impl';
+import Logger from './impl';
 
-export * from './decorator';
+export { Logger };
 export * from './level';
 export * from './types';
-
-export { ArtusLogger };

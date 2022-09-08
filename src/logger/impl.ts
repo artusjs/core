@@ -1,10 +1,10 @@
+import { Injectable } from '@artus/injection';
 import { BaseLogger } from './base';
-import { DefineLogger } from './decorator';
 import { LoggerLevel } from './level';
 import { LogOptions } from './types';
 
-@DefineLogger()
-export default class ArtusLogger extends BaseLogger {
+@Injectable()
+export default class Logger extends BaseLogger {
   public trace(message: string, ...args: any[]) {
     if (!this.checkLoggerLevel(LoggerLevel.TRACE)) {
       return;

@@ -1,12 +1,12 @@
 import { Inject, Injectable, ScopeEnum } from '@artus/injection';
-import { ArtusLogger, LoggerLevel } from '../../../../src/logger';
+import { Logger, LoggerLevel } from '../../../../src/logger';
 
 @Injectable({
   scope: ScopeEnum.SINGLETON,
 })
 export default class TestLoggerClazz {
   @Inject()
-  private logger!: ArtusLogger;
+  private logger!: Logger;
 
   public testLog(level: LoggerLevel, message: string | Error, ...splat: any[]) {
     this.logger.log({
