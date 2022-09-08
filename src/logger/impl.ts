@@ -3,7 +3,9 @@ import { BaseLogger } from './base';
 import { LoggerLevel } from './level';
 import { LogOptions } from './types';
 
-@Injectable()
+@Injectable({
+  scopeEscape: true
+})
 export default class Logger extends BaseLogger {
   public trace(message: string, ...args: any[]) {
     if (!this.checkLoggerLevel(LoggerLevel.TRACE)) {
