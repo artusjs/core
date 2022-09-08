@@ -336,9 +336,6 @@ describe('test/logger.test.ts', () => {
       testClazz.testInfo('info', 1, {});
       expect(console.info).toBeCalledTimes(2);
       expect(console.info).toBeCalledWith('[Custom]', 'info', 1, {});
-
-      expect(() => app.logger.error(err)).not.toThrow(new Error('Not implemented'));
-      expect(() => testClazz.testError(err)).toThrow(new Error('Not implemented'));
     });
   });
 });

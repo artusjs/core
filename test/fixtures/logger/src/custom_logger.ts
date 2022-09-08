@@ -1,8 +1,9 @@
-import { Injectable } from '../../../../src';
-import { BaseLogger } from '../../../../src/logger/base';
+import { Injectable, Logger, ScopeEnum } from '../../../../src';
 
-@Injectable()
-export default class CustomLogger extends BaseLogger {
+@Injectable({
+  scope: ScopeEnum.SINGLETON
+})
+export default class CustomLogger extends Logger {
   public info(message: string, ...args: any[]): void {
     console.info('[Custom]', message, ...args);
   }
