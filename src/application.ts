@@ -36,10 +36,6 @@ export class ArtusApplication implements Application {
     return this.container.get(ArtusInjectEnum.Frameworks);
   }
 
-  get logger(): Logger {
-    return this.container.get(Logger);
-  }
-
   get packages(): Record<string, any> {
     return this.container.get(ArtusInjectEnum.Packages);
   }
