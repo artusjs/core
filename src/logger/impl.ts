@@ -4,7 +4,7 @@ import { LoggerLevel, LOGGER_LEVEL_MAP } from './level';
 import { LoggerOptions, LoggerType, LogOptions } from './types';
 
 @Injectable({
-  scope: ScopeEnum.SINGLETON
+  scope: ScopeEnum.SINGLETON,
 })
 export default class Logger implements LoggerType {
   @Inject()
