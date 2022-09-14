@@ -55,7 +55,7 @@ describe('test/loader.test.ts', () => {
         filename: 'test_clazz.ts',
         root: path.resolve(__dirname, './fixtures/module_with_custom_loader/src'),
         baseDir: path.resolve(__dirname, './fixtures/module_with_custom_loader/src'),
-        configDir: '',
+        configDir: 'src/config',
       });
       expect(loaderName).toBe('test-custom-loader');
       jest.spyOn(console, 'log');
