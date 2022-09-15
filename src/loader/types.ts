@@ -1,8 +1,10 @@
 import { Container } from '@artus/injection';
 import { ScanPolicy } from '../constant';
+import { PluginConfigItem } from '../plugin/types';
 
 interface Manifest {
   items: ManifestItem[];
+  pluginConfig?: Record<string, PluginConfigItem>;
   relative?: boolean;
 }
 

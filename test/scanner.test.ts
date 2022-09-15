@@ -27,6 +27,11 @@ describe('test/scanner.test.ts', () => {
     expect(manifest.items.filter(item => item.unitName === 'redis').length).toBe(2);
     expect(manifest.items.filter(item => item.unitName === 'mysql').length).toBe(0);
     expect(manifest.items.filter(item => item.source === 'app').length).toBe(8);
+    expect(manifest.pluginConfig).toStrictEqual({
+      redis: { enable: true, path: path.join('src', 'redis_plugin') },
+      mysql: { enable: false, path: path.join('src', 'mysql_plugin') },
+      testDuplicate: { enable: false, path: path.join('..', '..', '..', 'node_modules', '@artus', 'injection', 'lib') },
+    });
 
     const { dev: devManifest } = scanResults;
     // console.log('devManifest', devManifest);
@@ -36,6 +41,11 @@ describe('test/scanner.test.ts', () => {
     expect(devManifest.items.filter(item => item.loader === 'config').length).toBe(2);
     expect(devManifest.items.filter(item => item.loader === 'plugin-meta').length).toBe(2);
     expect(devManifest.items.find(item => item.unitName === 'testDuplicate')).toBeDefined();
+    expect(devManifest.pluginConfig).toStrictEqual({
+      redis: { enable: true, path: path.join('src', 'redis_plugin') },
+      mysql: { enable: false, path: path.join('src', 'mysql_plugin') },
+      testDuplicate: { enable: true, path: path.join('src', 'test_duplicate_plugin') },
+    });
   });
 
   it('should scan module with custom loader', async () => {
