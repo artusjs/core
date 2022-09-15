@@ -129,9 +129,18 @@ export class Scanner {
     // 4. scan all file in app
     await this.walk(root, this.formatWalkOptions('app', root, ''));
 
+    const relative = this.options.useRelativePath;
+    if (relative) {
+      for (const [pluginName, pluginConfigItem] of Object.entries(pluginConfig)) {
+        if (pluginConfigItem.path) {
+          pluginConfig[pluginName].path = path.relative(root, pluginConfigItem.path);
+        }
+      }
+    }
     const result: Manifest = {
-      items: this.getItemsFromMap(this.options.useRelativePath, root, env),
-      relative: this.options.useRelativePath,
+      pluginConfig,
+      items: this.getItemsFromMap(relative, root, env),
+      relative,
     };
     return result;
   }
