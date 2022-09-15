@@ -29,7 +29,7 @@ export interface Application {
 }
 
 export interface TriggerType {
-  use(...args): Promise<void>;
-  initContext(...args): Promise<BaseContext>;
+  use(...args): void | Promise<void>;
+  initContext(...args): BaseContext | Promise<BaseContext>;
   startPipeline(...args): Promise<void>;
 }

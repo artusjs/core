@@ -46,7 +46,6 @@ export const DEFAULT_EXCLUDES = [
 
 export const FRAMEWORK_PATTERN = 'framework.*';
 export const PLUGIN_CONFIG_PATTERN = 'plugin.*';
-export const CONFIG_PATTERN = 'config.*';
 export const PACKAGE_JSON = 'package.json';
 export const PLUGIN_META_FILENAME = 'meta.json';
 export const EXCEPTION_FILENAME = 'exception.json';

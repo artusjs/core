@@ -1,7 +1,7 @@
 import * as path from 'path';
 import { Container } from '@artus/injection';
 import ConfigurationHandler from '../../configuration';
-import { ArtusInjectEnum, CONFIG_PATTERN } from '../../constant';
+import { ArtusInjectEnum, PLUGIN_CONFIG_PATTERN, FRAMEWORK_PATTERN } from '../../constant';
 import { DefineLoader } from '../decorator';
 import { ManifestItem, Loader, LoaderFindOptions } from '../types';
 import compatibleRequire from '../../utils/compatible_require';
@@ -26,10 +26,11 @@ class ConfigLoader implements Loader {
   }
 
   static async is(opts: LoaderFindOptions): Promise<boolean> {
-    if (this.isConfigDir(opts)) {
-      return isMatch(opts.filename, CONFIG_PATTERN);
-    }
-    return false;
+    return (
+      this.isConfigDir(opts) &&
+      !isMatch(opts.filename, PLUGIN_CONFIG_PATTERN) &&
+      !isMatch(opts.filename, FRAMEWORK_PATTERN)
+    );
   }
 
   protected static isConfigDir(opts: LoaderFindOptions): boolean {
