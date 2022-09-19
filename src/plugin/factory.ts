@@ -30,19 +30,4 @@ export class PluginFactory {
     }
     return pluginSortResult.map(name => pluginInstanceMap.get(name)!);
   }
-
-  static filterDuplicatePlugins(plugins: PluginType[]): PluginType[] {
-    const exists: Map<string, boolean> = new Map();
-    const filtedPlugins: PluginType[] = [];
-    for (const plugin of plugins) {
-      const key = plugin.importPath;
-      if (exists.get(key)) {
-        continue;
-      }
-      exists.set(key, true);
-      filtedPlugins.push(plugin);
-    }
-
-    return filtedPlugins;
-  }
 }
