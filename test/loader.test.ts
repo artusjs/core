@@ -58,10 +58,11 @@ describe('test/loader.test.ts', () => {
         configDir: 'src/config',
       });
       expect(loaderName).toBe('test-custom-loader');
-      jest.spyOn(console, 'log');
+
+      global.mockCustomLoaderFn = jest.fn();
       await loaderFactory.loadManifest(manifest);
-      expect(console.log).toBeCalledWith('TestCustomLoader.load TestClass');
-      expect(console.log).toBeCalledWith('TestCustomLoader.state loaderState');
+      expect(global.mockCustomLoaderFn).toBeCalledWith('TestClass');
+      expect(global.mockCustomLoaderFn).toBeCalledWith('loaderState');
     });
   });
 

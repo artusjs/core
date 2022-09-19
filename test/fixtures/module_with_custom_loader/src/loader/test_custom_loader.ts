@@ -22,7 +22,10 @@ export default class TestCustomLoader implements Loader {
 
   async load(item: ManifestItem) {
     const clazz = await compatibleRequire(item.path);
-    console.log('TestCustomLoader.load ' + clazz.name);
-    console.log('TestCustomLoader.state ' + this.state.hello);
+    if (!global.mockCustomLoaderFn) {
+      throw new Error('Invalid Jest Environment');
+    }
+    global.mockCustomLoaderFn(clazz.name);
+    global.mockCustomLoaderFn(this.state.hello);
   }
 }
