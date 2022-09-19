@@ -16,7 +16,7 @@ import { LoaderFactory, Manifest, ManifestItem } from '../loader';
 import { ScannerOptions, WalkOptions } from './types';
 import ConfigurationHandler, { ConfigObject } from '../configuration';
 import { FrameworkConfig, FrameworkHandler } from '../framework';
-import { BasePlugin, PluginFactory } from '../plugin';
+import { PluginType, PluginFactory } from '../plugin';
 import { ScanUtils } from './utils';
 import { PluginConfigItem, PluginMetadata } from '../plugin/types';
 import { getConfigMetaFromFilename } from '../loader/utils/config_file_meta';
@@ -149,7 +149,7 @@ export class Scanner {
     await ScanUtils.walk(root, options);
   }
 
-  private setPluginMeta(plugin: BasePlugin) {
+  private setPluginMeta(plugin: PluginType) {
     const metaList = this.itemMap.get('plugin-meta') ?? [];
     metaList.push({
       path: plugin.metaFilePath,

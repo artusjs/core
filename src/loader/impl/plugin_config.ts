@@ -1,5 +1,5 @@
 import { PLUGIN_CONFIG_PATTERN } from '../../constant';
-import { ArtusPlugin } from '../../plugin';
+import { getPackagePath } from '../../plugin/common';
 import { PluginConfigItem } from '../../plugin/types';
 import { isMatch } from '../../utils';
 import { DefineLoader } from '../decorator';
@@ -29,7 +29,7 @@ class PluginConfigLoader extends ConfigLoader implements Loader {
           );
         }
         const loaderState = item.loaderState as { baseDir: string };
-        pluginConfigItem.path = ArtusPlugin.getPath(pluginConfigItem.package, [loaderState?.baseDir]);
+        pluginConfigItem.path = getPackagePath(pluginConfigItem.package, [loaderState?.baseDir]);
         delete pluginConfigItem.package;
         configObj[pluginName] = pluginConfigItem;
       }
