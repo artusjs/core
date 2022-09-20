@@ -1,18 +1,18 @@
 import { topologicalSort } from './common';
 import { Plugin } from './impl';
-import { PluginConfigItem, PluginMap, PluginType } from './types';
+import { PluginConfigItem, PluginCreateOptions, PluginMap, PluginType } from './types';
 
 export class PluginFactory {
-  static async create(name: string, item: PluginConfigItem): Promise<PluginType> {
-    const pluginInstance = new Plugin(name, item);
+  static async create(name: string, item: PluginConfigItem, opts?: PluginCreateOptions): Promise<PluginType> {
+    const pluginInstance = new Plugin(name, item, opts);
     await pluginInstance.init();
     return pluginInstance;
   }
 
-  static async createFromConfig(config: Record<string, PluginConfigItem>): Promise<PluginType[]> {
+  static async createFromConfig(config: Record<string, PluginConfigItem>, opts?: PluginCreateOptions): Promise<PluginType[]> {
     const pluginInstanceMap: PluginMap = new Map();
     for (const [name, item] of Object.entries(config)) {
-      const pluginInstance = await PluginFactory.create(name, item);
+      const pluginInstance = await PluginFactory.create(name, item, opts);
       if (pluginInstance.enable) {
         pluginInstanceMap.set(name, pluginInstance);
       }

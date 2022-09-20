@@ -1,3 +1,9 @@
+import { LoggerType } from '../logger';
+
+export interface PluginCreateOptions {
+  logger?: LoggerType;
+}
+
 export interface PluginMetadata {
   name: string;
   dependencies?: PluginDependencyItem[];

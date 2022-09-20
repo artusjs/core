@@ -2,8 +2,9 @@ import path from 'path';
 import { loadMetaFile } from '../utils/load_meta_file';
 import { exisis } from '../utils/fs';
 import { PLUGIN_META_FILENAME } from '../constant';
-import { PluginConfigItem, PluginMap, PluginMetadata, PluginType } from './types';
+import { PluginConfigItem, PluginCreateOptions, PluginMap, PluginMetadata, PluginType } from './types';
 import { getPackagePath } from './common';
+import { LoggerType } from '../logger';
 
 export class Plugin implements PluginType {
   public name: string;
@@ -12,7 +13,9 @@ export class Plugin implements PluginType {
   public metadata: Partial<PluginMetadata> = {};
   public metaFilePath = '';
 
-  constructor(name: string, configItem: PluginConfigItem) {
+  private logger?: LoggerType;
+
+  constructor(name: string, configItem: PluginConfigItem, opts?: PluginCreateOptions) {
     this.name = name;
     this.enable = configItem.enable ?? false;
     if (this.enable) {
@@ -28,6 +31,7 @@ export class Plugin implements PluginType {
       }
       this.importPath = importPath;
     }
+    this.logger = opts?.logger;
   }
 
   async init() {
@@ -48,8 +52,7 @@ export class Plugin implements PluginType {
       const instance = pluginMap.get(pluginName);
       if (!instance || !instance.enable) {
         if (optional) {
-          // TODO: use artus logger instead
-          console.warn(`Plugin ${this.name} need have optional dependence: ${pluginName}.`);
+          this.logger?.warn(`Plugin ${this.name} need have optional dependence: ${pluginName}.`);
         } else {
           throw new Error(`Plugin ${this.name} need have dependence: ${pluginName}.`);
         }

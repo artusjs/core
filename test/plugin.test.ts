@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import path from 'path';
-import { Plugin, PluginFactory } from '../src';
+import { Logger, Plugin, PluginFactory } from '../src';
 
 const pluginPrefix = 'fixtures/plugins';
 
@@ -193,7 +193,9 @@ describe('test/app.test.ts', () => {
       const originWarn = console.warn;
       const mockWarnFn = jest.fn();
       console.warn = mockWarnFn;
-      const pluginList = await PluginFactory.createFromConfig(mockPluginConfig);
+      const pluginList = await PluginFactory.createFromConfig(mockPluginConfig, {
+        logger: new Logger(),
+      });
       expect(pluginList.length).toEqual(1);
       pluginList.forEach(plugin => {
         expect(plugin).toBeInstanceOf(Plugin);

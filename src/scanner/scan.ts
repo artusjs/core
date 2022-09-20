@@ -116,7 +116,9 @@ export class Scanner {
     }
     const { plugin } = this.configHandle.getMergedConfig(env);
     const pluginConfig = deepmerge.all([plugin || {}, this.options.plugin || {}]) as Record<string, PluginConfigItem>;
-    const pluginSortedList = await PluginFactory.createFromConfig(pluginConfig);
+    const pluginSortedList = await PluginFactory.createFromConfig(pluginConfig, {
+      logger: this.app.logger,
+    });
     for (const plugin of pluginSortedList) {
       if (!plugin.enable) continue;
       this.setPluginMeta(plugin);
