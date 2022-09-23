@@ -88,7 +88,7 @@ export class Scanner {
     }
 
     if (this.options.needWriteFile) {
-      await this.writeFile(`manifest.json`, JSON.stringify(result, null, 2));
+      await this.writeFile(path.resolve(root, 'manifest.json'), JSON.stringify(result, null, 2));
     }
 
     return result;
