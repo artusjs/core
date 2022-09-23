@@ -1,12 +1,13 @@
-export enum PluginType {
-  simple = 'simple',
-  module = 'module',
+import { LoggerType } from '../logger';
+
+export interface PluginCreateOptions {
+  logger?: LoggerType;
 }
 
 export interface PluginMetadata {
   name: string;
   dependencies?: PluginDependencyItem[];
-  type?: PluginType;
+  type?: 'simple' | 'module' | string;
   configDir?: string
   exclude?: string[];
 }
@@ -22,7 +23,9 @@ export interface PluginConfigItem {
   package?: string;
 }
 
-export interface Plugin {
+export type PluginMap = Map<string, PluginType>;
+
+export interface PluginType {
   name: string;
   enable: boolean;
   importPath: string;
@@ -30,6 +33,6 @@ export interface Plugin {
   metaFilePath: string;
 
   init(): Promise<void>;
-  checkDepExisted(map: Map<string, Plugin>): void;
+  checkDepExisted(map: PluginMap): void;
   getDepEdgeList(): [string, string][];
 }

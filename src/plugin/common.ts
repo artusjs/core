@@ -1,7 +1,8 @@
-import { Plugin } from './types';
+import path from 'path';
+import { PluginType } from './types';
 
 // A utils function that toplogical sort plugins
-export function topologicalSort(pluginInstanceMap: Map<string, Plugin>, pluginDepEdgeList: [string, string][]): string[] {
+export function topologicalSort(pluginInstanceMap: Map<string, PluginType>, pluginDepEdgeList: [string, string][]): string[] {
   const res: string[] = [];
   const indegree: Map<string, number> = new Map();
 
@@ -30,4 +31,10 @@ export function topologicalSort(pluginInstanceMap: Map<string, Plugin>, pluginDe
     }
   }
   return res;
+}
+
+// A util function of get package path for plugin
+export function getPackagePath(packageName: string, paths?: string[]): string {
+  const opts = paths ? { paths } : undefined;
+  return path.resolve(require.resolve(packageName, opts), '..');
 }

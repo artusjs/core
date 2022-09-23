@@ -2,6 +2,7 @@ import { Container } from '@artus/injection';
 import { BaseContext } from '@artus/pipeline';
 import { HookFunction } from './lifecycle';
 import { Manifest } from './loader';
+import { LoggerType } from './logger';
 
 export interface ApplicationLifecycle {
   configWillLoad?: HookFunction;
@@ -22,6 +23,9 @@ export interface Application {
 
   manifest?: Manifest;
   config?: Record<string, any>;
+
+  // getter
+  logger: LoggerType
 
   load(manifest: Manifest): Promise<this>;
   run(): Promise<void>;

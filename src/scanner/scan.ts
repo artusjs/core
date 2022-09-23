@@ -16,7 +16,7 @@ import { LoaderFactory, Manifest, ManifestItem } from '../loader';
 import { ScannerOptions, WalkOptions } from './types';
 import ConfigurationHandler, { ConfigObject } from '../configuration';
 import { FrameworkConfig, FrameworkHandler } from '../framework';
-import { BasePlugin, PluginFactory } from '../plugin';
+import { PluginType, PluginFactory } from '../plugin';
 import { ScanUtils } from './utils';
 import { PluginConfigItem, PluginMetadata } from '../plugin/types';
 import { getConfigMetaFromFilename } from '../loader/utils/config_file_meta';
@@ -116,7 +116,9 @@ export class Scanner {
     }
     const { plugin } = this.configHandle.getMergedConfig(env);
     const pluginConfig = deepmerge.all([plugin || {}, this.options.plugin || {}]) as Record<string, PluginConfigItem>;
-    const pluginSortedList = await PluginFactory.createFromConfig(pluginConfig);
+    const pluginSortedList = await PluginFactory.createFromConfig(pluginConfig, {
+      logger: this.app.logger,
+    });
     for (const plugin of pluginSortedList) {
       if (!plugin.enable) continue;
       this.setPluginMeta(plugin);
@@ -149,7 +151,7 @@ export class Scanner {
     await ScanUtils.walk(root, options);
   }
 
-  private setPluginMeta(plugin: BasePlugin) {
+  private setPluginMeta(plugin: PluginType) {
     const metaList = this.itemMap.get('plugin-meta') ?? [];
     metaList.push({
       path: plugin.metaFilePath,

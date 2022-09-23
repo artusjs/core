@@ -7,7 +7,7 @@ import { LoaderFactory, Manifest } from './loader';
 import { Application, ApplicationInitOptions } from './types';
 import Trigger from './trigger';
 import ConfigurationHandler from './configuration';
-import { Logger } from './logger';
+import { Logger, LoggerType } from './logger';
 
 export class ArtusApplication implements Application {
   public manifest?: Manifest;
@@ -46,6 +46,10 @@ export class ArtusApplication implements Application {
 
   get configurationHandler(): ConfigurationHandler {
     return this.container.get(ConfigurationHandler);
+  }
+
+  get logger(): LoggerType {
+    return this.container.get(Logger);
   }
 
   loadDefaultClass() {
