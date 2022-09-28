@@ -67,7 +67,7 @@ describe('test/loader.test.ts', () => {
   });
 
   describe('custom instance', () => {
-    it('should not overide custom instance', async () => {
+    it('should overide custom instance', async () => {
       const app = await createApp(path.resolve(__dirname, './fixtures/custom_instance'));
       expect(app.container.get(Custom).getName()).toBe('foo');
     });
