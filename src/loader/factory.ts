@@ -147,7 +147,7 @@ export class LoaderFactory {
           return loaderMd.loader;
         }
 
-        // default loder with @Injectable
+        // default loader with @Injectable
         const injectableMd = isInjectable(targetClazz);
         if (injectableMd) {
           exportNames.push(name);
