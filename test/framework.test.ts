@@ -38,9 +38,9 @@ describe('test/framework.test.ts', () => {
     //  check config loaded succeed
     const testResponseConfig = await axios.get(`http://127.0.0.1:${port}/config`);
     assert(testResponseConfig.status === 200);
-    assert(testResponseConfig.data.message === 'get conifg succeed');
+    assert(testResponseConfig.data.message === 'get config succeed');
 
-    // check frameworke used as env
+    // check framework used as env
     const testResponseName2 = await axios.get(`http://127.0.0.1:${port}/get_name2`);
     assert(testResponseName2.data.title === 'Hello Artus [name2] from framework: foo2 [default]');
     const testResponseName3 = await axios.get(`http://127.0.0.1:${port}/get_name3`);
