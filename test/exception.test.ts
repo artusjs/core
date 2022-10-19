@@ -1,26 +1,25 @@
 import 'reflect-metadata';
 import assert from 'assert';
-import { ArtusStdError, ErrorCodeUtils, ExceptionHandler } from '../src/exception';
+import { ArtusStdError } from '../src/exception';
 import { ExceptionItem } from '../src/exception/types';
 
 describe('test/app.test.ts', () => {
   describe('register error code and throw', () => {
-    const exceptionHandler = new ExceptionHandler();
     const errorCode = 'ARTUS:TEMP_TEST';
     const exceptionItem: ExceptionItem = {
       desc: 'TEST-DESC',
       detailUrl: 'http://test.artusjs.org',
     };
-    exceptionHandler.registerCode(errorCode, exceptionItem);
+    ArtusStdError.registerCode(errorCode, exceptionItem);
     try {
-      exceptionHandler.throw(errorCode);
+      throw new ArtusStdError(errorCode);
     } catch (error) {
       assert(error instanceof ArtusStdError);
       assert(error.code === errorCode);
       assert(error.desc === exceptionItem.desc);
       assert(error.detailUrl === exceptionItem.detailUrl);
     }
-    const error = exceptionHandler.create(errorCode);
+    const error = new ArtusStdError(errorCode);
     assert(error instanceof ArtusStdError);
     assert(error.code === errorCode);
     assert(error.desc === exceptionItem.desc);
@@ -28,7 +27,6 @@ describe('test/app.test.ts', () => {
   });
 
   describe('register error code and throw, with i18n', () => {
-    const exceptionHandler = new ExceptionHandler();
     const errorCode = 'ARTUS:TEMP_TEST_I18N';
     const exceptionItem: ExceptionItem = {
       desc: {
@@ -37,29 +35,25 @@ describe('test/app.test.ts', () => {
       },
       detailUrl: 'http://test.artusjs.org',
     };
-    exceptionHandler.registerCode(errorCode, exceptionItem);
+    ArtusStdError.registerCode(errorCode, exceptionItem);
     [
       undefined,
       'zh',
       'en',
     ].forEach(locale => {
       if (locale) {
-        process.env.ARTUS_ERROR_LOCALE = locale;
+        ArtusStdError.setCurrentLocale(locale);
       }
       const tDesc = exceptionItem.desc[locale || 'en'];
-      const tmpCodeMap: Map<string, ExceptionItem> = new Map([
-        [errorCode, exceptionItem],
-      ]);
-      assert(ErrorCodeUtils.getI18NDesc(tmpCodeMap, errorCode, locale) === tDesc);
       try {
-        exceptionHandler.throw(errorCode);
+        throw new ArtusStdError(errorCode);
       } catch (error) {
         assert(error instanceof ArtusStdError);
         assert(error.code === errorCode);
         assert(error.desc === tDesc);
         assert(error.detailUrl === exceptionItem.detailUrl);
       }
-      const error = exceptionHandler.create(errorCode);
+      const error = new ArtusStdError(errorCode);
       assert(error instanceof ArtusStdError);
       assert(error.code === errorCode);
       assert(error.desc === tDesc);
