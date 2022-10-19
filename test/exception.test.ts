@@ -24,6 +24,15 @@ describe('test/app.test.ts', () => {
     assert(error.code === errorCode);
     assert(error.desc === exceptionItem.desc);
     assert(error.detailUrl === exceptionItem.detailUrl);
+
+    try {
+      throw new ArtusStdError('UNKNWON_CODE');
+    } catch (error) {
+      assert(error instanceof ArtusStdError);
+      assert(error.code === 'UNKNWON_CODE');
+      assert(error.desc === 'Unknown Error');
+      assert(error.detailUrl === undefined);
+    }
   });
 
   describe('register error code and throw, with i18n', () => {

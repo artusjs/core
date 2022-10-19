@@ -1,6 +1,7 @@
 import { ExecutionContainer, Inject, Injectable, ScopeEnum } from '@artus/injection';
 import { Input, Context, MiddlewareInput, Pipeline, Output } from '@artus/pipeline';
 import { ArtusInjectEnum } from '../constant';
+import { exceptionFilterMiddleware } from '../exception';
 import { Application, TriggerType } from '../types';
 
 @Injectable({ scope: ScopeEnum.SINGLETON })
@@ -12,6 +13,7 @@ export default class Trigger implements TriggerType {
 
   constructor() {
     this.pipeline = new Pipeline();
+    this.pipeline.use(exceptionFilterMiddleware);
   }
 
   async use(middleware: MiddlewareInput): Promise<void> {

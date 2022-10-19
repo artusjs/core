@@ -1,5 +1,19 @@
+import { Middleware } from '@artus/pipeline';
 import { ARTUS_EXCEPTION_DEFAULT_LOCALE } from '../constant';
 import { ExceptionItem } from './types';
+import { matchExceptionFilter } from './utils';
+
+export const exceptionFilterMiddleware: Middleware = async (ctx, next) => {
+  try {
+    await next();
+  } catch (err) {
+    const filter = matchExceptionFilter(err, ctx.container);
+    if (filter) {
+      await filter.catch(err);
+    }
+    throw err;
+  }
+};
 
 export class ArtusStdError extends Error {
   name = 'ArtusStdError';
@@ -16,8 +30,13 @@ export class ArtusStdError extends Error {
   }
   
   constructor (code: string) {
-    super(`[${code}] This is Artus standard error, Please check on https://github.com/artusjs/error-code`);
+    super(`[${code}] This is Artus standard error, Please check on https://github.com/artusjs/spec/blob/master/documentation/core/6.exception.md`); // default message
     this._code = code;
+  }
+
+  public get message(): string {
+    const { code, desc, detailUrl } = this;
+    return `[${code}] ${desc}${detailUrl ? ', Please check on ' + detailUrl : ''}`;
   }
   
   public get code(): string {
