@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import axios from 'axios';
 import assert from 'assert';
-import { ArtusInjectEnum, ConfigurationHandler, ExceptionHandler } from '../src';
+import { ArtusInjectEnum, ConfigurationHandler } from '../src';
 
 describe('test/app.test.ts', () => {
   describe('app koa with ts', () => {
@@ -25,7 +25,6 @@ describe('test/app.test.ts', () => {
         // Check Artus Default Class Inject to Contianer
         expect(() => app.container.get(ArtusInjectEnum.Application)).not.toThrow();
         expect(() => app.container.get(ArtusInjectEnum.LifecycleManager)).not.toThrow();
-        expect(() => app.container.get(ExceptionHandler)).not.toThrow();
         expect(() => app.container.get(ConfigurationHandler)).not.toThrow();
 
         await main();

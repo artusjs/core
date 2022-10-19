@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { Container } from '@artus/injection';
 import { ArtusInjectEnum } from './constant';
-import { ArtusStdError, ExceptionHandler } from './exception';
+import { ArtusStdError } from './exception';
 import { HookFunction, LifecycleManager } from './lifecycle';
 import { LoaderFactory, Manifest } from './loader';
 import { Application, ApplicationInitOptions } from './types';
@@ -40,10 +40,6 @@ export class ArtusApplication implements Application {
     return this.container.get(ArtusInjectEnum.Packages);
   }
 
-  get exceptionHandler(): ExceptionHandler {
-    return this.container.get(ExceptionHandler);
-  }
-
   get configurationHandler(): ConfigurationHandler {
     return this.container.get(ConfigurationHandler);
   }
@@ -61,7 +57,6 @@ export class ArtusApplication implements Application {
     this.container.set({ type: ConfigurationHandler });
     this.container.set({ type: Logger });
     this.container.set({ type: Trigger });
-    this.container.set({ type: ExceptionHandler });
   }
 
   async load(manifest: Manifest, root: string = process.cwd()) {
@@ -96,11 +91,11 @@ export class ArtusApplication implements Application {
   }
 
   throwException(code: string): void {
-    this.exceptionHandler.throw(code);
+    throw new ArtusStdError(code);
   }
 
   createException(code: string): ArtusStdError {
-    return this.exceptionHandler.create(code);
+    return new ArtusStdError(code);
   }
 
   protected addLoaderListener() {
