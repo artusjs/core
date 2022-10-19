@@ -29,7 +29,7 @@ class ExceptionFilterLoader extends ModuleLoader {
 
       /* istanbul ignore next */
       if (!filterMeta) {
-        throw new Error(`invalid ExceptionFiler ${filterClazz.name}`);
+        throw new Error(`invalid ExceptionFilter ${filterClazz.name}`);
       }
 
       let { targetErr } = filterMeta;
