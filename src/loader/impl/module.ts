@@ -6,7 +6,7 @@ import { SHOULD_OVERWRITE_VALUE } from '../../constant';
 
 @DefineLoader('module')
 class ModuleLoader implements Loader {
-  private container: Container;
+  protected container: Container;
 
   constructor(container) {
     this.container = container;

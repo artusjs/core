@@ -1,5 +1,19 @@
+import { Middleware } from '@artus/pipeline';
 import { ARTUS_EXCEPTION_DEFAULT_LOCALE } from '../constant';
 import { ExceptionItem } from './types';
+import { matchExceptionFilter } from './utils';
+
+export const exceptionFilterMiddleware: Middleware = async (ctx, next) => {
+  try {
+    await next();
+  } catch (err) {
+    const filter = matchExceptionFilter(err, ctx.container);
+    if (filter) {
+      await filter.catch(err);
+    }
+    throw err;
+  }
+};
 
 export class ArtusStdError extends Error {
   name = 'ArtusStdError';

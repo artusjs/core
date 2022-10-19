@@ -1,0 +1,9 @@
+{
+  "APP:TEST_ERROR": {
+      "desc": "这是一个测试用的错误",
+      "detailUrl": "https://github.com/artusjs"
+  },
+  "APP:WRAPPED_ERROR": {
+    "desc": "这个错误将会被自定义类包装"
+  }
+}
