@@ -49,4 +49,15 @@ describe('test/exception_filter.test.ts', () => {
       throw error;
     }
   });
+  it('should throw error then filter is invalid', async () => {
+    try {
+      const {
+        main,
+      } = await import('./fixtures/exception_invalid_filter/bootstrap');
+
+      expect(() => main()).rejects.toThrow(new Error(`invalid ExceptionFilter TestInvalidFilter`));
+    } catch (error) {
+      throw error;
+    }
+  });
 });

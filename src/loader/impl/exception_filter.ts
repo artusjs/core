@@ -27,7 +27,6 @@ class ExceptionFilterLoader extends ModuleLoader {
         targetErr: string|Constructable<Error>
       } = Reflect.getOwnMetadata(EXCEPTION_FILTER_METADATA_KEY, filterClazz);
 
-      /* istanbul ignore next */
       if (!filterMeta) {
         throw new Error(`invalid ExceptionFilter ${filterClazz.name}`);
       }
