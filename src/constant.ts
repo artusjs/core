@@ -52,6 +52,7 @@ export const EXCEPTION_FILENAME = 'exception.json';
 
 export const DEFAULT_LOADER_LIST_WITH_ORDER = [
   'exception',
+  'exception-filter',
   'plugin-config',
   'plugin-meta',
   'framework-config',

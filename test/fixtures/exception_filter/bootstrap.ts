@@ -15,7 +15,7 @@ async function main() {
         path: path.resolve(__dirname, './filter'),
         extname: '.ts',
         filename: 'filter.ts',
-        loader: 'exception_filter',
+        loader: 'exception-filter',
         loaderState: {
           exportNames: [
             'TestDefaultExceptionHandler',
