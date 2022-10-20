@@ -12,23 +12,13 @@ export const matchExceptionFilter = (err: Error, container: Container): Exceptio
     return null;
   }
   let targetFilterClazz: Constructable<ExceptionFilterType>;
-  // handle ArtusStdError with code simply
   if (err instanceof ArtusStdError) {
+    // handle ArtusStdError with code simply
     targetFilterClazz = filterMap.get(err.code);
-  }
-  if (!targetFilterClazz) {
-    // handler other Exception by Clazz
-    for (const errorClazz of filterMap.keys()) {
-      if (typeof errorClazz === 'string' || typeof errorClazz === 'symbol') {
-        continue;
-      }
-      if (err instanceof errorClazz) {
-        targetFilterClazz = filterMap.get(errorClazz);
-        break;
-      }
-    }
-  }
-  if (!targetFilterClazz && filterMap.has(EXCEPTION_FILTER_DEFAULT_SYMBOL)) {
+  } else if (filterMap.has(err['constructor'] as Constructable<Error>)) {
+    // handle CustomErrorClazz
+    targetFilterClazz = filterMap.get(err['constructor'] as Constructable<Error>);
+  } else if (filterMap.has(EXCEPTION_FILTER_DEFAULT_SYMBOL)) {
     // handle default ExceptionFilter
     targetFilterClazz = filterMap.get(EXCEPTION_FILTER_DEFAULT_SYMBOL);
   }
