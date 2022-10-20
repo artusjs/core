@@ -7,7 +7,7 @@ export const Catch = (targetErr?: string|Constructable<Error>): ClassDecorator =
     Reflect.defineMetadata(EXCEPTION_FILTER_METADATA_KEY, {
       targetErr: targetErr ?? EXCEPTION_FILTER_DEFAULT_SYMBOL,
     }, target);
-    Reflect.defineMetadata(HOOK_FILE_LOADER, { loader: 'exception_filter' }, target);
+    Reflect.defineMetadata(HOOK_FILE_LOADER, { loader: 'exception-filter' }, target);
     Injectable()(target);
   };
 };

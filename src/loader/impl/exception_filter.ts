@@ -5,7 +5,7 @@ import { ArtusStdError, EXCEPTION_FILTER_DEFAULT_SYMBOL, EXCEPTION_FILTER_MAP_IN
 import { Constructable } from '@artus/injection';
 import { ExceptionFilterMapType, ExceptionFilterType, ExceptionIdentifier } from '../../exception/types';
 
-@DefineLoader('exception_filter')
+@DefineLoader('exception-filter')
 class ExceptionFilterLoader extends ModuleLoader {
   async load(item: ManifestItem) {
     // Get or Init Exception Filter Map
