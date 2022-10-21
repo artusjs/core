@@ -32,9 +32,10 @@ export class ArtusStdError extends Error {
   constructor (code: string) {
     super(`[${code}] This is Artus standard error, Please check on https://github.com/artusjs/spec/blob/master/documentation/core/6.exception.md`); // default message
     this._code = code;
+    this.message = this.getFormatedMessage();
   }
 
-  public get message(): string {
+  private getFormatedMessage(): string {
     const { code, desc, detailUrl } = this;
     return `[${code}] ${desc}${detailUrl ? ', Please check on ' + detailUrl : ''}`;
   }
