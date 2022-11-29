@@ -47,6 +47,9 @@ export class Scanner {
   }
 
   private async initItemMap(): Promise<void> {
+    if (this.itemMap.size) {
+      return;
+    }
     this.itemMap = new Map(
       this.options.loaderListGenerator(DEFAULT_LOADER_LIST_WITH_ORDER).map(loaderNameOrClazz => {
         if (typeof loaderNameOrClazz === 'string') {
@@ -83,9 +86,6 @@ export class Scanner {
     const result = {};
     const envList = await this.scanEnvList(root);
     
-    //  init clean itemMap
-    await this.initItemMap();
-    
     for (const env of envList) {
       result[env] = await this.scanManifestByEnv(root, env);
     }
@@ -98,6 +98,9 @@ export class Scanner {
   }
 
   private async scanManifestByEnv(root: string, env: string): Promise<Manifest> {
+    //  init clean itemMap
+    await this.initItemMap();
+    
     // 1. Pre-Scan all config files
     const config = await this.getAllConfig(root, env);
 
