@@ -82,7 +82,10 @@ export class Scanner {
   async scan(root: string): Promise<Record<string, Manifest>> {
     const result = {};
     const envList = await this.scanEnvList(root);
-
+    
+    //  init clean itemMap
+    await this.initItemMap();
+    
     for (const env of envList) {
       result[env] = await this.scanManifestByEnv(root, env);
     }
@@ -95,9 +98,6 @@ export class Scanner {
   }
 
   private async scanManifestByEnv(root: string, env: string): Promise<Manifest> {
-    // 0. init clean itemMap
-    await this.initItemMap();
-
     // 1. Pre-Scan all config files
     const config = await this.getAllConfig(root, env);
 
