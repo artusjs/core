@@ -12,7 +12,7 @@ export const matchExceptionFilterClazz =  (err: Error, container: Container): Co
     return null;
   }
   let targetFilterClazz: Constructable<ExceptionFilterType> | null = null;
-  if (err instanceof ArtusStdError) {
+  if (err instanceof ArtusStdError && filterMap.has(err.code)) {
     // handle ArtusStdError with code simply
     targetFilterClazz = filterMap.get(err.code);
   } else if (filterMap.has(err['constructor'] as Constructable<Error>)) {
