@@ -21,9 +21,14 @@ export default class MyLifecycle implements ApplicationLifecycle {
     this.lifecycleList.add('configDidLoad');
   }
 
-  @LifecycleHook('willReady')
+  @LifecycleHook()
   async willReady() {
     this.lifecycleList.add('willReady');
+  }
+
+  @LifecycleHook()
+  async  didLoad() {
+    this.lifecycleList.add('didLoad');
   }
 
   @LifecycleHook('didReady')

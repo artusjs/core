@@ -99,6 +99,7 @@ describe('test/lifecycle.test.ts', () => {
     assert.deepStrictEqual(lifecycleList, [
       'configWillLoad',
       'configDidLoad',
+      'didLoad',
       'willReady',
       'didReady',
       'beforeClose',
