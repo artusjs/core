@@ -66,9 +66,11 @@ export class LoaderFactory {
 
   async loadItemList(itemList: ManifestItem[] = [], root?: string): Promise<void> {
     let prevLoader = '';
+    const idleLoaders = new Set(LoaderFactory.loaderClazzMap.keys());
     for (const item of itemList) {
       item.path = root ? path.join(root, item.path) : item.path;
       const curLoader = item.loader ?? DEFAULT_LOADER;
+      if (idleLoaders.has(curLoader)) idleLoaders.delete(curLoader);
       if (item.loader !== prevLoader) {
         if (prevLoader) {
           await this.loaderEmitter.emitAfter(prevLoader);
@@ -82,6 +84,10 @@ export class LoaderFactory {
     }
     if (prevLoader) {
       await this.loaderEmitter.emitAfter(prevLoader);
+    }
+    // emit idle event
+    for (const idleLoader of idleLoaders) {
+      this.loaderEmitter.emitIdle(idleLoader);
     }
   }
 

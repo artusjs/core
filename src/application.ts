@@ -109,6 +109,12 @@ export class ArtusApplication implements Application {
           });
           return this.lifecycleManager.emitHook('configDidLoad');
         },
+        idle: async () => {
+          // should call hook in idle callback
+          await this.lifecycleManager.emitHook('configWillLoad');
+          this.container.set({ id: ArtusInjectEnum.Config, value: {} });
+          return this.lifecycleManager.emitHook('configDidLoad');
+        },
       })
       .addLoaderListener('framework-config', {
         after: () =>

@@ -67,7 +67,7 @@ export class Scanner {
     if (Array.isArray(envs) && envs.length) {
       return envs;
     }
-    const configFileList = await fs.readdir(path.resolve(root, configDir));
+    const configFileList = await fs.readdir(path.resolve(root, configDir)).catch(() => []);
     const envSet: Set<string> = new Set([ARTUS_DEFAULT_CONFIG_ENV.DEFAULT]);
     for (const configFilename of configFileList) {
       if (configFilename.endsWith('.d.ts')) {
@@ -169,7 +169,8 @@ export class Scanner {
       return {};
     }
     const root = path.resolve(baseDir, configDir);
-    const configFileList = await fs.readdir(root);
+    // config dir may not exists
+    const configFileList = await fs.readdir(root).catch(() => []);
     const container = new Container(ArtusInjectEnum.DefaultContainerName);
     container.set({ type: ConfigurationHandler });
     container.set({

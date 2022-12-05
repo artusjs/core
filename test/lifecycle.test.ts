@@ -2,6 +2,7 @@ import path from 'path';
 import assert from 'assert';
 import { createApp } from './utils';
 import LifecycleList from './fixtures/app_with_lifecycle/lifecyclelist';
+import WithoutConfigLifecycleList from './fixtures/app_without_config/lifecyclelist';
 
 describe('test/lifecycle.test.ts', () => {
   it('should lifecycle works without error', async () => {
@@ -86,6 +87,21 @@ describe('test/lifecycle.test.ts', () => {
       'pluginA_beforeClose',
       'pluginB_beforeClose',
       'app_beforeClose',
+    ]);
+  });
+
+  it('should trigger configDidLoad without config file', async () => {
+    const appWithoutConfigPath = path.resolve(__dirname, './fixtures/app_without_config');
+    const app = await createApp(appWithoutConfigPath);
+    const lifecycleList = app.container.get(WithoutConfigLifecycleList).lifecycleList;
+    await app.close();
+
+    assert.deepStrictEqual(lifecycleList, [
+      'configWillLoad',
+      'configDidLoad',
+      'willReady',
+      'didReady',
+      'beforeClose',
     ]);
   });
 });
