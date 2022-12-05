@@ -3,7 +3,6 @@ import { ManifestItem } from './types';
 export interface LoaderEventListener {
   before?: CallableFunction;
   after?: CallableFunction;
-  idle?: CallableFunction;
 
   beforeEach?: (item: ManifestItem) => void;
 
@@ -15,11 +14,7 @@ export default class LoaderEventEmitter {
 
   addListener(eventName, listener: LoaderEventListener) {
     if (!this.listeners[eventName]) {
-      this.listeners[eventName] = { before: [], after: [], idle: [], beforeEach: [], afterEach: [] };
-    }
-
-    if (listener.idle) {
-      this.listeners[eventName].idle.push(listener.idle);
+      this.listeners[eventName] = { before: [], after: [], beforeEach: [], afterEach: [] };
     }
 
     if (listener.before) {
@@ -49,10 +44,6 @@ export default class LoaderEventEmitter {
     }
 
     delete this.listeners[eventName];
-  }
-
-  async emitIdle(eventName, ...args) {
-    await this.emit(eventName, 'idle', ...args);
   }
 
   async emitBefore(eventName, ...args) {
