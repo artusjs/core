@@ -1,6 +1,6 @@
 import * as path from 'path';
 import { isInjectable, Container } from '@artus/injection';
-import { ArtusInjectEnum, DEFAULT_LOADER, HOOK_FILE_LOADER, LOADER_NAME_META, ScanPolicy } from '../constant';
+import { ArtusInjectEnum, DEFAULT_LOADER, HOOK_FILE_LOADER, LOADER_NAME_META, ScanPolicy, DEFAULT_LOADER_LIST_WITH_ORDER } from '../constant';
 import {
   Manifest,
   ManifestItem,
@@ -65,23 +65,31 @@ export class LoaderFactory {
   }
 
   async loadItemList(itemList: ManifestItem[] = [], root?: string): Promise<void> {
-    let prevLoader = '';
+    const itemMap = new Map(DEFAULT_LOADER_LIST_WITH_ORDER.map(loaderName => [loaderName, []]));
+
+    // group by loader names
     for (const item of itemList) {
       item.path = root ? path.join(root, item.path) : item.path;
-      const curLoader = item.loader ?? DEFAULT_LOADER;
-      if (item.loader !== prevLoader) {
-        if (prevLoader) {
-          await this.loaderEmitter.emitAfter(prevLoader);
-        }
-        await this.loaderEmitter.emitBefore(curLoader);
-        prevLoader = curLoader;
+      item.loader = item.loader ?? DEFAULT_LOADER;
+      if (!itemMap.has(item.loader)) {
+        // compatible for custom loader
+        itemMap.set(item.loader, []);
       }
-      await this.loaderEmitter.emitBeforeEach(curLoader, item);
-      const result = await this.loadItem(item);
-      await this.loaderEmitter.emitAfterEach(curLoader, item, result);
+      itemMap.get(item.loader)!.push(item);
     }
-    if (prevLoader) {
-      await this.loaderEmitter.emitAfter(prevLoader);
+
+    // trigger loader
+    for (const [ loaderName, itemList ] of itemMap) {
+      await this.loaderEmitter.emitBefore(loaderName);
+
+      for (const item of itemList) {
+        const curLoader = item.loader;
+        await this.loaderEmitter.emitBeforeEach(curLoader, item);
+        const result = await this.loadItem(item);
+        await this.loaderEmitter.emitAfterEach(curLoader, item, result);
+      }
+
+      await this.loaderEmitter.emitAfter(loaderName);
     }
   }
 
