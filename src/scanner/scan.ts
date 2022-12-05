@@ -169,7 +169,6 @@ export class Scanner {
       return {};
     }
     const root = path.resolve(baseDir, configDir);
-    // config dir may not exists
     const configFileList = await fs.readdir(root);
     const container = new Container(ArtusInjectEnum.DefaultContainerName);
     container.set({ type: ConfigurationHandler });
