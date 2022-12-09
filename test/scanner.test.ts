@@ -94,4 +94,11 @@ describe('test/scanner.test.ts', () => {
     expect(manifest.items).toBeDefined();
     expect(manifest.items.length).toBe(3);
   });
+
+  it('should not throw when scan application without configdir', async () => {
+    const scanner = new Scanner({ needWriteFile: false, extensions: ['.ts', '.js', '.json'] });
+    const scanResults = await scanner.scan(path.resolve(__dirname, './fixtures/app_without_config'));
+    const { default: manifest } = scanResults;
+    expect(manifest.items.find(item => item.loader === 'config')).toBeUndefined();
+  });
 });
