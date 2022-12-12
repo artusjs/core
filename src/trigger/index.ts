@@ -1,5 +1,5 @@
 import { ExecutionContainer, Inject, Injectable, ScopeEnum } from '@artus/injection';
-import { Input, Context, MiddlewareInput, Pipeline, Output } from '@artus/pipeline';
+import { Input, Context, MiddlewareInput, Middleware, Pipeline, Output, BaseContext, Next } from '@artus/pipeline';
 import { ArtusInjectEnum } from '../constant';
 import { exceptionFilterMiddleware } from '../exception';
 import { Application, TriggerType } from '../types';
@@ -13,6 +13,7 @@ export default class Trigger implements TriggerType {
 
   constructor() {
     this.pipeline = new Pipeline();
+    this.pipeline.use(this.createAsyncCtxStorageMiddleware());
     this.pipeline.use(exceptionFilterMiddleware);
   }
 
@@ -33,5 +34,14 @@ export default class Trigger implements TriggerType {
 
   async startPipeline(ctx: Context): Promise<void> {
     await this.pipeline.run(ctx);
+  }
+
+  createAsyncCtxStorageMiddleware(): Middleware<BaseContext> {
+    const app = this.app;
+    return async function asyncCtxStorage(ctx: BaseContext, next: Next) {
+      await app.ctxStorage.run(ctx, async () => {
+        return await next();
+      });
+    }
   }
 }

@@ -1,6 +1,9 @@
 import { Stream } from 'stream';
+import diagnosticsChannel from 'diagnostics_channel';
 import { Context, Next } from '@artus/pipeline';
 import { Injectable, ScopeEnum, Trigger } from '../../../../src';
+
+const simpleTracing = diagnosticsChannel.channel('artus:http:simple:response');
 
 @Injectable({ scope: ScopeEnum.SINGLETON })
 export default class HttpTrigger extends Trigger {
@@ -28,6 +31,7 @@ export default class HttpTrigger extends Trigger {
       return content.pipe(res);
     }
 
+    simpleTracing.publish({ hello: 'artus' });
     return res.end(JSON.stringify(content));
   }
 }

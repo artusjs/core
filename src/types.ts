@@ -1,3 +1,4 @@
+import { AsyncLocalStorage } from 'async_hooks';
 import { Container } from '@artus/injection';
 import { BaseContext } from '@artus/pipeline';
 import { HookFunction } from './lifecycle';
@@ -20,6 +21,8 @@ export interface ApplicationInitOptions {
 
 export interface Application {
   container: Container;
+  ctxStorage: AsyncLocalStorage<BaseContext>;
+  get currentContext(): BaseContext | undefined;
 
   manifest?: Manifest;
   config?: Record<string, any>;

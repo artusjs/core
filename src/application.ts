@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import { AsyncLocalStorage } from 'async_hooks';
 import { Container } from '@artus/injection';
 import { ArtusInjectEnum } from './constant';
 import { ArtusStdError } from './exception';
@@ -8,8 +9,10 @@ import { Application, ApplicationInitOptions } from './types';
 import Trigger from './trigger';
 import ConfigurationHandler from './configuration';
 import { Logger, LoggerType } from './logger';
+import { BaseContext } from '@artus/pipeline';
 
 export class ArtusApplication implements Application {
+  public ctxStorage = new AsyncLocalStorage<BaseContext>;
   public manifest?: Manifest;
   public container: Container;
 
@@ -46,6 +49,10 @@ export class ArtusApplication implements Application {
 
   get logger(): LoggerType {
     return this.container.get(Logger);
+  }
+
+  get currentContext() {
+    return this.ctxStorage.getStore();
   }
 
   loadDefaultClass() {

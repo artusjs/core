@@ -1,4 +1,5 @@
 import http, { Server } from 'http';
+import diagnosticsChannel from 'diagnostics_channel';
 import { Context, Input } from '@artus/pipeline';
 import { ArtusApplication, Inject, ArtusInjectEnum } from '../../../../src';
 import { LifecycleHookUnit, LifecycleHook } from '../../../../src/decorator';
@@ -19,6 +20,12 @@ export default class MyLifecycle implements ApplicationLifecycle {
     this.trigger.use(async (ctx: Context) => {
       const { data } = ctx.output;
       data.content = { title: 'Hello Artus' };
+    });
+
+    diagnosticsChannel.subscribe('artus:http:simple:response', (message: any) => {
+      const ctx = this.app.currentContext;
+      const { req, res } = ctx.input.params;
+      console.log('%s %s, status: %d, mesage: %j', req.method, req.url, res.status, message);
     });
   }
 
