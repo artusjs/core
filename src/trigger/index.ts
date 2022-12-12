@@ -38,10 +38,8 @@ export default class Trigger implements TriggerType {
 
   createAsyncCtxStorageMiddleware(): Middleware<BaseContext> {
     const app = this.app;
-    return async function asyncCtxStorage(ctx: BaseContext, next: Next) {
-      await app.ctxStorage.run(ctx, async () => {
-        return await next();
-      });
-    }
+    return function asyncCtxStorage(ctx: BaseContext, next: Next) {
+      return app.ctxStorage.run(ctx, next);
+    };
   }
 }
