@@ -1,6 +1,6 @@
 import path from 'path';
 import { loadMetaFile } from '../utils/load_meta_file';
-import { exisis } from '../utils/fs';
+import { exists } from '../utils/fs';
 import { PLUGIN_META_FILENAME } from '../constant';
 import { PluginConfigItem, PluginCreateOptions, PluginMap, PluginMetadata, PluginType } from './types';
 import { getPackagePath } from './common';
@@ -68,12 +68,12 @@ export class Plugin implements PluginType {
 
   private async checkAndLoadMetadata() {
     // check import path
-    if (!await exisis(this.importPath)) {
+    if (!await exists(this.importPath)) {
       throw new Error(`load plugin <${this.name}> import path ${this.importPath} is not exists.`);
     }
     const metaFilePath = path.resolve(this.importPath, PLUGIN_META_FILENAME);
     try {
-      if (!await exisis(metaFilePath)) {
+      if (!await exists(metaFilePath)) {
         throw new Error(`load plugin <${this.name}> import path ${this.importPath} can't find meta file.`);
       }
       this.metadata = await loadMetaFile(metaFilePath);

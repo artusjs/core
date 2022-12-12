@@ -18,7 +18,7 @@ import ConfigurationHandler, { ConfigObject } from '../configuration';
 import { FrameworkConfig, FrameworkHandler } from '../framework';
 import { PluginType, PluginFactory } from '../plugin';
 import { ScanUtils } from './utils';
-import { exisis } from '../utils/fs';
+import { exists } from '../utils/fs';
 import { PluginConfigItem, PluginMetadata } from '../plugin/types';
 import { getConfigMetaFromFilename } from '../loader/utils/config_file_meta';
 import { Application } from '../types';
@@ -69,7 +69,7 @@ export class Scanner {
       return envs;
     }
     const absoluteConfigDir = path.resolve(root, configDir);
-    const configFileList = (await exisis(absoluteConfigDir)) ? await fs.readdir(absoluteConfigDir) : [];
+    const configFileList = (await exists(absoluteConfigDir)) ? await fs.readdir(absoluteConfigDir) : [];
     const envSet: Set<string> = new Set([ARTUS_DEFAULT_CONFIG_ENV.DEFAULT]);
     for (const configFilename of configFileList) {
       if (configFilename.endsWith('.d.ts')) {
@@ -171,7 +171,7 @@ export class Scanner {
       return {};
     }
     const root = path.resolve(baseDir, configDir);
-    const configFileList = (await exisis(root)) ? await fs.readdir(root) : [];
+    const configFileList = (await exists(root)) ? await fs.readdir(root) : [];
     const container = new Container(ArtusInjectEnum.DefaultContainerName);
     container.set({ type: ConfigurationHandler });
     container.set({
