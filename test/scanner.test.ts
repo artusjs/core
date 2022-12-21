@@ -49,6 +49,14 @@ describe('test/scanner.test.ts', () => {
     });
   });
 
+  it('should not scan test dir', async () => {
+    const scanner = new Scanner({ needWriteFile: false, extensions: ['.ts', '.js', '.json'] });
+    const scanResults = await scanner.scan(path.resolve(__dirname, './fixtures/app_with_lifecycle'));
+    const { default: manifest } = scanResults;
+    expect(manifest.items).toBeDefined();
+    expect(manifest.items.find(item => item.filename === 'throw.ts')).toBeUndefined();
+  });
+
   it('should scan module with custom loader', async () => {
     // TODO: allow scan custom loader
     const { default: TestCustomLoader } = await import('./fixtures/module_with_custom_loader/src/loader/test_custom_loader');
