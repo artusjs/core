@@ -40,7 +40,7 @@ describe('test/config.test.ts', () => {
           loader: 'plugin-config',
         });
       }).rejects.toThrowError(new Error(
-        `Plugin config item test is invalid, please check your plugin config file ${filePath}, reason: must NOT have additional properties`,
+        `Plugin config item test is invalid, please check your plugin config file ${filePath}, reason: must NOT have additional properties 'additionalField1,additionalField2'`,
       ));
     });
   });

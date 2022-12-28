@@ -1,4 +1,3 @@
-import Ajv from 'ajv';
 import { PLUGIN_CONFIG_PATTERN } from '../../constant';
 import { getPackagePath } from '../../plugin/common';
 import { PluginConfigItem } from '../../plugin/types';
@@ -7,19 +6,6 @@ import { DefineLoader } from '../decorator';
 import { ManifestItem, Loader, LoaderFindOptions } from '../types';
 import { getConfigMetaFromFilename } from '../utils/config_file_meta';
 import ConfigLoader from './config';
-
-const ajv = new Ajv();
-const pluginConfigSchema = {
-  type: 'object',
-  properties: {
-    enable: { type: 'boolean' },
-    path: { type: 'string', nullable: true },
-    package: { type: 'string', nullable: true },
-  },
-  required: ['enable'],
-  additionalProperties: false,
-};
-const validatePluginConfig = ajv.compile(pluginConfigSchema);
 
 @DefineLoader('plugin-config')
 class PluginConfigLoader extends ConfigLoader implements Loader {
@@ -35,10 +21,11 @@ class PluginConfigLoader extends ConfigLoader implements Loader {
     const configObj = await this.loadConfigFile(item);
     for (const pluginName of Object.keys(configObj)) {
       const pluginConfigItem: PluginConfigItem = configObj[pluginName];
-      if (!validatePluginConfig(pluginConfigItem)) {
+      const itemValidateResult = this.validatePluginConfigItem(pluginConfigItem);
+      if (!itemValidateResult.isValid) {
         // validate failed for plugin config item
         throw new Error(
-          `Plugin config item ${pluginName} is invalid, please check your plugin config file ${item.path}, reason: ${validatePluginConfig.errors?.map(e => e.message ?? e.keyword).join(',')}`,
+          `Plugin config item ${pluginName} is invalid, please check your plugin config file ${item.path}, reason: ${itemValidateResult.message}`,
         );
       }
       if (pluginConfigItem.package) {
@@ -58,6 +45,30 @@ class PluginConfigLoader extends ConfigLoader implements Loader {
       plugin: configObj,
     });
     return configObj;
+  }
+
+  private validatePluginConfigItem(pluginConfigItem: PluginConfigItem): {
+    isValid: boolean;
+    message: string;
+  } {
+    const pluginConfigItemKeyList = Object.keys(pluginConfigItem);
+    if (!pluginConfigItemKeyList.includes('enable')) {
+      return {
+        isValid: false,
+        message: 'must have required property \'enable\'',
+      };
+    }
+    const additionalProperties = pluginConfigItemKeyList.filter(key => !['enable', 'path', 'package'].includes(key));
+    if (additionalProperties.length) {
+      return {
+        isValid: false,
+        message: `must NOT have additional properties '${additionalProperties.join(',')}'`,
+      };
+    }
+    return {
+      isValid: true,
+      message: '',
+    };
   }
 }
 

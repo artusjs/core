@@ -2,6 +2,7 @@ export default {
   test: {
     enable: true,
     path: '.',
-    additionField: 'mock',
+    additionalField1: 'mock',
+    additionalField2: 'mock',
   },
 };
