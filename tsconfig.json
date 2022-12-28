@@ -1,6 +1,7 @@
 {
   "extends": "@artus/tsconfig",
   "compilerOptions": {
+    "strictNullChecks": false,
     "outDir": "./lib",
     "types": [
       "node",
