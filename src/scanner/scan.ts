@@ -155,7 +155,7 @@ export class Scanner {
 
   private setPluginMeta(plugin: PluginType) {
     const metaList = this.itemMap.get('plugin-meta') as ManifestItem<unknown>[];
-    metaList.push({
+    metaList?.push({
       path: plugin.metaFilePath,
       extname: path.extname(plugin.metaFilePath),
       filename: path.basename(plugin.metaFilePath),
