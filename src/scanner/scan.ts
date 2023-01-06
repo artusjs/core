@@ -155,7 +155,7 @@ export class Scanner {
 
   private setPluginMeta(plugin: PluginType) {
     if (!this.itemMap.has('plugin-meta')) {
-      this.itemMap.set('plugin-meta', [])
+      this.itemMap.set('plugin-meta', []);
     }
     const metaList = this.itemMap.get('plugin-meta');
     metaList.push({
