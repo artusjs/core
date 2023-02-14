@@ -1,0 +1,6 @@
+{
+  "name": "@artus/test-plugin-with-entry-c",
+  "exports": {
+    ".": "./mock_lib/index.js"
+  }
+}

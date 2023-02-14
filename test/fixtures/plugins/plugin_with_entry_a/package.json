@@ -1,0 +1,4 @@
+{
+  "name": "@artus/test-plugin-with-entry-a",
+  "main": "mock_lib/index.js"
+}

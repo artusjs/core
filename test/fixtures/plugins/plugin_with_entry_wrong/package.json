@@ -1,0 +1,7 @@
+{
+  "name": "@artus/test-plugin-with-entry-wrong",
+  "exports": [
+    "./mock_lib/index.js",
+    "./mock_lib/index.json"
+  ]
+}

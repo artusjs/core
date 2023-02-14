@@ -1,13 +1,14 @@
 import * as path from 'path';
 import { Container } from '@artus/injection';
 import ConfigurationHandler from '../../configuration';
-import { ArtusInjectEnum, PLUGIN_CONFIG_PATTERN, FRAMEWORK_PATTERN } from '../../constant';
+import { ArtusInjectEnum, FRAMEWORK_PATTERN } from '../../constant';
 import { DefineLoader } from '../decorator';
 import { ManifestItem, Loader, LoaderFindOptions } from '../types';
 import compatibleRequire from '../../utils/compatible_require';
 import { isMatch } from '../../utils';
 import { Application } from '../../types';
 import { getConfigMetaFromFilename } from '../utils/config_file_meta';
+import { PluginFactory } from '../../plugin';
 
 @DefineLoader('config')
 class ConfigLoader implements Loader {
@@ -28,7 +29,6 @@ class ConfigLoader implements Loader {
   static async is(opts: LoaderFindOptions): Promise<boolean> {
     return (
       this.isConfigDir(opts) &&
-      !isMatch(opts.filename, PLUGIN_CONFIG_PATTERN) &&
       !isMatch(opts.filename, FRAMEWORK_PATTERN)
     );
   }
@@ -41,7 +41,11 @@ class ConfigLoader implements Loader {
   async load(item: ManifestItem) {
     const { namespace, env } = getConfigMetaFromFilename(item.filename);
     let configObj = await this.loadConfigFile(item);
-    if (namespace) {
+    if (namespace === 'plugin') {
+      configObj = {
+        plugin: await PluginFactory.formatPluginConfig(configObj, item),
+      };
+    } else if (namespace) {
       configObj = {
         [namespace]: configObj,
       };

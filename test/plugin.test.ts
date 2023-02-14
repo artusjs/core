@@ -207,4 +207,39 @@ describe('test/app.test.ts', () => {
       console.warn = originWarn;
     });
   });
+ 
+  describe('format plugin config', () => { 
+    it('should format plugin with entry in package.json', async () => {
+      const mockPluginConfig = {
+        'plugin-with-entry-a': {
+          enable: true,
+          path: path.resolve(__dirname, `${pluginPrefix}/plugin_with_entry_a`),
+        },
+        'plugin-with-entry-b': {
+          enable: true,
+          path: path.resolve(__dirname, `${pluginPrefix}/plugin_with_entry_b`),
+        },
+        'plugin-with-entry-c': {
+          enable: true,
+          path: path.resolve(__dirname, `${pluginPrefix}/plugin_with_entry_c`),
+        },
+      };
+      const formattedPluginConfigList = await PluginFactory.formatPluginConfig(mockPluginConfig);
+      const pluginList = await PluginFactory.createFromConfig(formattedPluginConfigList);
+      expect(pluginList.length).toBe(3);
+      for (const pluginItem of pluginList) {
+        expect(pluginItem.importPath).toBe(path.resolve(__dirname, pluginPrefix, pluginItem.name.replaceAll('-', '_') , 'mock_lib'));
+      }
+    });
+
+    it('should throw error if multi exports entry in package.json', async () => {
+      const mockPluginConfig = {
+        'plugin-with-entry-wrong': {
+          enable: true,
+          path: path.resolve(__dirname, `${pluginPrefix}/plugin_with_entry_wrong`),
+        },
+      };
+      expect(() => PluginFactory.formatPluginConfig(mockPluginConfig)).rejects.toThrowError('inline package multi exports is not supported');
+    });
+  });
 });

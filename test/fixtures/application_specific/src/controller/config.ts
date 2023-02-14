@@ -10,7 +10,7 @@ export default class Hello {
   async index(ctx: Context) {
     const { params: { config } } = ctx.input;
     return {
-      message: `get conifg succeed`,
+      message: `get config succeed`,
       config,
     };
   }

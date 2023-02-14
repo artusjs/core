@@ -1,4 +1,5 @@
 import path from 'path';
+import compatibleRequire from '../utils/compatible_require';
 import { PluginType } from './types';
 
 // A utils function that toplogical sort plugins
@@ -37,4 +38,23 @@ export function topologicalSort(pluginInstanceMap: Map<string, PluginType>, plug
 export function getPackagePath(packageName: string, paths?: string[]): string {
   const opts = paths ? { paths } : undefined;
   return path.resolve(require.resolve(packageName, opts), '..');
+}
+
+export async function getInlinePackageEntryPath(packagePath: string): Promise<string> {
+  const pkgJson = await compatibleRequire(`${packagePath}/package.json`);
+  let entryFilePath = '';
+  if (pkgJson.exports) {
+    if (Array.isArray(pkgJson.exports)) {
+      throw new Error(`inline package multi exports is not supported`);
+    } else if (typeof pkgJson.exports === 'string') {
+      entryFilePath = pkgJson.exports;
+    } else if (pkgJson.exports?.['.']) {
+      entryFilePath = pkgJson.exports['.'];
+    }
+  }
+  if (pkgJson.main) {
+    entryFilePath = pkgJson.main;
+  }
+  // will use package root path if no entry file found
+  return entryFilePath ? path.resolve(packagePath, entryFilePath, '..') : packagePath;
 }
