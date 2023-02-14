@@ -52,7 +52,7 @@ export async function getInlinePackageEntryPath(packagePath: string): Promise<st
       entryFilePath = pkgJson.exports['.'];
     }
   }
-  if (pkgJson.main) {
+  if (!entryFilePath && pkgJson.main) {
     entryFilePath = pkgJson.main;
   }
   // will use package root path if no entry file found
