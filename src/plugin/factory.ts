@@ -46,7 +46,8 @@ export class PluginFactory {
             `Plugin ${pluginName} config can't have both package and path at ${manifestItem?.path ?? 'UNKNOWN_PATH'}`,
           );
         }
-        pluginConfigItem.path = getPackagePath(pluginConfigItem.package, [loaderState?.baseDir]);
+        const requirePaths = loaderState?.baseDir ? [loaderState.baseDir] : undefined;
+        pluginConfigItem.path = getPackagePath(pluginConfigItem.package, requirePaths);
         delete pluginConfigItem.package;
       } else if (pluginConfigItem.path && await exists(path.resolve(pluginConfigItem.path, 'package.json'))) {
         // plugin path is a npm package, need resolve main file
