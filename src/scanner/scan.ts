@@ -280,11 +280,6 @@ export class Scanner {
     }
     relative && items.forEach(item => (item.path = path.relative(appRoot, item.path)));
     return items.filter(item => {
-      // remove PluginConfig to avoid re-merge on application running
-      if (item.loader === 'plugin-config') {
-        return false;
-      }
-
       // remove other env config
       if (item.loader === 'config' || item.loader === 'framework-config') {
         const { env: filenameEnv } = getConfigMetaFromFilename(item.filename);
