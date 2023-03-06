@@ -82,6 +82,11 @@ export class Scanner {
   }
 
   async scan(root: string): Promise<Record<string, Manifest>> {
+    if (!path.isAbsolute(root)) {
+      // make sure the root path is absolute
+      root = path.resolve(root);
+    }
+
     const result = {};
     const envList = await this.scanEnvList(root);
 
