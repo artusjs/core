@@ -47,6 +47,14 @@ describe('test/scanner.test.ts', () => {
     });
   });
 
+  it('should scan test dir by relative path', async () => {
+    const scanner = new Scanner({ needWriteFile: false, extensions: ['.ts', '.js', '.json'] });
+    const relativeRoot = path.relative(process.cwd(), __dirname);
+    const scanResults = await scanner.scan(path.join(relativeRoot, './fixtures/app_koa_with_ts'));
+    expect(scanResults?.default?.items).toBeDefined();
+    expect(scanResults?.dev?.items).toBeDefined();
+  });
+
   it('should not scan test dir', async () => {
     const scanner = new Scanner({ needWriteFile: false, extensions: ['.ts', '.js', '.json'] });
     const scanResults = await scanner.scan(path.resolve(__dirname, './fixtures/app_with_lifecycle'));
