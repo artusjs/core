@@ -21,7 +21,7 @@ export enum ARTUS_DEFAULT_CONFIG_ENV {
 export enum ScanPolicy {
   NamedExport = 'named_export',
   DefaultExport = 'default_export',
-  All = "all",
+  All = 'all',
 }
 
 export const ARTUS_EXCEPTION_DEFAULT_LOCALE = 'en';
@@ -39,7 +39,7 @@ export const DEFAULT_EXCLUDES = [
   'tsconfig*.json',
   '*.d.ts',
   'jest.config.*',
-  'meta.*',
+  'meta.json',
   'LICENSE',
   'pnpm-lock.yaml',
 ];
