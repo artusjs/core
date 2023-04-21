@@ -69,13 +69,15 @@ export class LoaderFactory {
 
     // group by loader names
     for (const item of itemList) {
-      item.path = root ? path.join(root, item.path) : item.path;
-      item.loader = item.loader ?? DEFAULT_LOADER;
       if (!itemMap.has(item.loader)) {
         // compatible for custom loader
         itemMap.set(item.loader, []);
       }
-      itemMap.get(item.loader)!.push(item);
+      itemMap.get(item.loader)!.push({
+        ...item,
+        path: root ? path.join(root, item.path) : item.path,
+        loader: item.loader ?? DEFAULT_LOADER,
+      });
     }
 
     // trigger loader
