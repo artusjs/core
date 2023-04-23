@@ -8,7 +8,7 @@ import compatibleRequire from '../../utils/compatible_require';
 import { isMatch } from '../../utils';
 import { Application } from '../../types';
 import { getConfigMetaFromFilename } from '../utils/config_file_meta';
-import { PluginFactory } from '../../plugin';
+// import { PluginFactory } from '../../plugin';
 
 @DefineLoader('config')
 class ConfigLoader implements Loader {
@@ -41,11 +41,12 @@ class ConfigLoader implements Loader {
   async load(item: ManifestItem) {
     const { namespace, env } = getConfigMetaFromFilename(item.filename);
     let configObj = await this.loadConfigFile(item);
-    if (namespace === 'plugin') {
-      configObj = {
-        plugin: await PluginFactory.formatPluginConfig(configObj, item),
-      };
-    } else if (namespace) {
+    // if (namespace === 'plugin') {
+    // configObj = {
+    //  plugin: await PluginFactory.formatPluginConfig(configObj, item),
+    // };
+    // } else
+    if (namespace) {
       configObj = {
         [namespace]: configObj,
       };
