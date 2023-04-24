@@ -2,7 +2,7 @@ import path from 'path';
 import * as fs from 'fs/promises';
 import { ScanContext, ScanTaskItem, WalkOptions } from './types';
 import { existsAsync, getPackageVersion, getPluginMeta, getPluginRefName, getPluginRefPath, isExclude, isPluginAsync } from './utils';
-import { LoaderFactory, ManifestItem, ManifestV2PluginConfig, ManifestV2PluginConfigItem } from '../loader';
+import { findLoader, LoaderFactory, ManifestItem, ManifestV2PluginConfig, ManifestV2PluginConfigItem } from '../loader';
 import { PluginConfigItem, PluginDependencyItem } from '../plugin';
 import { mergeConfig } from '../loader/utils/merge';
 import { Container } from '@artus/injection';
@@ -45,7 +45,7 @@ const walkDir = async (root: string, options: WalkOptions, itemList: ManifestIte
       }
       const filename = path.basename(realPath);
       const filenameWithoutExt = path.basename(realPath, extname);
-      const loaderFindResult = await LoaderFactory.findLoader({
+      const loaderFindResult = await findLoader({
         filename,
         root,
         baseDir,
@@ -83,7 +83,7 @@ export const handlePluginConfig = async (configItemList: ManifestItem[], root: s
   container.set({
     type: ConfigurationHandler,
   });
-  const loaderFactory = new LoaderFactory(container);
+  const loaderFactory = LoaderFactory.create(container);
   await loaderFactory.loadItemList(configItemList);
   const pluginConfigEnvMap: Record<string, ManifestV2PluginConfig> = {};
   for (const [env, configObj] of loaderFactory.configurationHandler.configStore) {

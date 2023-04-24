@@ -1,29 +1,26 @@
 import * as path from 'path';
-import { isInjectable, Container } from '@artus/injection';
-import { ArtusInjectEnum, DEFAULT_LOADER, HOOK_FILE_LOADER, LOADER_NAME_META, ScanPolicy, DEFAULT_LOADER_LIST_WITH_ORDER } from '../constant';
+import { Container } from '@artus/injection';
+import { ArtusInjectEnum, DEFAULT_LOADER, LOADER_NAME_META, DEFAULT_LOADER_LIST_WITH_ORDER } from '../constant';
 import {
   Manifest,
   ManifestItem,
   LoaderConstructor,
   Loader,
-  LoaderFindOptions,
-  LoaderFindResult,
 } from './types';
 import ConfigurationHandler from '../configuration';
 import { LifecycleManager } from '../lifecycle';
-import compatibleRequire from '../utils/compatible_require';
 import LoaderEventEmitter, { LoaderEventListener } from './loader_event';
-import { isClass } from '../utils/is';
 
 export class LoaderFactory {
-  private container: Container;
-  private static loaderClazzMap: Map<string, LoaderConstructor> = new Map();
-  private loaderEmitter: LoaderEventEmitter;
+  public static loaderClazzMap: Map<string, LoaderConstructor> = new Map();
 
   static register(clazz: LoaderConstructor) {
     const loaderName = Reflect.getMetadata(LOADER_NAME_META, clazz);
     this.loaderClazzMap.set(loaderName, clazz);
   }
+
+  private container: Container;
+  private loaderEmitter: LoaderEventEmitter;
 
   constructor(container: Container) {
     this.container = container;
@@ -100,78 +97,5 @@ export class LoaderFactory {
     const loader = this.getLoader(loaderName);
     loader.state = item.loaderState;
     return loader.load(item);
-  }
-
-  static async findLoader(opts: LoaderFindOptions): Promise<LoaderFindResult | null> {
-    const { loader: loaderName, exportNames } = await this.findLoaderName(opts);
-
-    if (!loaderName) {
-      return null;
-    }
-
-    const loaderClazz = LoaderFactory.loaderClazzMap.get(loaderName);
-    if (!loaderClazz) {
-      throw new Error(`Cannot find loader '${loaderName}'`);
-    }
-    const result: LoaderFindResult = {
-      loaderName,
-      loaderState: { exportNames },
-    };
-    if (loaderClazz.onFind) {
-      result.loaderState = await loaderClazz.onFind(opts);
-    }
-    return result;
-  }
-
-  static async findLoaderName(opts: LoaderFindOptions): Promise<{ loader: string | null, exportNames: string[] }> {
-    for (const [loaderName, LoaderClazz] of LoaderFactory.loaderClazzMap.entries()) {
-      if (await LoaderClazz.is?.(opts)) {
-        return { loader: loaderName, exportNames: [] };
-      }
-    }
-    const { root, filename, policy = ScanPolicy.All } = opts;
-
-    // require file for find loader
-    const allExport = await compatibleRequire(path.join(root, filename), true);
-    const exportNames: string[] = [];
-
-    let loaders = Object.entries(allExport)
-      .map(([name, targetClazz]) => {
-        if (!isClass(targetClazz)) {
-          // The file is not export with default class
-          return null;
-        }
-
-        if (policy === ScanPolicy.NamedExport && name === 'default') {
-          return null;
-        }
-
-        if (policy === ScanPolicy.DefaultExport && name !== 'default') {
-          return null;
-        }
-
-        // get loader from reflect metadata
-        const loaderMd = Reflect.getMetadata(HOOK_FILE_LOADER, targetClazz);
-        if (loaderMd?.loader) {
-          exportNames.push(name);
-          return loaderMd.loader;
-        }
-
-        // default loder with @Injectable
-        const injectableMd = isInjectable(targetClazz);
-        if (injectableMd) {
-          exportNames.push(name);
-          return DEFAULT_LOADER;
-        }
-      })
-      .filter(v => v);
-
-    loaders = Array.from(new Set(loaders));
-
-    if (loaders.length > 1) {
-      throw new Error(`Not support multiple loaders for ${path.join(root, filename)}`);
-    }
-
-    return { loader: loaders[0] ?? null, exportNames };
   }
 }
