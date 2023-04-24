@@ -20,7 +20,7 @@ export default class ConfigurationHandler {
     return env;
   }
 
-  private configStore: Map<string, ConfigObject> = new Map();
+  public configStore: Map<string, ConfigObject> = new Map();
   private frameworks: Map<string, FrameworkObject[]> = new Map();
   private packages: Map<string, PackageObject[]> = new Map();
 

@@ -1,0 +1,202 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test/scanner.test.ts should be scan application 1`] = `
+Object {
+  "pluginConfig": Object {
+    "default": Object {
+      "mysql": Object {
+        "enable": undefined,
+        "refName": "src/mysql_plugin",
+      },
+      "redis": Object {
+        "enable": undefined,
+        "refName": "src/redis_plugin",
+      },
+      "testDuplicate": Object {
+        "enable": undefined,
+        "refName": "@artus/injection",
+      },
+    },
+    "dev": Object {
+      "testDuplicate": Object {
+        "enable": undefined,
+        "refName": "src/test_duplicate_plugin",
+      },
+    },
+  },
+  "refMap": Object {
+    "@artus/injection": Object {
+      "dependencies": undefined,
+      "items": Array [],
+      "packageVersion": undefined,
+    },
+    "_app": Object {
+      "dependencies": undefined,
+      "items": Array [
+        Object {
+          "extname": ".json",
+          "filename": "package.json",
+          "loader": "package-json",
+          "loaderState": Object {
+            "exportNames": Array [],
+          },
+          "path": "package",
+        },
+        Object {
+          "extname": ".ts",
+          "filename": "app.ts",
+          "loader": "lifecycle-hook-unit",
+          "loaderState": Object {
+            "exportNames": Array [
+              "default",
+            ],
+          },
+          "path": "src/app",
+        },
+        Object {
+          "extname": ".ts",
+          "filename": "config.default.ts",
+          "loader": "config",
+          "loaderState": Object {
+            "exportNames": Array [],
+          },
+          "path": "src/config/config.default",
+        },
+        Object {
+          "extname": ".ts",
+          "filename": "config.dev.ts",
+          "loader": "config",
+          "loaderState": Object {
+            "exportNames": Array [],
+          },
+          "path": "src/config/config.dev",
+        },
+        Object {
+          "extname": ".ts",
+          "filename": "plugin.default.ts",
+          "loader": "config",
+          "loaderState": Object {
+            "exportNames": Array [],
+          },
+          "path": "src/config/plugin.default",
+        },
+        Object {
+          "extname": ".ts",
+          "filename": "plugin.dev.ts",
+          "loader": "config",
+          "loaderState": Object {
+            "exportNames": Array [],
+          },
+          "path": "src/config/plugin.dev",
+        },
+        Object {
+          "extname": ".ts",
+          "filename": "hello.ts",
+          "loader": "module",
+          "loaderState": Object {
+            "exportNames": Array [
+              "default",
+            ],
+          },
+          "path": "src/controllers/hello",
+        },
+        Object {
+          "extname": ".json",
+          "filename": "exception.json",
+          "loader": "exception",
+          "loaderState": Object {
+            "exportNames": Array [],
+          },
+          "path": "src/exception",
+        },
+        Object {
+          "extname": ".ts",
+          "filename": "default.ts",
+          "loader": "exception-filter",
+          "loaderState": Object {
+            "exportNames": Array [
+              "MockExceptionFilter",
+            ],
+          },
+          "path": "src/filter/default",
+        },
+        Object {
+          "extname": ".ts",
+          "filename": "http_trigger.ts",
+          "loader": "module",
+          "loaderState": Object {
+            "exportNames": Array [
+              "default",
+            ],
+          },
+          "path": "src/http_trigger",
+        },
+        Object {
+          "extname": ".ts",
+          "filename": "koa_app.ts",
+          "loader": "module",
+          "loaderState": Object {
+            "exportNames": Array [
+              "default",
+            ],
+          },
+          "path": "src/koa_app",
+        },
+        Object {
+          "extname": ".ts",
+          "filename": "hello.ts",
+          "loader": "module",
+          "loaderState": Object {
+            "exportNames": Array [
+              "default",
+            ],
+          },
+          "path": "src/services/hello",
+        },
+      ],
+      "packageVersion": undefined,
+    },
+    "src/mysql_plugin": Object {
+      "dependencies": undefined,
+      "items": Array [
+        Object {
+          "extname": ".ts",
+          "filename": "app.ts",
+          "loader": "lifecycle-hook-unit",
+          "loaderState": Object {
+            "exportNames": Array [
+              "default",
+            ],
+          },
+          "path": "src/mysql_plugin/app",
+        },
+      ],
+      "packageVersion": undefined,
+    },
+    "src/redis_plugin": Object {
+      "dependencies": undefined,
+      "items": Array [
+        Object {
+          "extname": ".ts",
+          "filename": "app.ts",
+          "loader": "lifecycle-hook-unit",
+          "loaderState": Object {
+            "exportNames": Array [
+              "default",
+            ],
+          },
+          "path": "src/redis_plugin/app",
+        },
+      ],
+      "packageVersion": undefined,
+    },
+    "src/test_duplicate_plugin": Object {
+      "dependencies": undefined,
+      "items": Array [],
+      "packageVersion": undefined,
+    },
+  },
+  "relative": true,
+  "version": "2",
+}
+`;

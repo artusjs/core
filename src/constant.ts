@@ -43,6 +43,7 @@ export const DEFAULT_EXCLUDES = [
   'LICENSE',
   'pnpm-lock.yaml',
 ];
+export const DEFAULT_MODULE_EXTENSIONS = ['.js', '.json', '.node'];
 
 export const FRAMEWORK_PATTERN = 'framework.*';
 export const PLUGIN_CONFIG_PATTERN = 'plugin.*';
@@ -62,5 +63,6 @@ export const DEFAULT_LOADER_LIST_WITH_ORDER = [
 ];
 
 export const DEFAULT_CONFIG_DIR = 'src/config';
+export const DEFAULT_MANIFEST_FILENAME = 'manifest.json';
 
 export const SHOULD_OVERWRITE_VALUE = 'shouldOverwrite';

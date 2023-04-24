@@ -81,7 +81,7 @@ export class LoaderFactory {
     }
 
     // trigger loader
-    for (const [ loaderName, itemList ] of itemMap) {
+    for (const [loaderName, itemList] of itemMap) {
       await this.loaderEmitter.emitBefore(loaderName);
 
       for (const item of itemList) {
@@ -102,7 +102,7 @@ export class LoaderFactory {
     return loader.load(item);
   }
 
-  async findLoader(opts: LoaderFindOptions): Promise<LoaderFindResult | null> {
+  static async findLoader(opts: LoaderFindOptions): Promise<LoaderFindResult | null> {
     const { loader: loaderName, exportNames } = await this.findLoaderName(opts);
 
     if (!loaderName) {
@@ -123,7 +123,7 @@ export class LoaderFactory {
     return result;
   }
 
-  async findLoaderName(opts: LoaderFindOptions): Promise<{ loader: string | null, exportNames: string[] }> {
+  static async findLoaderName(opts: LoaderFindOptions): Promise<{ loader: string | null, exportNames: string[] }> {
     for (const [loaderName, LoaderClazz] of LoaderFactory.loaderClazzMap.entries()) {
       if (await LoaderClazz.is?.(opts)) {
         return { loader: loaderName, exportNames: [] };
