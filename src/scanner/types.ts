@@ -1,10 +1,10 @@
 import { ManifestEnvMap, ManifestV2, ManifestV2PluginConfig, ManifestV2RefMapItem } from '../loader';
-import { PluginConfigItem } from '../plugin/types';
+import { PluginConfigMap } from '../plugin/types';
 import { Application } from '../types';
 import { ScanPolicy } from '../constant';
 
+
 export interface ScannerOptions {
-  appName: string;
   extensions: string[];
   needWriteFile: boolean;
   useRelativePath: boolean;
@@ -12,7 +12,7 @@ export interface ScannerOptions {
   configDir: string;
   policy: ScanPolicy;
   envs?: string[];
-  plugin?: Record<string, Partial<PluginConfigItem>>;
+  plugin?: PluginConfigMap;
   app?: Application;
 }
 
@@ -22,6 +22,8 @@ export interface WalkOptions {
   policy: ScanPolicy;
   extensions: string[];
   exclude: string[];
+  source?: string;
+  unitName?: string;
 }
 
 export interface LoaderOptions {
@@ -38,12 +40,12 @@ export interface ScannerType {
 }
 
 export interface ScanTaskItem {
-  root: string;
-  subPath: string;
+  curPath: string;
   refName: string;
 }
 
 export interface ScanContext {
+  root: string;
   taskQueue: ScanTaskItem[];
   pluginConfigMap: ManifestV2PluginConfig;
   refMap: Record<string, ManifestV2RefMapItem>;

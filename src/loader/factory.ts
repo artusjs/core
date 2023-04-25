@@ -1,6 +1,6 @@
 import * as path from 'path';
 import { Container } from '@artus/injection';
-import { ArtusInjectEnum, DEFAULT_LOADER, LOADER_NAME_META, DEFAULT_LOADER_LIST_WITH_ORDER, ARTUS_DEFAULT_CONFIG_ENV, ARTUS_SERVER_ENV } from '../constant';
+import { ArtusInjectEnum, DEFAULT_LOADER, LOADER_NAME_META, DEFAULT_LOADER_LIST_WITH_ORDER, ARTUS_DEFAULT_CONFIG_ENV, ARTUS_SERVER_ENV, DEFAULT_APP_REF } from '../constant';
 import {
   Manifest,
   ManifestItem,
@@ -90,7 +90,7 @@ export class LoaderFactory {
       let itemList: ManifestItem[] = [];
       const sortedRefNameList: (string | null)[] = sortedPluginList
         .map(plugin => ((plugin.enable && mergedPluginConfig[plugin.name]?.refName) || null))
-        .concat(['_app']);
+        .concat([DEFAULT_APP_REF]);
       for (const refName of sortedRefNameList) {
         const refItem = manifest.refMap[refName];
         itemList = itemList.concat(refItem.items);

@@ -41,53 +41,8 @@ Object {
             ],
           },
           "path": "src/app",
-        },
-        Object {
-          "extname": ".ts",
-          "filename": "config.default.ts",
-          "loader": "config",
-          "loaderState": Object {
-            "exportNames": Array [],
-          },
-          "path": "src/config/config.default",
-        },
-        Object {
-          "extname": ".ts",
-          "filename": "config.dev.ts",
-          "loader": "config",
-          "loaderState": Object {
-            "exportNames": Array [],
-          },
-          "path": "src/config/config.dev",
-        },
-        Object {
-          "extname": ".ts",
-          "filename": "plugin.default.ts",
-          "loader": "config",
-          "loaderState": Object {
-            "exportNames": Array [],
-          },
-          "path": "src/config/plugin.default",
-        },
-        Object {
-          "extname": ".ts",
-          "filename": "plugin.dev.ts",
-          "loader": "config",
-          "loaderState": Object {
-            "exportNames": Array [],
-          },
-          "path": "src/config/plugin.dev",
-        },
-        Object {
-          "extname": ".ts",
-          "filename": "hello.ts",
-          "loader": "module",
-          "loaderState": Object {
-            "exportNames": Array [
-              "default",
-            ],
-          },
-          "path": "src/controllers/hello",
+          "source": "app",
+          "unitName": "_app",
         },
         Object {
           "extname": ".json",
@@ -97,17 +52,8 @@ Object {
             "exportNames": Array [],
           },
           "path": "src/exception",
-        },
-        Object {
-          "extname": ".ts",
-          "filename": "default.ts",
-          "loader": "exception-filter",
-          "loaderState": Object {
-            "exportNames": Array [
-              "MockExceptionFilter",
-            ],
-          },
-          "path": "src/filter/default",
+          "source": "app",
+          "unitName": "_app",
         },
         Object {
           "extname": ".ts",
@@ -119,6 +65,8 @@ Object {
             ],
           },
           "path": "src/http_trigger",
+          "source": "app",
+          "unitName": "_app",
         },
         Object {
           "extname": ".ts",
@@ -130,6 +78,78 @@ Object {
             ],
           },
           "path": "src/koa_app",
+          "source": "app",
+          "unitName": "_app",
+        },
+        Object {
+          "extname": ".ts",
+          "filename": "config.default.ts",
+          "loader": "config",
+          "loaderState": Object {
+            "exportNames": Array [],
+          },
+          "path": "src/config/config.default",
+          "source": "app",
+          "unitName": "_app",
+        },
+        Object {
+          "extname": ".ts",
+          "filename": "config.dev.ts",
+          "loader": "config",
+          "loaderState": Object {
+            "exportNames": Array [],
+          },
+          "path": "src/config/config.dev",
+          "source": "app",
+          "unitName": "_app",
+        },
+        Object {
+          "extname": ".ts",
+          "filename": "plugin.default.ts",
+          "loader": "config",
+          "loaderState": Object {
+            "exportNames": Array [],
+          },
+          "path": "src/config/plugin.default",
+          "source": "app",
+          "unitName": "_app",
+        },
+        Object {
+          "extname": ".ts",
+          "filename": "plugin.dev.ts",
+          "loader": "config",
+          "loaderState": Object {
+            "exportNames": Array [],
+          },
+          "path": "src/config/plugin.dev",
+          "source": "app",
+          "unitName": "_app",
+        },
+        Object {
+          "extname": ".ts",
+          "filename": "hello.ts",
+          "loader": "module",
+          "loaderState": Object {
+            "exportNames": Array [
+              "default",
+            ],
+          },
+          "path": "src/controllers/hello",
+          "source": "app",
+          "unitName": "_app",
+        },
+        Object {
+          "extname": ".ts",
+          "filename": "default.ts",
+          "loader": "exception-filter",
+          "loaderState": Object {
+            "exportNames": Array [
+              "MockExceptionFilter",
+            ],
+          },
+          "path": "src/filter/default",
+          "source": "app",
+          "unitName": "_app",
         },
         Object {
           "extname": ".ts",
@@ -141,6 +161,8 @@ Object {
             ],
           },
           "path": "src/services/hello",
+          "source": "app",
+          "unitName": "_app",
         },
       ],
       "packageVersion": undefined,
@@ -157,6 +179,8 @@ Object {
             ],
           },
           "path": "src/mysql_plugin/app",
+          "source": "plugin",
+          "unitName": "mysql",
         },
       ],
       "packageVersion": undefined,
@@ -176,6 +200,8 @@ Object {
             ],
           },
           "path": "src/redis_plugin/app",
+          "source": "plugin",
+          "unitName": "redis",
         },
       ],
       "packageVersion": undefined,

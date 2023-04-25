@@ -1,11 +1,15 @@
 import 'reflect-metadata';
 import * as path from 'path';
 import *  as fs from 'fs/promises';
+import { Container } from '@artus/injection';
 import { isMatch } from '../utils';
 import compatibleRequire from '../utils/compatible_require';
 import { PLUGIN_META_FILENAME } from '../constant';
 import { PluginConfigItem } from '../plugin';
 import { getInlinePackageEntryPath, getPackagePath } from '../plugin/common';
+import { ScanContext } from './types';
+import { LoaderFactory, ManifestItem } from '../loader';
+import ConfigurationHandler from '../configuration';
 
 export const getPackageVersion = async (basePath: string): Promise<string | undefined> => {
   try {
@@ -42,25 +46,49 @@ export const isPluginAsync = (basePath: string): Promise<boolean> => {
   return existsAsync(path.resolve(basePath, PLUGIN_META_FILENAME));
 };
 
-export const getPluginRefName = (pluginConfigItem: PluginConfigItem, root: string): string | undefined => {
-  if (pluginConfigItem.package) {
-    return pluginConfigItem.package;
+export const loadConfigItemList = async <T = Record<string, any>>(configItemList: ManifestItem[]): Promise<Record<string, T>> => {
+  if (!configItemList.length) {
+    return {};
   }
-  if (pluginConfigItem.path) {
-    return path.isAbsolute(pluginConfigItem.path) ? path.relative(root, pluginConfigItem.path) : pluginConfigItem.path;
-  }
-  return undefined;
+
+  const container = new Container('_');
+  container.set({
+    type: ConfigurationHandler,
+  });
+  const loaderFactory = new LoaderFactory(container);
+  await loaderFactory.loadItemList(configItemList);
+  return Object.fromEntries(loaderFactory.configurationHandler.configStore.entries()) as Record<string, T>;
 };
 
-export const getPluginRefPath = async (pluginConfigItem: PluginConfigItem, root: string, baseDir: string): Promise<string | undefined> => {
+export const resolvePluginConfigItemRef = async (
+  pluginConfigItem: PluginConfigItem,
+  baseDir: string,
+  scanCtx: ScanContext,
+): Promise<{
+  name: string;
+  path: string;
+} | null> => {
   if (pluginConfigItem.package) {
-    return getPackagePath(pluginConfigItem.package, [baseDir]);
-  } else if (pluginConfigItem.path && await existsAsync(path.resolve(pluginConfigItem.path, 'package.json'))) {
-    const pluginEntryPath = await getInlinePackageEntryPath(pluginConfigItem.path);
-    return path.relative(root, pluginEntryPath);
+    const refPath = getPackagePath(pluginConfigItem.package, [baseDir]);
+    return {
+      name: pluginConfigItem.package,
+      path: refPath,
+    };
   } else if (pluginConfigItem.path) {
-    return path.isAbsolute(pluginConfigItem.path) ? path.relative(root, pluginConfigItem.path) : pluginConfigItem.path;
+    const refName = path.isAbsolute(pluginConfigItem.path) ? path.relative(scanCtx.root, pluginConfigItem.path) : pluginConfigItem.path;
+    let refPath = refName;
+
+    const packageJsonPath = path.resolve(pluginConfigItem.path, 'package.json');
+    if (await existsAsync(packageJsonPath)) {
+      refPath = await getInlinePackageEntryPath(pluginConfigItem.path);
+    }
+    return {
+      name: refName,
+      path: refPath,
+    };
   }
-  return undefined;
+  return null;
+
+
 };
 

@@ -43,6 +43,7 @@ export const DEFAULT_EXCLUDES = [
   'pnpm-lock.yaml',
 ];
 export const DEFAULT_MODULE_EXTENSIONS = ['.js', '.json', '.node'];
+export const DEFAULT_APP_REF = '_app';
 
 export const FRAMEWORK_PATTERN = 'framework.*';
 export const PLUGIN_CONFIG_PATTERN = 'plugin.*';

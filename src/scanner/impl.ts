@@ -1,16 +1,15 @@
 import path from 'path';
 import { writeFile } from 'fs/promises';
-import { DEFAULT_CONFIG_DIR, DEFAULT_EXCLUDES, DEFAULT_MANIFEST_FILENAME, DEFAULT_MODULE_EXTENSIONS, ScanPolicy } from '../constant';
+import { DEFAULT_APP_REF, DEFAULT_CONFIG_DIR, DEFAULT_EXCLUDES, DEFAULT_MANIFEST_FILENAME, DEFAULT_MODULE_EXTENSIONS, ScanPolicy } from '../constant';
 import { ManifestV2 } from '../loader';
 import { ScannerOptions, ScanContext, ScannerType, ScanTaskItem } from './types';
-import { runTask } from './task';
+import { handlePluginConfig, runTask } from './task';
 
 export class ArtusScanner implements ScannerType {
   private options: ScannerOptions;
 
   constructor(options: Partial<ScannerOptions> = {}) {
     this.options = {
-      appName: '_app',
       needWriteFile: true,
       useRelativePath: true,
       configDir: DEFAULT_CONFIG_DIR,
@@ -32,25 +31,28 @@ export class ArtusScanner implements ScannerType {
 
     // Init scan-task queue with a root task
     const taskQueue: ScanTaskItem[] = [{
-      root,
-      subPath: '.',
-      refName: this.options.appName,
+      curPath: '.',
+      refName: DEFAULT_APP_REF,
     }];
 
     // Init scan-task context
     const scanCtx: ScanContext = {
+      root,
       taskQueue,
       refMap: {},
       pluginConfigMap: {},
       options: this.options,
     };
 
+    // Add Task of options.plugin
+    if (this.options.plugin) {
+      await handlePluginConfig(this.options.plugin, '.', scanCtx);
+    }
+
     // Run task queue
     while (taskQueue.length > 0) {
-      const taskSlice = taskQueue
-        .splice(0, taskQueue.length)
-        .map(taskItem => runTask(taskItem, scanCtx));
-      await Promise.all(taskSlice);
+      const taskItem = taskQueue.shift();
+      await runTask(taskItem, scanCtx);
     }
 
     // Dump manifest
