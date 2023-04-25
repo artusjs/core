@@ -9,6 +9,7 @@ for (const [_, impl] of Object.entries(LoaderImpls)) {
   LoaderFactory.register(impl);
 }
 
+export * from './helper';
 export * from './types';
 
 export {

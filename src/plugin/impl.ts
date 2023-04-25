@@ -10,7 +10,7 @@ export class Plugin implements PluginType {
   public name: string;
   public enable: boolean;
   public importPath = '';
-  public metadata: Partial<PluginMetadata> = {};
+  public metadata: Partial<PluginMetadata> | null = null;
   public metaFilePath = '';
 
   private logger?: LoggerType;
@@ -26,10 +26,13 @@ export class Plugin implements PluginType {
         }
         importPath = getPackagePath(configItem.package);
       }
-      if (!importPath) {
+      if (!importPath && !configItem.refName) {
         throw new Error(`Plugin ${name} need have path or package field`);
       }
       this.importPath = importPath;
+    }
+    if (configItem.metadata) {
+      this.metadata = configItem.metadata;
     }
     this.logger = opts?.logger;
   }
@@ -67,6 +70,10 @@ export class Plugin implements PluginType {
   }
 
   private async checkAndLoadMetadata() {
+    // check metadata from configItem
+    if (this.metadata) {
+      return;
+    }
     // check import path
     if (!await exists(this.importPath)) {
       throw new Error(`load plugin <${this.name}> import path ${this.importPath} is not exists.`);

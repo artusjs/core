@@ -4,7 +4,7 @@ import *  as fs from 'fs/promises';
 import { isMatch } from '../utils';
 import compatibleRequire from '../utils/compatible_require';
 import { PLUGIN_META_FILENAME } from '../constant';
-import { PluginConfigItem, PluginMetadata } from '../plugin';
+import { PluginConfigItem } from '../plugin';
 import { getInlinePackageEntryPath, getPackagePath } from '../plugin/common';
 
 export const getPackageVersion = async (basePath: string): Promise<string | undefined> => {
@@ -40,10 +40,6 @@ export const isExclude = (filename: string, extname: string, exclude: string[], 
 
 export const isPluginAsync = (basePath: string): Promise<boolean> => {
   return existsAsync(path.resolve(basePath, PLUGIN_META_FILENAME));
-};
-
-export const getPluginMeta = (basePath: string): Promise<PluginMetadata> => {
-  return compatibleRequire(path.resolve(basePath, PLUGIN_META_FILENAME));
 };
 
 export const getPluginRefName = (pluginConfigItem: PluginConfigItem, root: string): string | undefined => {

@@ -1,6 +1,6 @@
 import { Container } from '@artus/injection';
 import { ScanPolicy } from '../constant';
-import { PluginConfigItem, PluginDependencyItem } from '../plugin/types';
+import { PluginConfigItem, PluginMetadata } from '../plugin/types';
 
 export interface Manifest {
   items: ManifestItem[];
@@ -9,21 +9,21 @@ export interface Manifest {
 }
 export type ManifestEnvMap = Record<string, Manifest>;
 
-export interface ManifestV2PluginConfigItem {
-  enable: boolean;
-  refName: string;
-}
-export type ManifestV2PluginConfig = Record<string, ManifestV2PluginConfigItem>;
+// Key: Env => PluginName => Value: PluginConfigItem
+export type ManifestV2PluginConfig = Record<string, Record<string, PluginConfigItem>>;
+
 export interface ManifestV2RefMapItem {
   packageVersion?: string;
-  dependencies?: PluginDependencyItem[];
+  pluginMetadata?: PluginMetadata;
   items: ManifestItem[];
 }
+// Key: RefName => RefMapItem
+export type ManifestV2RefMap = Record<string, ManifestV2RefMapItem>;
 
 export interface ManifestV2 {
   version: '2';
-  pluginConfig: Record<string, Record<string, ManifestV2PluginConfigItem>>;
-  refMap: Record<string, ManifestV2RefMapItem>;
+  pluginConfig: ManifestV2PluginConfig;
+  refMap: ManifestV2RefMap;
   relative: boolean;
 }
 

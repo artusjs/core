@@ -1,12 +1,14 @@
 import path from 'path';
 import * as fs from 'fs/promises';
 import { ScanContext, ScanTaskItem, WalkOptions } from './types';
-import { existsAsync, getPackageVersion, getPluginMeta, getPluginRefName, getPluginRefPath, isExclude, isPluginAsync } from './utils';
-import { LoaderFactory, ManifestItem, ManifestV2PluginConfig, ManifestV2PluginConfigItem } from '../loader';
-import { PluginConfigItem, PluginDependencyItem } from '../plugin';
+import { existsAsync, getPackageVersion, getPluginRefName, getPluginRefPath, isExclude, isPluginAsync } from './utils';
+import { findLoader, LoaderFactory, ManifestItem, ManifestV2PluginConfig, ManifestV2RefMapItem } from '../loader';
+import { PluginConfigItem, PluginMetadata } from '../plugin';
 import { mergeConfig } from '../loader/utils/merge';
 import { Container } from '@artus/injection';
 import ConfigurationHandler from '../configuration';
+import { loadMetaFile } from '../utils/load_meta_file';
+import { PLUGIN_META_FILENAME } from '../constant';
 
 const walkDir = async (root: string, options: WalkOptions, itemList: ManifestItem[] = []) => {
   const { baseDir, configDir } = options;
@@ -45,7 +47,7 @@ const walkDir = async (root: string, options: WalkOptions, itemList: ManifestIte
       }
       const filename = path.basename(realPath);
       const filenameWithoutExt = path.basename(realPath, extname);
-      const loaderFindResult = await LoaderFactory.findLoader({
+      const loaderFindResult = await findLoader({
         filename,
         root,
         baseDir,
@@ -85,7 +87,7 @@ export const handlePluginConfig = async (configItemList: ManifestItem[], root: s
   });
   const loaderFactory = new LoaderFactory(container);
   await loaderFactory.loadItemList(configItemList);
-  const pluginConfigEnvMap: Record<string, ManifestV2PluginConfig> = {};
+  const pluginConfigEnvMap: ManifestV2PluginConfig = {};
   for (const [env, configObj] of loaderFactory.configurationHandler.configStore) {
     if (configObj?.plugin) {
       pluginConfigEnvMap[env] = {};
@@ -94,7 +96,7 @@ export const handlePluginConfig = async (configItemList: ManifestItem[], root: s
         pluginConfigEnvMap[env][pluginName] = {
           enable: configObj.plugin.enable,
           refName,
-        } as ManifestV2PluginConfigItem;
+        } as PluginConfigItem;
         if (refName && !refNameSet.has(refName) && !scanCtx.refMap[refName]) {
           // Generate and push scan task
           scanCtx.taskQueue.push({
@@ -107,7 +109,7 @@ export const handlePluginConfig = async (configItemList: ManifestItem[], root: s
       }
     }
   }
-  scanCtx.pluginConfigMap = mergeConfig(pluginConfigEnvMap, scanCtx.pluginConfigMap) as Record<string, ManifestV2PluginConfig>;
+  scanCtx.pluginConfigMap = mergeConfig(pluginConfigEnvMap, scanCtx.pluginConfigMap) as ManifestV2PluginConfig;
 };
 
 
@@ -135,26 +137,30 @@ export const runTask = async (taskItem: ScanTaskItem, scanCtx: ScanContext) => {
     extensions: scanCtx.options.extensions,
     policy: scanCtx.options.policy,
   };
-  let dependencies: PluginDependencyItem[];
+  const refItem: ManifestV2RefMapItem = {
+    packageVersion: await getPackageVersion(basePath),
+    items: [],
+  };
 
   if (await isPluginAsync(basePath)) {
-    const pluginMeta = await getPluginMeta(basePath);
+    const metaFilePath = path.resolve(basePath, PLUGIN_META_FILENAME);
+    const pluginMeta: PluginMetadata = await loadMetaFile(metaFilePath);
     walkOpts.configDir = pluginMeta.configDir || walkOpts.configDir;
     walkOpts.exclude = walkOpts.exclude.concat(pluginMeta.exclude ?? []);
-    dependencies = pluginMeta.dependencies;
+    refItem.pluginMetadata = pluginMeta;
   }
 
-  const itemList = await walkDir(basePath, walkOpts);
-  const configItemList = itemList.filter(item => item.loader === 'config');
+  refItem.items = await walkDir(basePath, walkOpts);
+  const configItemList = refItem.items.filter(item => item.loader === 'config');
   await handlePluginConfig(configItemList, root, basePath, scanCtx);
 
-  scanCtx.refMap[refName] = {
-    packageVersion: await getPackageVersion(basePath),
-    dependencies,
-    items: scanCtx.options.useRelativePath ? itemList.map(item => ({
+  if (scanCtx.options.useRelativePath) {
+    refItem.items = refItem.items.map(item => ({
       ...item,
       path: path.relative(root, item.path),
-    })) : itemList,
-  };
+    }));
+  }
+
+  scanCtx.refMap[refName] = refItem;
 };
 

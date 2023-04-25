@@ -3,14 +3,14 @@ import { Container } from '@artus/injection';
 import { ArtusInjectEnum } from './constant';
 import { ArtusStdError } from './exception';
 import { HookFunction, LifecycleManager } from './lifecycle';
-import { LoaderFactory, Manifest } from './loader';
+import { LoaderFactory, Manifest, ManifestV2 } from './loader';
 import { Application, ApplicationInitOptions } from './types';
 import Trigger from './trigger';
 import ConfigurationHandler from './configuration';
 import { Logger, LoggerType } from './logger';
 
 export class ArtusApplication implements Application {
-  public manifest?: Manifest;
+  public manifest?: Manifest | ManifestV2;
   public container: Container;
 
   protected lifecycleManager: LifecycleManager;
@@ -19,7 +19,7 @@ export class ArtusApplication implements Application {
   constructor(opts?: ApplicationInitOptions) {
     this.container = new Container(opts?.containerName ?? ArtusInjectEnum.DefaultContainerName);
     this.lifecycleManager = new LifecycleManager(this, this.container);
-    this.loaderFactory = LoaderFactory.create(this.container);
+    this.loaderFactory = new LoaderFactory(this.container);
 
     this.addLoaderListener();
     this.loadDefaultClass();
@@ -59,7 +59,7 @@ export class ArtusApplication implements Application {
     this.container.set({ type: Trigger });
   }
 
-  async load(manifest: Manifest, root: string = process.cwd()) {
+  async load(manifest: Manifest | ManifestV2, root: string = process.cwd()) {
     // Load user manifest
     this.manifest = manifest;
 
