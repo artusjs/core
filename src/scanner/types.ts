@@ -1,5 +1,4 @@
 import { ManifestEnvMap, ManifestV2, ManifestV2PluginConfig, ManifestV2RefMapItem } from '../loader';
-import { FrameworkConfig } from '../framework';
 import { PluginConfigItem } from '../plugin/types';
 import { Application } from '../types';
 import { ScanPolicy } from '../constant';
@@ -13,7 +12,6 @@ export interface ScannerOptions {
   configDir: string;
   policy: ScanPolicy;
   envs?: string[];
-  framework?: FrameworkConfig;
   plugin?: Record<string, Partial<PluginConfigItem>>;
   app?: Application;
 }
