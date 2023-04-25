@@ -47,7 +47,7 @@ export interface ScanTaskItem {
 
 export interface ScanContext {
   taskQueue: ScanTaskItem[];
-  pluginConfigMap: Record<string, ManifestV2PluginConfig>;
+  pluginConfigMap: ManifestV2PluginConfig;
   refMap: Record<string, ManifestV2RefMapItem>;
   options: ScannerOptions;
 }

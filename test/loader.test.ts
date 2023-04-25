@@ -3,7 +3,7 @@ import 'reflect-metadata';
 import assert from 'assert';
 import path from 'path';
 import { Container } from '@artus/injection';
-import { LoaderFactory } from '../src';
+import { LoaderFactory, findLoaderName } from '../src';
 import Custom from './fixtures/custom_instance/custom';
 import { createApp } from './utils';
 
@@ -11,8 +11,9 @@ describe('test/loader.test.ts', () => {
   describe('module with ts', () => {
     it('should load module testServiceA.ts and testServiceB.ts', async () => {
       const container = new Container('testDefault');
-      const loaderFactory = LoaderFactory.create(container);
+      const loaderFactory = new LoaderFactory(container);
 
+      // Manifest Version 1
       const manifest = require('./fixtures/module_with_ts/src/index').default;
       await loaderFactory.loadManifest(manifest);
       assert((container.get('testServiceA') as any).testMethod() === 'Hello Artus');
@@ -22,7 +23,7 @@ describe('test/loader.test.ts', () => {
   describe('module with js', () => {
     it('should load module testServiceA.js and testServiceB.js', async () => {
       const container = new Container('testDefault');
-      const loaderFactory = LoaderFactory.create(container);
+      const loaderFactory = new LoaderFactory(container);
 
       const manifest = require('./fixtures/module_with_js/src/index');
       await loaderFactory.loadManifest(manifest);
@@ -49,9 +50,9 @@ describe('test/loader.test.ts', () => {
       const { default: manifest } = require('./fixtures/module_with_custom_loader/src/index');
 
       const container = new Container('testDefault');
-      const loaderFactory = LoaderFactory.create(container);
+      const loaderFactory = new LoaderFactory(container);
 
-      const { loader: loaderName } = await loaderFactory.findLoaderName({
+      const { loader: loaderName } = await findLoaderName({
         filename: 'test_clazz.ts',
         root: path.resolve(__dirname, './fixtures/module_with_custom_loader/src'),
         baseDir: path.resolve(__dirname, './fixtures/module_with_custom_loader/src'),
@@ -76,7 +77,7 @@ describe('test/loader.test.ts', () => {
   describe('loader event', () => {
     it('should emit loader event', async () => {
       const container = new Container('testDefault');
-      const loaderFactory = LoaderFactory.create(container);
+      const loaderFactory = new LoaderFactory(container);
       const cb = jest.fn();
       loaderFactory.addLoaderListener('module', {
         before: () => {
@@ -91,7 +92,7 @@ describe('test/loader.test.ts', () => {
 
     it('should remove listener success', async () => {
       const container = new Container('testDefault');
-      const loaderFactory = LoaderFactory.create(container);
+      const loaderFactory = new LoaderFactory(container);
       const cb = jest.fn();
       loaderFactory.addLoaderListener('module', {
         before: () => {
@@ -108,7 +109,7 @@ describe('test/loader.test.ts', () => {
 
     it('should remove listener success with stage', async () => {
       const container = new Container('testDefault');
-      const loaderFactory = LoaderFactory.create(container);
+      const loaderFactory = new LoaderFactory(container);
       const cb = jest.fn();
       const afterCallback = jest.fn();
       loaderFactory.addLoaderListener('module', {

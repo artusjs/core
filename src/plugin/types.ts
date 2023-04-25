@@ -21,6 +21,8 @@ export interface PluginConfigItem {
   enable: boolean;
   path?: string;
   package?: string;
+  refName?: string;
+  metadata?: PluginMetadata;
 }
 
 export type PluginMap = Map<string, PluginType>;
