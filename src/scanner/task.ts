@@ -94,7 +94,7 @@ export const handlePluginConfig = async (configItemList: ManifestItem[], root: s
       for (const [pluginName, pluginConfigItem] of Object.entries(configObj.plugin as Record<string, PluginConfigItem>)) {
         const refName = getPluginRefName(pluginConfigItem, root);
         pluginConfigEnvMap[env][pluginName] = {
-          enable: configObj.plugin.enable,
+          enable: pluginConfigItem.enable,
           refName,
         } as PluginConfigItem;
         if (refName && !refNameSet.has(refName) && !scanCtx.refMap[refName]) {

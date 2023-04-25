@@ -109,20 +109,6 @@ export class ArtusApplication implements Application {
           });
           return this.lifecycleManager.emitHook('configDidLoad');
         },
-      })
-      .addLoaderListener('framework-config', {
-        after: () =>
-          this.container.set({
-            id: ArtusInjectEnum.Frameworks,
-            value: this.configurationHandler.getFrameworkConfig(),
-          }),
-      })
-      .addLoaderListener('package-json', {
-        after: () =>
-          this.container.set({
-            id: ArtusInjectEnum.Packages,
-            value: this.configurationHandler.getPackages(),
-          }),
       });
   }
 }

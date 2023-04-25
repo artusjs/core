@@ -71,7 +71,9 @@ export class LoaderFactory {
       // Merge plugin config with ref
       const validEnvList = [ARTUS_DEFAULT_CONFIG_ENV.DEFAULT as string].concat(envList);
       for (const env of validEnvList) {
-        this.configurationHandler.setConfig(env, manifest.pluginConfig?.[env] ?? {});
+        this.configurationHandler.setConfig(env, {
+          plugin: manifest.pluginConfig?.[env] ?? {},
+        });
       }
       const mergedPluginConfig: Record<string, PluginConfigItem> = this.configurationHandler.getAllConfig()?.plugin ?? {};
       for (const pluginConfigItem of Object.values(mergedPluginConfig)) {

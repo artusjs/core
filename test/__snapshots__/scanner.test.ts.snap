@@ -5,21 +5,21 @@ Object {
   "pluginConfig": Object {
     "default": Object {
       "mysql": Object {
-        "enable": undefined,
+        "enable": false,
         "refName": "src/mysql_plugin",
       },
       "redis": Object {
-        "enable": undefined,
+        "enable": true,
         "refName": "src/redis_plugin",
       },
       "testDuplicate": Object {
-        "enable": undefined,
+        "enable": false,
         "refName": "@artus/injection",
       },
     },
     "dev": Object {
       "testDuplicate": Object {
-        "enable": undefined,
+        "enable": true,
         "refName": "src/test_duplicate_plugin",
       },
     },
@@ -31,15 +31,6 @@ Object {
     },
     "_app": Object {
       "items": Array [
-        Object {
-          "extname": ".json",
-          "filename": "package.json",
-          "loader": "package-json",
-          "loaderState": Object {
-            "exportNames": Array [],
-          },
-          "path": "package",
-        },
         Object {
           "extname": ".ts",
           "filename": "app.ts",

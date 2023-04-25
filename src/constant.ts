@@ -30,7 +30,6 @@ export const ARTUS_SERVER_ENV = 'ARTUS_SERVER_ENV';
 
 export const HOOK_NAME_META_PREFIX = 'hookName:';
 export const HOOK_FILE_LOADER = 'appHook:fileLoader';
-export const HOOK_CONFIG_HANDLE = 'appHook:configHandle::';
 
 export const DEFAULT_EXCLUDES = [
   'test',

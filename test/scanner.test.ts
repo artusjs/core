@@ -20,21 +20,21 @@ describe('test/scanner.test.ts', () => {
     const scanner = new ArtusScanner({ needWriteFile: false, extensions: ['.ts'] });
     const manifest = await scanner.scan(path.resolve(__dirname, './fixtures/named_export'));
     expect(manifest?.refMap?._app?.items).toBeDefined();
-    expect(manifest.refMap._app.items.length).toBe(5);
+    expect(manifest.refMap._app.items.length).toBe(4);
   });
 
   it('should scan application with named export class', async () => {
     const scanner = new ArtusScanner({ needWriteFile: false, extensions: ['.ts'], policy: ScanPolicy.NamedExport });
     const manifest = await scanner.scan(path.resolve(__dirname, './fixtures/named_export'));
     expect(manifest?.refMap?._app?.items).toBeDefined();
-    expect(manifest?.refMap?._app?.items.length).toBe(5);
+    expect(manifest?.refMap?._app?.items.length).toBe(4);
   });
 
   it('should scan application with default export class', async () => {
     const scanner = new ArtusScanner({ needWriteFile: false, extensions: ['.ts'], policy: ScanPolicy.DefaultExport });
     const manifest = await scanner.scan(path.resolve(__dirname, './fixtures/named_export'));
     expect(manifest?.refMap?._app?.items).toBeDefined();
-    expect(manifest?.refMap?._app?.items.length).toBe(3);
+    expect(manifest?.refMap?._app?.items.length).toBe(2);
   });
 
   it('should not throw when scan application without configdir', async () => {
