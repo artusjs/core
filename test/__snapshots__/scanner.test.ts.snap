@@ -26,12 +26,10 @@ Object {
   },
   "refMap": Object {
     "@artus/injection": Object {
-      "dependencies": undefined,
       "items": Array [],
       "packageVersion": undefined,
     },
     "_app": Object {
-      "dependencies": undefined,
       "items": Array [
         Object {
           "extname": ".json",
@@ -157,7 +155,6 @@ Object {
       "packageVersion": undefined,
     },
     "src/mysql_plugin": Object {
-      "dependencies": undefined,
       "items": Array [
         Object {
           "extname": ".ts",
@@ -172,9 +169,11 @@ Object {
         },
       ],
       "packageVersion": undefined,
+      "pluginMetadata": Object {
+        "name": "mysql",
+      },
     },
     "src/redis_plugin": Object {
-      "dependencies": undefined,
       "items": Array [
         Object {
           "extname": ".ts",
@@ -189,11 +188,20 @@ Object {
         },
       ],
       "packageVersion": undefined,
+      "pluginMetadata": Object {
+        "exclude": Array [
+          "not_to_be_scanned_dir",
+          "not_to_be_scanned_file.ts",
+        ],
+        "name": "redis",
+      },
     },
     "src/test_duplicate_plugin": Object {
-      "dependencies": undefined,
       "items": Array [],
       "packageVersion": undefined,
+      "pluginMetadata": Object {
+        "name": "testDuplicate",
+      },
     },
   },
   "relative": true,

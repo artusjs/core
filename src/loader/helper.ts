@@ -9,7 +9,7 @@ import { ScanPolicy, HOOK_FILE_LOADER, DEFAULT_LOADER } from '../constant';
 import compatibleRequire from '../utils/compatible_require';
 import { isClass } from '../utils/is';
 
-const findLoaderName = async (opts: LoaderFindOptions): Promise<{ loader: string | null, exportNames: string[] }> => {
+export const findLoaderName = async (opts: LoaderFindOptions): Promise<{ loader: string | null, exportNames: string[] }> => {
   // Use Loader.is to find loader
   for (const [loaderName, LoaderClazz] of LoaderFactory.loaderClazzMap.entries()) {
     if (await LoaderClazz.is?.(opts)) {
