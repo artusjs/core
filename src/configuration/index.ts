@@ -21,11 +21,20 @@ export default class ConfigurationHandler {
 
   public configStore: Map<string, ConfigObject> = new Map();
 
-  getMergedConfig(env?: string): ConfigObject {
-    const currentEnv = env ?? process.env[ARTUS_SERVER_ENV] ?? ARTUS_DEFAULT_CONFIG_ENV.DEV;
+  getMergedConfig(env?: string | string[]): ConfigObject {
+    let currentEnvList: string[] = [];
+    if (Array.isArray(env)) {
+      currentEnvList = env;
+    } else if (env) {
+      currentEnvList = [env];
+    } else if (process.env[ARTUS_SERVER_ENV]) {
+      currentEnvList = [process.env[ARTUS_SERVER_ENV]];
+    } else {
+      currentEnvList = [ARTUS_DEFAULT_CONFIG_ENV.DEV];
+    }
     const defaultConfig = this.configStore.get(ARTUS_DEFAULT_CONFIG_ENV.DEFAULT) ?? {};
-    const envConfig = this.configStore.get(currentEnv) ?? {};
-    return mergeConfig(defaultConfig, envConfig);
+    const envConfigList = currentEnvList.map(currentEnv => (this.configStore.get(currentEnv) ?? {}));
+    return mergeConfig(defaultConfig, ...envConfigList);
   }
 
   getAllConfig(): ConfigObject {

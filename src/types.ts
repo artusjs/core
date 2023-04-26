@@ -15,7 +15,7 @@ export interface ApplicationLifecycle {
 
 export interface ApplicationInitOptions {
   containerName?: string;
-  env: string;
+  env: string | string[];
 }
 
 export interface Application {

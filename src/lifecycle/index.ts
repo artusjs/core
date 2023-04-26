@@ -11,7 +11,9 @@ export type HookFunction = <T = unknown>(hookProps: {
 }) => void | Promise<void>;
 
 export class LifecycleManager {
-  hookList: string[] = [
+  public enable = true; // Enabled default, will NOT emit when enable is false
+
+  private hookList: string[] = [
     'configWillLoad', // 配置文件即将加载，这是最后动态修改配置的时机
     'configDidLoad', // 配置文件加载完成
     'didLoad', // 文件加载完成
@@ -19,7 +21,7 @@ export class LifecycleManager {
     'didReady', // 应用启动完成
     'beforeClose', // 应用即将关闭
   ];
-  hookFnMap: Map<string, HookFunction[]> = new Map();
+  private hookFnMap: Map<string, HookFunction[]> = new Map();
   private app: Application;
   private container: Container;
   private hookUnitSet: Set<Constructable<ApplicationLifecycle>> = new Set();
@@ -66,6 +68,9 @@ export class LifecycleManager {
   }
 
   async emitHook<T = unknown>(hookName: string, payload?: T) {
+    if (!this.enable) {
+      return;
+    }
     if (!this.hookFnMap.has(hookName)) {
       return;
     }

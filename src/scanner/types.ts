@@ -50,5 +50,6 @@ export interface ScanContext {
   pluginConfigMap: ManifestV2PluginConfig;
   refMap: Record<string, ManifestV2RefMapItem>;
   options: ScannerOptions;
+  app: Application;
 }
 

@@ -11,6 +11,7 @@ import { Logger, LoggerType } from './logger';
 
 export class ArtusApplication implements Application {
   public manifest?: Manifest | ManifestV2;
+  public envList?: string[];
   public container: Container;
 
   protected lifecycleManager: LifecycleManager;
@@ -20,6 +21,10 @@ export class ArtusApplication implements Application {
     this.container = new Container(opts?.containerName ?? ArtusInjectEnum.DefaultContainerName);
     this.lifecycleManager = new LifecycleManager(this, this.container);
     this.loaderFactory = new LoaderFactory(this.container);
+
+    if (opts?.env) {
+      this.envList = [].concat(opts.env);
+    }
 
     this.addLoaderListener();
     this.loadDefaultClass();
@@ -53,6 +58,7 @@ export class ArtusApplication implements Application {
     this.container.set({ id: Container, value: this.container });
     this.container.set({ id: ArtusInjectEnum.Application, value: this });
     this.container.set({ id: ArtusInjectEnum.LifecycleManager, value: this.lifecycleManager });
+    this.container.set({ id: ArtusInjectEnum.Config, value: {} });
 
     this.container.set({ type: ConfigurationHandler });
     this.container.set({ type: Logger });
@@ -63,7 +69,7 @@ export class ArtusApplication implements Application {
     // Load user manifest
     this.manifest = manifest;
 
-    await this.loaderFactory.loadManifest(manifest, manifest.relative ? root : undefined);
+    await this.loaderFactory.loadManifest(manifest, manifest.relative ? root : undefined, this.envList);
 
     await this.lifecycleManager.emitHook('didLoad');
 
@@ -105,7 +111,7 @@ export class ArtusApplication implements Application {
         after: () => {
           this.container.set({
             id: ArtusInjectEnum.Config,
-            value: this.configurationHandler.getAllConfig(),
+            value: this.configurationHandler.getMergedConfig(this.envList),
           });
           return this.lifecycleManager.emitHook('configDidLoad');
         },

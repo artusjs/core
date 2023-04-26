@@ -4,6 +4,7 @@ import { DEFAULT_APP_REF, DEFAULT_CONFIG_DIR, DEFAULT_EXCLUDES, DEFAULT_MANIFEST
 import { ManifestV2 } from '../loader';
 import { ScannerOptions, ScanContext, ScannerType, ScanTaskItem } from './types';
 import { handlePluginConfig, runTask } from './task';
+import { ArtusApplication } from '../application';
 
 export class ArtusScanner implements ScannerType {
   private options: ScannerOptions;
@@ -42,6 +43,7 @@ export class ArtusScanner implements ScannerType {
       refMap: {},
       pluginConfigMap: {},
       options: this.options,
+      app: this.options.app ?? new ArtusApplication(),
     };
 
     // Add Task of options.plugin

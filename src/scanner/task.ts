@@ -146,7 +146,7 @@ export const runTask = async (taskItem: ScanTaskItem, scanCtx: ScanContext) => {
   const configItemList = refItem.items.filter(item => item.loader === 'config');
   const pluginConfigEnvMap = await loadConfigItemList<{
     plugin: PluginConfigMap;
-  }>(configItemList);
+  }>(configItemList, scanCtx);
   for (const [env, configObj] of Object.entries(pluginConfigEnvMap)) {
     const pluginConfig = configObj?.plugin;
     if (!pluginConfig) {

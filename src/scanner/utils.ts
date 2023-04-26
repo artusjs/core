@@ -4,7 +4,7 @@ import *  as fs from 'fs/promises';
 import { Container } from '@artus/injection';
 import { isMatch } from '../utils';
 import compatibleRequire from '../utils/compatible_require';
-import { PLUGIN_META_FILENAME } from '../constant';
+import { ArtusInjectEnum, PLUGIN_META_FILENAME } from '../constant';
 import { PluginConfigItem } from '../plugin';
 import { getInlinePackageEntryPath, getPackagePath } from '../plugin/common';
 import { ScanContext } from './types';
@@ -46,7 +46,7 @@ export const isPluginAsync = (basePath: string): Promise<boolean> => {
   return existsAsync(path.resolve(basePath, PLUGIN_META_FILENAME));
 };
 
-export const loadConfigItemList = async <T = Record<string, any>>(configItemList: ManifestItem[]): Promise<Record<string, T>> => {
+export const loadConfigItemList = async <T = Record<string, any>>(configItemList: ManifestItem[], scanCtx: ScanContext): Promise<Record<string, T>> => {
   if (!configItemList.length) {
     return {};
   }
@@ -54,6 +54,10 @@ export const loadConfigItemList = async <T = Record<string, any>>(configItemList
   const container = new Container('_');
   container.set({
     type: ConfigurationHandler,
+  });
+  container.set({
+    id: ArtusInjectEnum.Application,
+    value: scanCtx.app,
   });
   const loaderFactory = new LoaderFactory(container);
   await loaderFactory.loadItemList(configItemList);
