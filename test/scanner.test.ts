@@ -2,12 +2,15 @@ import 'reflect-metadata';
 import { ArtusScanner } from '../src/scanner';
 import path from 'path';
 import { DEFAULT_APP_REF, ScanPolicy } from '../src';
+import { formatManifestForWindowsTest } from './utils';
 
 describe('test/scanner.test.ts', () => {
   it('should be scan application', async () => {
     const scanner = new ArtusScanner({ needWriteFile: false, extensions: ['.ts'] });
-    const manifest = await scanner.scan(path.resolve(__dirname, './fixtures/app_koa_with_ts'));
+    let manifest = await scanner.scan(path.resolve(__dirname, './fixtures/app_koa_with_ts'));
     expect(manifest.version).toBe('2');
+    
+    manifest = formatManifestForWindowsTest(manifest);
     expect(manifest).toMatchSnapshot();
 
     // scan with relative root

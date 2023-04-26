@@ -1,4 +1,4 @@
-import { ManifestEnvMap, ManifestV2, ManifestV2PluginConfig, ManifestV2RefMapItem } from '../loader';
+import { Manifest, PluginConfigEnvMap, RefMap } from '../loader';
 import { PluginConfigMap } from '../plugin/types';
 import { Application } from '../types';
 import { ScanPolicy } from '../constant';
@@ -36,7 +36,7 @@ export interface ScannerConstructor {
 }
 
 export interface ScannerType {
-  scan(root: string): Promise<ManifestEnvMap | ManifestV2>;
+  scan(root: string): Promise<Manifest>;
 }
 
 export interface ScanTaskItem {
@@ -47,8 +47,8 @@ export interface ScanTaskItem {
 export interface ScanContext {
   root: string;
   taskQueue: ScanTaskItem[];
-  pluginConfigMap: ManifestV2PluginConfig;
-  refMap: Record<string, ManifestV2RefMapItem>;
+  pluginConfigMap: PluginConfigEnvMap;
+  refMap: RefMap;
   options: ScannerOptions;
   app: Application;
 }

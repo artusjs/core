@@ -1,7 +1,7 @@
 import { Container } from '@artus/injection';
 import { BaseContext } from '@artus/pipeline';
 import { HookFunction } from './lifecycle';
-import { Manifest, ManifestV2 } from './loader';
+import { Manifest } from './loader';
 import { LoggerType } from './logger';
 
 export interface ApplicationLifecycle {
@@ -21,7 +21,7 @@ export interface ApplicationInitOptions {
 export interface Application {
   container: Container;
 
-  manifest?: Manifest | ManifestV2;
+  manifest?: Manifest;
   config?: Record<string, any>;
 
   // getter

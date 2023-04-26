@@ -2,7 +2,7 @@ import path from 'path';
 import * as fs from 'fs/promises';
 import { ScanContext, ScanTaskItem, WalkOptions } from './types';
 import { existsAsync, getPackageVersion, isExclude, isPluginAsync, loadConfigItemList, resolvePluginConfigItemRef } from './utils';
-import { findLoader, ManifestItem, ManifestV2RefMapItem } from '../loader';
+import { findLoader, ManifestItem, RefMapItem } from '../loader';
 import { PluginConfigMap, PluginMetadata } from '../plugin';
 import { mergeConfig } from '../loader/utils/merge';
 import { loadMetaFile } from '../utils/load_meta_file';
@@ -128,7 +128,7 @@ export const runTask = async (taskItem: ScanTaskItem, scanCtx: ScanContext) => {
     source: refName === DEFAULT_APP_REF ? 'app' : 'plugin',
     unitName: refName,
   };
-  const refItem: ManifestV2RefMapItem = {
+  const refItem: RefMapItem = {
     packageVersion: await getPackageVersion(basePath),
     items: [],
   };

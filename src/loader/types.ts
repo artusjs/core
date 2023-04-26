@@ -2,28 +2,21 @@ import { Container } from '@artus/injection';
 import { ScanPolicy } from '../constant';
 import { PluginConfigMap, PluginMetadata } from '../plugin/types';
 
-export interface Manifest {
-  items: ManifestItem[];
-  pluginConfig?: PluginConfigMap;
-  relative?: boolean;
-}
-export type ManifestEnvMap = Record<string, Manifest>;
-
 // Key: Env => PluginName => Value: PluginConfigItem
-export type ManifestV2PluginConfig = Record<string, PluginConfigMap>;
+export type PluginConfigEnvMap = Record<string, PluginConfigMap>;
 
-export interface ManifestV2RefMapItem {
+export interface RefMapItem {
   packageVersion?: string;
   pluginMetadata?: PluginMetadata;
   items: ManifestItem[];
 }
 // Key: RefName => RefMapItem
-export type ManifestV2RefMap = Record<string, ManifestV2RefMapItem>;
+export type RefMap = Record<string, RefMapItem>;
 
-export interface ManifestV2 {
+export interface Manifest {
   version: '2';
-  pluginConfig: ManifestV2PluginConfig;
-  refMap: ManifestV2RefMap;
+  pluginConfig: PluginConfigEnvMap;
+  refMap: RefMap;
   relative: boolean;
 }
 

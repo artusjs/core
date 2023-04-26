@@ -2,15 +2,19 @@ import 'reflect-metadata';
 
 import assert from 'assert';
 import path from 'path';
-import { Container } from '@artus/injection';
-import { LoaderFactory, findLoaderName } from '../src';
+import { ArtusApplication, LoaderFactory, findLoaderName } from '../src';
 import Custom from './fixtures/custom_instance/custom';
 import { createApp } from './utils';
+
+const initTestContainer = () => {
+  const app = new ArtusApplication();
+  return app.container;
+};
 
 describe('test/loader.test.ts', () => {
   describe('module with ts', () => {
     it('should load module testServiceA.ts and testServiceB.ts', async () => {
-      const container = new Container('testDefault');
+      const container = initTestContainer();
       const loaderFactory = new LoaderFactory(container);
 
       // Manifest Version 1
@@ -22,7 +26,7 @@ describe('test/loader.test.ts', () => {
 
   describe('module with js', () => {
     it('should load module testServiceA.js and testServiceB.js', async () => {
-      const container = new Container('testDefault');
+      const container = initTestContainer();
       const loaderFactory = new LoaderFactory(container);
 
       const manifest = require('./fixtures/module_with_js/src/index');
@@ -49,7 +53,7 @@ describe('test/loader.test.ts', () => {
 
       const { default: manifest } = require('./fixtures/module_with_custom_loader/src/index');
 
-      const container = new Container('testDefault');
+      const container = initTestContainer();
       const loaderFactory = new LoaderFactory(container);
 
       const { loader: loaderName } = await findLoaderName({
@@ -76,7 +80,7 @@ describe('test/loader.test.ts', () => {
 
   describe('loader event', () => {
     it('should emit loader event', async () => {
-      const container = new Container('testDefault');
+      const container = initTestContainer();
       const loaderFactory = new LoaderFactory(container);
       const cb = jest.fn();
       loaderFactory.addLoaderListener('module', {
@@ -91,7 +95,7 @@ describe('test/loader.test.ts', () => {
     });
 
     it('should remove listener success', async () => {
-      const container = new Container('testDefault');
+      const container = initTestContainer();
       const loaderFactory = new LoaderFactory(container);
       const cb = jest.fn();
       loaderFactory.addLoaderListener('module', {
@@ -108,7 +112,7 @@ describe('test/loader.test.ts', () => {
     });
 
     it('should remove listener success with stage', async () => {
-      const container = new Container('testDefault');
+      const container = initTestContainer();
       const loaderFactory = new LoaderFactory(container);
       const cb = jest.fn();
       const afterCallback = jest.fn();

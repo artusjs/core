@@ -6,7 +6,6 @@ import {
   ManifestItem,
   LoaderConstructor,
   Loader,
-  ManifestV2,
 } from './types';
 import ConfigurationHandler from '../configuration';
 import { LifecycleManager } from '../lifecycle';
@@ -61,47 +60,45 @@ export class LoaderFactory {
   }
 
   async loadManifest(
-    manifest: Manifest | ManifestV2,
+    manifest: Manifest,
     root: string = process.cwd(),
     envList: string[] = [process.env[ARTUS_SERVER_ENV] ?? ARTUS_DEFAULT_CONFIG_ENV.DEV],
   ): Promise<void> {
-    if ('version' in manifest && manifest.version === '2') {
-      // Manifest Version 2 is supported mainly
-
-      // Merge plugin config with ref
-      const validEnvList = [ARTUS_DEFAULT_CONFIG_ENV.DEFAULT as string].concat(envList);
-      for (const env of validEnvList) {
-        this.configurationHandler.setConfig(env, {
-          plugin: manifest.pluginConfig?.[env] ?? {},
-        });
-      }
-      const mergedPluginConfig: Record<string, PluginConfigItem> = this.configurationHandler.getAllConfig()?.plugin ?? {};
-      for (const pluginConfigItem of Object.values(mergedPluginConfig)) {
-        const refItem = manifest.refMap[pluginConfigItem.refName];
-        pluginConfigItem.metadata = refItem.pluginMetadata;
-      }
-
-      // sort ref(plugin) firstly
-      const sortedPluginList = await PluginFactory.createFromConfig(mergedPluginConfig, {
-        logger: this.logger,
-      });
-
-      // Merge itemList
-      let itemList: ManifestItem[] = [];
-      const sortedRefNameList: (string | null)[] = sortedPluginList
-        .map(plugin => ((plugin.enable && mergedPluginConfig[plugin.name]?.refName) || null))
-        .concat([DEFAULT_APP_REF]);
-      for (const refName of sortedRefNameList) {
-        const refItem = manifest.refMap[refName];
-        itemList = itemList.concat(refItem.items);
-      }
-
-      // Load final item list(non-ordered)
-      await this.loadItemList(itemList, root);
-    } else if ('items' in manifest) {
-      // Fallback Manifest Version 1
-      await this.loadItemList(manifest.items, root);
+    if (!('version' in manifest) || manifest.version !== '2') {
+      throw new Error(`invalid manifest, @artus/core@2.x only support manifest version 2.`);
     }
+    // Manifest Version 2 is supported mainly
+
+    // Merge plugin config with ref
+    const validEnvList = [ARTUS_DEFAULT_CONFIG_ENV.DEFAULT as string].concat(envList);
+    for (const env of validEnvList) {
+      this.configurationHandler.setConfig(env, {
+        plugin: manifest.pluginConfig?.[env] ?? {},
+      });
+    }
+    const mergedPluginConfig: Record<string, PluginConfigItem> = this.configurationHandler.getAllConfig()?.plugin ?? {};
+    for (const pluginConfigItem of Object.values(mergedPluginConfig)) {
+      const refItem = manifest.refMap[pluginConfigItem.refName];
+      pluginConfigItem.metadata = refItem.pluginMetadata;
+    }
+
+    // sort ref(plugin) firstly
+    const sortedPluginList = await PluginFactory.createFromConfig(mergedPluginConfig, {
+      logger: this.logger,
+    });
+
+    // Merge itemList
+    let itemList: ManifestItem[] = [];
+    const sortedRefNameList: (string | null)[] = sortedPluginList
+      .map(plugin => ((plugin.enable && mergedPluginConfig[plugin.name]?.refName) || null))
+      .concat([DEFAULT_APP_REF]);
+    for (const refName of sortedRefNameList) {
+      const refItem = manifest.refMap[refName];
+      itemList = itemList.concat(refItem.items);
+    }
+
+    // Load final item list(non-ordered)
+    await this.loadItemList(itemList, root);
   }
 
   async loadItemList(itemList: ManifestItem[] = [], root?: string): Promise<void> {

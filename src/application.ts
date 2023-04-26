@@ -3,14 +3,14 @@ import { Container } from '@artus/injection';
 import { ArtusInjectEnum } from './constant';
 import { ArtusStdError } from './exception';
 import { HookFunction, LifecycleManager } from './lifecycle';
-import { LoaderFactory, Manifest, ManifestV2 } from './loader';
+import { LoaderFactory, Manifest } from './loader';
 import { Application, ApplicationInitOptions } from './types';
 import Trigger from './trigger';
 import ConfigurationHandler from './configuration';
 import { Logger, LoggerType } from './logger';
 
 export class ArtusApplication implements Application {
-  public manifest?: Manifest | ManifestV2;
+  public manifest?: Manifest;
   public envList?: string[];
   public container: Container;
 
@@ -65,7 +65,7 @@ export class ArtusApplication implements Application {
     this.container.set({ type: Trigger });
   }
 
-  async load(manifest: Manifest | ManifestV2, root: string = process.cwd()) {
+  async load(manifest: Manifest, root: string = process.cwd()) {
     // Load user manifest
     this.manifest = manifest;
 

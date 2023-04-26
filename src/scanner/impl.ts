@@ -1,7 +1,7 @@
 import path from 'path';
 import { writeFile } from 'fs/promises';
 import { DEFAULT_APP_REF, DEFAULT_CONFIG_DIR, DEFAULT_EXCLUDES, DEFAULT_MANIFEST_FILENAME, DEFAULT_MODULE_EXTENSIONS, ScanPolicy } from '../constant';
-import { ManifestV2 } from '../loader';
+import { Manifest } from '../loader';
 import { ScannerOptions, ScanContext, ScannerType, ScanTaskItem } from './types';
 import { handlePluginConfig, runTask } from './task';
 import { ArtusApplication } from '../application';
@@ -24,7 +24,7 @@ export class ArtusScanner implements ScannerType {
   /**
   * The entrance of Scanner
   */
-  async scan(root: string): Promise<ManifestV2> {
+  async scan(root: string): Promise<Manifest> {
     // make sure the root path is absolute
     if (!path.isAbsolute(root)) {
       root = path.resolve(root);
@@ -58,7 +58,7 @@ export class ArtusScanner implements ScannerType {
     }
 
     // Dump manifest
-    const manifestResult: ManifestV2 = {
+    const manifestResult: Manifest = {
       version: '2',
       pluginConfig: scanCtx.pluginConfigMap,
       refMap: scanCtx.refMap,
