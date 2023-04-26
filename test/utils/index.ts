@@ -29,7 +29,7 @@ export function formatManifestForWindowsTest(manifest: Manifest) {
     return manifest;
   }
   // A regexp for convert win32 path delimiter to POSIX style
-  const pathReg = /\\\\/g;
+  const pathReg = /\\/g;
   for (const pluginConfig of Object.values(manifest.pluginConfig)) {
     for (const pluginConfigItem of Object.values(pluginConfig)) {
       if (!pluginConfigItem.refName) {

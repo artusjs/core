@@ -15,7 +15,8 @@ describe('test/scanner.test.ts', () => {
 
     // scan with relative root
     const relativeRoot = path.relative(process.cwd(), __dirname);
-    const relativeRootManifest = await scanner.scan(path.join(relativeRoot, './fixtures/app_koa_with_ts'));
+    let relativeRootManifest = await scanner.scan(path.join(relativeRoot, './fixtures/app_koa_with_ts'));
+    relativeRootManifest = formatManifestForWindowsTest(relativeRootManifest);
     expect(relativeRootManifest).toStrictEqual(manifest);
   });
 
