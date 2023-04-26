@@ -8,37 +8,37 @@ import { mergeConfig } from '../loader/utils/merge';
 import { loadMetaFile } from '../utils/load_meta_file';
 import { ARTUS_DEFAULT_CONFIG_ENV, DEFAULT_APP_REF, PLUGIN_META_FILENAME } from '../constant';
 
-const walkDir = async (curPath: string, options: WalkOptions, itemList: ManifestItem[] = []) => {
+const walkDir = async (curPath: string, options: WalkOptions) => {
   const { baseDir, configDir } = options;
   if (!(await existsAsync(curPath))) {
     // TODO: use artus logger instead
     console.warn(`[scan->walk] ${curPath} is not exists.`);
-    return itemList;
+    return [];
   }
 
   const stat = await fs.stat(curPath);
   if (!stat.isDirectory()) {
-    return itemList;
+    return [];
   }
 
   const items = await fs.readdir(curPath);
-  await Promise.all(items.map(async item => {
+  const itemWalkResult = await Promise.all(items.map(async (item): Promise<ManifestItem[]> => {
     const realPath = path.resolve(curPath, item);
     const extname = path.extname(realPath);
     if (isExclude(item, extname, options.exclude, options.extensions)) {
-      return;
+      return [];
     }
     const itemStat = await fs.stat(realPath);
     if (itemStat.isDirectory()) {
       // ignore plugin dir
       if (await isPluginAsync(realPath)) {
-        return;
+        return [];
       }
-      await walkDir(realPath, options, itemList);
+      return walkDir(realPath, options);
     } else if (itemStat.isFile()) {
       if (!extname) {
         // Exclude file without extname
-        return;
+        return [];
       }
       const filename = path.basename(realPath);
       const filenameWithoutExt = path.basename(realPath, extname);
@@ -50,7 +50,7 @@ const walkDir = async (curPath: string, options: WalkOptions, itemList: Manifest
         policy: options.policy,
       });
       if (!loaderFindResult) {
-        return;
+        return [];
       }
       const { loaderName, loaderState } = loaderFindResult;
       const item: ManifestItem = {
@@ -64,12 +64,12 @@ const walkDir = async (curPath: string, options: WalkOptions, itemList: Manifest
       if (loaderState) {
         item.loaderState = loaderState;
       }
-      if (Array.isArray(itemList)) {
-        itemList.push(item);
-      }
+      return [item];
+    } else {
+      return [];
     }
   }));
-  return itemList;
+  return itemWalkResult.reduce((itemList, result) => itemList.concat(result), []);
 };
 
 export const handlePluginConfig = async (

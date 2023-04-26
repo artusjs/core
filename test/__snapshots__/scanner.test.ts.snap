@@ -32,43 +32,6 @@ Object {
     "_app": Object {
       "items": Array [
         Object {
-          "extname": ".json",
-          "filename": "exception.json",
-          "loader": "exception",
-          "loaderState": Object {
-            "exportNames": Array [],
-          },
-          "path": "src/exception",
-          "source": "app",
-          "unitName": "_app",
-        },
-        Object {
-          "extname": ".ts",
-          "filename": "koa_app.ts",
-          "loader": "module",
-          "loaderState": Object {
-            "exportNames": Array [
-              "default",
-            ],
-          },
-          "path": "src/koa_app",
-          "source": "app",
-          "unitName": "_app",
-        },
-        Object {
-          "extname": ".ts",
-          "filename": "lifecycle.ts",
-          "loader": "lifecycle-hook-unit",
-          "loaderState": Object {
-            "exportNames": Array [
-              "default",
-            ],
-          },
-          "path": "src/lifecycle",
-          "source": "app",
-          "unitName": "_app",
-        },
-        Object {
           "extname": ".ts",
           "filename": "config.default.ts",
           "loader": "config",
@@ -126,6 +89,17 @@ Object {
           "unitName": "_app",
         },
         Object {
+          "extname": ".json",
+          "filename": "exception.json",
+          "loader": "exception",
+          "loaderState": Object {
+            "exportNames": Array [],
+          },
+          "path": "src/exception",
+          "source": "app",
+          "unitName": "_app",
+        },
+        Object {
           "extname": ".ts",
           "filename": "default.ts",
           "loader": "exception-filter",
@@ -135,6 +109,32 @@ Object {
             ],
           },
           "path": "src/filter/default",
+          "source": "app",
+          "unitName": "_app",
+        },
+        Object {
+          "extname": ".ts",
+          "filename": "koa_app.ts",
+          "loader": "module",
+          "loaderState": Object {
+            "exportNames": Array [
+              "default",
+            ],
+          },
+          "path": "src/koa_app",
+          "source": "app",
+          "unitName": "_app",
+        },
+        Object {
+          "extname": ".ts",
+          "filename": "lifecycle.ts",
+          "loader": "lifecycle-hook-unit",
+          "loaderState": Object {
+            "exportNames": Array [
+              "default",
+            ],
+          },
+          "path": "src/lifecycle",
           "source": "app",
           "unitName": "_app",
         },
