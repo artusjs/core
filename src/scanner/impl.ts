@@ -12,6 +12,7 @@ export class ArtusScanner implements ScannerType {
   constructor(options: Partial<ScannerOptions> = {}) {
     this.options = {
       needWriteFile: true,
+      manifestFilePath: DEFAULT_MANIFEST_FILENAME,
       useRelativePath: true,
       configDir: DEFAULT_CONFIG_DIR,
       policy: ScanPolicy.All,
@@ -65,7 +66,10 @@ export class ArtusScanner implements ScannerType {
       relative: this.options.useRelativePath,
     };
     if (this.options.needWriteFile) {
-      const manifestFilePath = path.resolve(root, DEFAULT_MANIFEST_FILENAME);
+      let { manifestFilePath } = this.options;
+      if (!path.isAbsolute(manifestFilePath)) {
+        manifestFilePath = path.resolve(root, manifestFilePath);
+      }
       await writeFile(
         manifestFilePath,
         JSON.stringify(manifestResult, null, 2),

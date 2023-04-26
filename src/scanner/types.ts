@@ -7,6 +7,7 @@ import { ScanPolicy } from '../constant';
 export interface ScannerOptions {
   extensions: string[];
   needWriteFile: boolean;
+  manifestFilePath?: string;
   useRelativePath: boolean;
   exclude: string[];
   configDir: string;
