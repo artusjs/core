@@ -14,5 +14,3 @@ export * from './constant';
 import ConfigurationHandler from './configuration';
 export { ConfigurationHandler };
 
-import Trigger from './trigger';
-export { Trigger };

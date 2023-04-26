@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import path from "path";
 import { ArtusApplication } from "../../../../src";
-import { server } from "./app";
+import { server } from "./lifecycle";
 
 export const app: ArtusApplication = new ArtusApplication();
 
@@ -14,9 +14,9 @@ async function main() {
       _app: {
         items: [
           {
-            path: path.resolve(__dirname, "./app"),
+            path: path.resolve(__dirname, "./lifecycle"),
             extname: ".ts",
-            filename: "app.ts",
+            filename: "lifecycle.ts",
             loader: "lifecycle-hook-unit",
             source: "app",
           },
@@ -24,13 +24,6 @@ async function main() {
             path: path.resolve(__dirname, "./koa_app"),
             extname: ".ts",
             filename: "koaApp.ts",
-            loader: "module",
-            source: "app",
-          },
-          {
-            path: path.resolve(__dirname, "./http_trigger"),
-            extname: ".ts",
-            filename: "httpTrigger.ts",
             loader: "module",
             source: "app",
           },

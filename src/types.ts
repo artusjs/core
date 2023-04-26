@@ -1,5 +1,4 @@
 import { Container } from '@artus/injection';
-import { BaseContext } from '@artus/pipeline';
 import { HookFunction } from './lifecycle';
 import { Manifest } from './loader';
 import { LoggerType } from './logger';
@@ -32,8 +31,3 @@ export interface Application {
   registerHook(hookName: string, hookFn: HookFunction): void;
 }
 
-export interface TriggerType {
-  use(...args): void | Promise<void>;
-  initContext(...args): BaseContext | Promise<BaseContext>;
-  startPipeline(...args): Promise<void>;
-}

@@ -1,18 +1,12 @@
 import 'reflect-metadata';
-import { ArtusApplication, ArtusStdError, Trigger } from '../src';
-import { Input } from '@artus/pipeline';
+import { ArtusStdError, matchExceptionFilter } from '../src';
+import MockErrorService from './fixtures/exception_filter/service';
 
 describe('test/exception_filter.test.ts', () => {
   it('a standard exception catch logic with no filter', async () => {
     try {
-      const app = new ArtusApplication();
-      const trigger = app.container.get(Trigger);
-      trigger.use(() => {
-        throw new ArtusStdError('TEST');
-      });
-      const ctx = await trigger.initContext();
       try {
-        await trigger.startPipeline(ctx);
+        throw new ArtusStdError('TEST');
       } catch (error) {
         expect(error).toBeInstanceOf(ArtusStdError);
       }
@@ -27,7 +21,6 @@ describe('test/exception_filter.test.ts', () => {
       } = await import('./fixtures/exception_filter/bootstrap');
 
       const app = await main();
-      const trigger = app.container.get(Trigger);
       const mockSet: Set<string> = app.container.get('mock_exception_set');
       for (const [inputTarget, exceptedVal] of [
         ['default', 'Error'],
@@ -35,14 +28,13 @@ describe('test/exception_filter.test.ts', () => {
         ['wrapped', 'APP:WRAPPED_ERROR'],
         ['APP:TEST_ERROR', 'APP:TEST_ERROR'],
       ]) {
-        const input = new Input();
-        input.params = {
-          target: inputTarget,
-        };
-        const ctx = await trigger.initContext(input);
+        const mockErrorService = app.container.get(MockErrorService);
         try {
-          await trigger.startPipeline(ctx);
-        } catch (error) {}
+          mockErrorService.throw(inputTarget);
+        } catch (error) {
+          const filter = matchExceptionFilter(error, app.container);
+          await filter.catch(error);
+        }
         expect(mockSet.has(exceptedVal)).toBeTruthy();
       }
     } catch (error) {

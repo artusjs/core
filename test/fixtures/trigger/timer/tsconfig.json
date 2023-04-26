@@ -1,8 +1,0 @@
-{
-  "compilerOptions": {
-    "esModuleInterop": true,
-    "experimentalDecorators": true
-  },
-  "rootDir": "./src",
-  "exclude": []
-}

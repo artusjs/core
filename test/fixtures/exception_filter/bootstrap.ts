@@ -1,7 +1,5 @@
-import { Context } from "@artus/pipeline";
 import path from "path";
-import { ArtusApplication, ArtusStdError, Trigger } from "../../../src";
-import { TestCustomError, TestWrappedError } from "./error";
+import { ArtusApplication } from "../../../src";
 
 async function main() {
   const app = new ArtusApplication();
@@ -45,23 +43,16 @@ async function main() {
             loader: "exception",
             source: "app",
           },
+          {
+            path: path.resolve(__dirname, "./service"),
+            extname: ".ts",
+            filename: "service.ts",
+            loader: "module",
+            source: "app",
+          },
         ],
       },
     },
-  });
-  const trigger = app.container.get(Trigger);
-  trigger.use((ctx: Context) => {
-    const target = ctx.input.params.target;
-    switch (target) {
-      case "default":
-        throw new Error("default error");
-      case "custom":
-        throw new TestCustomError();
-      case "wrapped":
-        throw new TestWrappedError();
-      default:
-        throw new ArtusStdError(target);
-    }
   });
   await app.run();
   return app;

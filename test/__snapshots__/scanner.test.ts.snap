@@ -32,19 +32,6 @@ Object {
     "_app": Object {
       "items": Array [
         Object {
-          "extname": ".ts",
-          "filename": "app.ts",
-          "loader": "lifecycle-hook-unit",
-          "loaderState": Object {
-            "exportNames": Array [
-              "default",
-            ],
-          },
-          "path": "src/app",
-          "source": "app",
-          "unitName": "_app",
-        },
-        Object {
           "extname": ".json",
           "filename": "exception.json",
           "loader": "exception",
@@ -52,19 +39,6 @@ Object {
             "exportNames": Array [],
           },
           "path": "src/exception",
-          "source": "app",
-          "unitName": "_app",
-        },
-        Object {
-          "extname": ".ts",
-          "filename": "http_trigger.ts",
-          "loader": "module",
-          "loaderState": Object {
-            "exportNames": Array [
-              "default",
-            ],
-          },
-          "path": "src/http_trigger",
           "source": "app",
           "unitName": "_app",
         },
@@ -78,6 +52,19 @@ Object {
             ],
           },
           "path": "src/koa_app",
+          "source": "app",
+          "unitName": "_app",
+        },
+        Object {
+          "extname": ".ts",
+          "filename": "lifecycle.ts",
+          "loader": "lifecycle-hook-unit",
+          "loaderState": Object {
+            "exportNames": Array [
+              "default",
+            ],
+          },
+          "path": "src/lifecycle",
           "source": "app",
           "unitName": "_app",
         },

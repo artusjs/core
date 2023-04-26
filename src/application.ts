@@ -5,7 +5,6 @@ import { ArtusStdError } from './exception';
 import { HookFunction, LifecycleManager } from './lifecycle';
 import { LoaderFactory, Manifest } from './loader';
 import { Application, ApplicationInitOptions } from './types';
-import Trigger from './trigger';
 import ConfigurationHandler from './configuration';
 import { Logger, LoggerType } from './logger';
 
@@ -62,7 +61,6 @@ export class ArtusApplication implements Application {
 
     this.container.set({ type: ConfigurationHandler });
     this.container.set({ type: Logger });
-    this.container.set({ type: Trigger });
   }
 
   async load(manifest: Manifest, root: string = process.cwd()) {
