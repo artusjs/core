@@ -1,9 +1,9 @@
 import { Container } from '@artus/injection';
 import { ScanPolicy } from '../constant';
-import { PluginConfigMap, PluginMetadata } from '../plugin/types';
+import { PluginConfig, PluginMetadata } from '../plugin/types';
 
 // Key: Env => PluginName => Value: PluginConfigItem
-export type PluginConfigEnvMap = Record<string, PluginConfigMap>;
+export type PluginConfigEnvMap = Record<string, PluginConfig>;
 
 export interface RefMapItem {
   packageVersion?: string;
@@ -17,7 +17,6 @@ export interface Manifest {
   version: '2';
   pluginConfig: PluginConfigEnvMap;
   refMap: RefMap;
-  relative: boolean;
 }
 
 export interface ManifestItem<LoaderState = unknown> extends Record<string, any> {

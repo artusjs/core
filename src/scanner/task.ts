@@ -3,7 +3,7 @@ import * as fs from 'fs/promises';
 import { ScanContext, ScanTaskItem, WalkOptions } from './types';
 import { existsAsync, getPackageVersion, isExclude, isPluginAsync, loadConfigItemList, resolvePluginConfigItemRef } from './utils';
 import { findLoader, ManifestItem, RefMapItem } from '../loader';
-import { PluginConfigMap, PluginMetadata } from '../plugin';
+import { PluginConfig, PluginMetadata } from '../plugin';
 import { mergeConfig } from '../loader/utils/merge';
 import { loadMetaFile } from '../utils/load_meta_file';
 import { ARTUS_DEFAULT_CONFIG_ENV, DEFAULT_APP_REF, PLUGIN_META_FILENAME } from '../constant';
@@ -73,48 +73,71 @@ const walkDir = async (curPath: string, options: WalkOptions) => {
 };
 
 export const handlePluginConfig = async (
-  pluginConfig: PluginConfigMap,
+  pluginConfig: PluginConfig,
   basePath: string,
   scanCtx: ScanContext,
   env: string = ARTUS_DEFAULT_CONFIG_ENV.DEFAULT,
 ): Promise<void> => {
-  const tPluginConfig: PluginConfigMap = {};
+  const tPluginConfig: PluginConfig = {};
   for (const [pluginName, pluginConfigItem] of Object.entries(pluginConfig)) {
+    // Set temp pluginConfig in manifest
+    tPluginConfig[pluginName] = {};
+    if (pluginConfigItem.enable !== undefined) {
+      tPluginConfig[pluginName].enable = pluginConfigItem.enable;
+    }
+    if (pluginConfigItem.enable) {
+      scanCtx.enabledPluginSet.add(pluginName);
+    }
+    
+    // Resolve ref and set
+    const isPluginEnabled = scanCtx.enabledPluginSet.has(pluginName);
     const ref = await resolvePluginConfigItemRef(pluginConfigItem, basePath, scanCtx);
-    tPluginConfig[pluginName] = {
-      enable: pluginConfigItem.enable,
+    if (!ref?.name) {
+      continue;
+    }
+    tPluginConfig[pluginName].refName = ref.name;
+    // Generate and push scan task
+    const curRefTask: ScanTaskItem = {
+      curPath: ref.path,
+      refName: ref.name,
+      checkPackageVersion: ref.isPackage,
     };
-    if (ref?.name) {
-      tPluginConfig[pluginName].refName = ref.name;
-      if (!scanCtx.refMap[ref.name]) {
-        // Generate and push scan task
-        scanCtx.taskQueue.push({
-          curPath: ref.path,
-          refName: ref.name,
-        });
+    const waitingTaskList = scanCtx.waitingTaskMap.get(pluginName) ?? [];
+    if (isPluginEnabled) {
+      // Ref need scan immediately and add all waiting task to queue
+      scanCtx.taskQueue.push(curRefTask);
+      for (const waitingTask of waitingTaskList) {
+        scanCtx.taskQueue.push(waitingTask);
       }
+      scanCtx.waitingTaskMap.delete(pluginName);
+    } else {
+      // Need waiting to detect enabled, push refTask to waitingList
+      waitingTaskList.push(curRefTask);
+      scanCtx.waitingTaskMap.set(pluginName, waitingTaskList);
     }
   }
   // Reverse Merge, The prior of top-level(exists) is higher
   const existsPluginConfig = scanCtx.pluginConfigMap[env] ?? {};
-  scanCtx.pluginConfigMap[env] = mergeConfig(tPluginConfig, existsPluginConfig) as PluginConfigMap;
+  scanCtx.pluginConfigMap[env] = mergeConfig(tPluginConfig, existsPluginConfig) as PluginConfig;
 };
 
 
 /**
- * Handler of single scan task(only a ref)
- */
+* Handler of single scan task(only a ref)
+*/
 export const runTask = async (taskItem: ScanTaskItem, scanCtx: ScanContext) => {
-  const { curPath = '', refName } = taskItem;
+  const { curPath = '', refName, checkPackageVersion } = taskItem;
   const { root, refMap, options } = scanCtx;
   const basePath = path.resolve(root, curPath);
-  const curPackageVersion = await getPackageVersion(refName === DEFAULT_APP_REF ? basePath : refName);
   if (refMap[refName]) {
     // Already scanned
     const refItem = refMap[refName];
-    if (refItem.packageVersion && curPackageVersion && curPackageVersion !== refItem.packageVersion) {
-      // Do NOT allow multi-version of plugin package
-      throw new Error(`${refName} has multi version of ${curPackageVersion}, ${refItem.packageVersion}`);
+    if (checkPackageVersion && refItem.packageVersion) {
+      const curPackageVersion = await getPackageVersion(refName === DEFAULT_APP_REF ? basePath : refName);
+      if (curPackageVersion && curPackageVersion !== refItem.packageVersion) {
+        // Do NOT allow multi-version of plugin package
+        throw new Error(`${refName} has multi version of ${curPackageVersion}, ${refItem.packageVersion}`);
+      }
     }
     return;
   }
@@ -145,7 +168,7 @@ export const runTask = async (taskItem: ScanTaskItem, scanCtx: ScanContext) => {
   refItem.items = await walkDir(basePath, walkOpts);
   const configItemList = refItem.items.filter(item => item.loader === 'config');
   const pluginConfigEnvMap = await loadConfigItemList<{
-    plugin: PluginConfigMap;
+    plugin: PluginConfig;
   }>(configItemList, scanCtx);
   for (const [env, configObj] of Object.entries(pluginConfigEnvMap)) {
     const pluginConfig = configObj?.plugin;

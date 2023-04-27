@@ -6,7 +6,6 @@ async function main() {
   const app = new ArtusApplication();
   await app.load({
     version: "2",
-    relative: false,
     pluginConfig: {},
     refMap: {
       _app: {

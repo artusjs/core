@@ -67,7 +67,7 @@ export class ArtusApplication implements Application {
     // Load user manifest
     this.manifest = manifest;
 
-    await this.loaderFactory.loadManifest(manifest, manifest.relative ? root : undefined, this.envList);
+    await this.loaderFactory.loadManifest(manifest, root);
 
     await this.lifecycleManager.emitHook('didLoad');
 

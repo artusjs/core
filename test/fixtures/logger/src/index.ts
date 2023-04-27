@@ -5,7 +5,6 @@ const rootDir = path.resolve(__dirname, "./");
 
 const defaultManifest: Manifest = {
   version: "2",
-  relative: false,
   pluginConfig: {},
   refMap: {
     _app: {
@@ -22,7 +21,6 @@ const defaultManifest: Manifest = {
 
 export const manifestWithCustomLogger: Manifest = {
   version: "2",
-  relative: false,
   pluginConfig: {},
   refMap: {
     _app: {

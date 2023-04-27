@@ -4,7 +4,6 @@ const rootDir = path.resolve(__dirname, "./");
 
 module.exports = {
   version: "2",
-  relative: false,
   pluginConfig: {},
   refMap: {
     _app: {

@@ -25,7 +25,7 @@ export interface PluginConfigItem {
   metadata?: PluginMetadata;
 }
 
-export type PluginConfigMap = Record<string, PluginConfigItem>;
+export type PluginConfig = Record<string, PluginConfigItem>;
 export type PluginMap = Map<string, PluginType>;
 
 export interface PluginType {

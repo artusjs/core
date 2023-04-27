@@ -8,7 +8,6 @@ export const app: ArtusApplication = new ArtusApplication();
 async function main() {
   await app.load({
     version: '2',
-    relative: false,
     pluginConfig: {},
     refMap: {
       _app: {

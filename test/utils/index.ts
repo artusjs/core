@@ -4,7 +4,6 @@ import { ArtusScanner, ArtusApplication, Manifest, RefMap } from '../../src';
 
 export const DEFAULT_EMPTY_MANIFEST: Manifest = {
   version: '2',
-  relative: false,
   pluginConfig: {},
   refMap: {},
 };

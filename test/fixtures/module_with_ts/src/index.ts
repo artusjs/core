@@ -5,7 +5,6 @@ const rootDir = path.resolve(__dirname, "./");
 
 export default {
   version: "2",
-  relative: false,
   pluginConfig: {},
   refMap: {
     _app: {

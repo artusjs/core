@@ -35,12 +35,15 @@ export class ArtusScanner implements ScannerType {
     const taskQueue: ScanTaskItem[] = [{
       curPath: '.',
       refName: DEFAULT_APP_REF,
+      checkPackageVersion: false, // Don't check app version
     }];
 
     // Init scan-task context
     const scanCtx: ScanContext = {
       root,
       taskQueue,
+      waitingTaskMap: new Map(),
+      enabledPluginSet: new Set(),
       refMap: {},
       pluginConfigMap: {},
       options: this.options,
@@ -63,7 +66,6 @@ export class ArtusScanner implements ScannerType {
       version: '2',
       pluginConfig: scanCtx.pluginConfigMap,
       refMap: scanCtx.refMap,
-      relative: this.options.useRelativePath,
     };
     if (this.options.needWriteFile) {
       let { manifestFilePath } = this.options;

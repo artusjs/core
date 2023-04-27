@@ -77,9 +77,15 @@ export class LoaderFactory {
       });
     }
     const mergedPluginConfig: Record<string, PluginConfigItem> = this.configurationHandler.getAllConfig()?.plugin ?? {};
-    for (const pluginConfigItem of Object.values(mergedPluginConfig)) {
+    for (const [pluginName, pluginConfigItem] of Object.entries(mergedPluginConfig)) {
       const refItem = manifest.refMap[pluginConfigItem.refName];
-      pluginConfigItem.metadata = refItem.pluginMetadata;
+      if (!refItem) {
+        continue;
+      }
+      mergedPluginConfig[pluginName] = {
+        ...pluginConfigItem,
+        metadata: refItem.pluginMetadata, 
+      };
     }
 
     // sort ref(plugin) firstly

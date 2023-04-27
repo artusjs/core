@@ -71,12 +71,14 @@ export const resolvePluginConfigItemRef = async (
 ): Promise<{
   name: string;
   path: string;
+  isPackage: boolean;
 } | null> => {
   if (pluginConfigItem.package) {
     const refPath = getPackagePath(pluginConfigItem.package, [baseDir]);
     return {
       name: pluginConfigItem.package,
       path: refPath,
+      isPackage: true,
     };
   } else if (pluginConfigItem.path) {
     const refName = path.isAbsolute(pluginConfigItem.path) ? path.relative(scanCtx.root, pluginConfigItem.path) : pluginConfigItem.path;
@@ -89,6 +91,7 @@ export const resolvePluginConfigItemRef = async (
     return {
       name: refName,
       path: refPath,
+      isPackage: false,
     };
   }
   return null;

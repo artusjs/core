@@ -1,5 +1,5 @@
 import { Manifest, PluginConfigEnvMap, RefMap } from '../loader';
-import { PluginConfigMap } from '../plugin/types';
+import { PluginConfig } from '../plugin/types';
 import { Application } from '../types';
 import { ScanPolicy } from '../constant';
 
@@ -13,7 +13,7 @@ export interface ScannerOptions {
   configDir: string;
   policy: ScanPolicy;
   envs?: string[];
-  plugin?: PluginConfigMap;
+  plugin?: PluginConfig;
   app?: Application;
 }
 
@@ -43,11 +43,14 @@ export interface ScannerType {
 export interface ScanTaskItem {
   curPath: string;
   refName: string;
+  checkPackageVersion: boolean;
 }
 
 export interface ScanContext {
   root: string;
   taskQueue: ScanTaskItem[];
+  waitingTaskMap: Map<string, ScanTaskItem[]>; // Key is pluginName
+  enabledPluginSet: Set<string>; // Key is pluginName
   pluginConfigMap: PluginConfigEnvMap;
   refMap: RefMap;
   options: ScannerOptions;

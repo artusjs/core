@@ -154,27 +154,6 @@ Object {
       ],
       "packageVersion": undefined,
     },
-    "src/mysql_plugin": Object {
-      "items": Array [
-        Object {
-          "extname": ".ts",
-          "filename": "app.ts",
-          "loader": "lifecycle-hook-unit",
-          "loaderState": Object {
-            "exportNames": Array [
-              "default",
-            ],
-          },
-          "path": "src/mysql_plugin/app",
-          "source": "plugin",
-          "unitName": "mysql",
-        },
-      ],
-      "packageVersion": undefined,
-      "pluginMetadata": Object {
-        "name": "mysql",
-      },
-    },
     "src/redis_plugin": Object {
       "items": Array [
         Object {
@@ -208,7 +187,6 @@ Object {
       },
     },
   },
-  "relative": true,
   "version": "2",
 }
 `;
