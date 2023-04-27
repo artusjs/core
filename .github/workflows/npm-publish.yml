@@ -11,6 +11,8 @@ jobs:
     name: Publish to NPM & Create Pull Request of Version Update
     # Run on latest version of ubuntu
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
 
     steps:
     - uses: actions/checkout@v2
@@ -40,12 +42,12 @@ jobs:
     # run tests just in case
     - run: npm test
     # publish to NPM -> there is one caveat, continue reading for the fix
-    - run: npm publish
+    - run: npm publish --provenance --access public
       if: "!github.event.release.prerelease"
       env:
         # Use a token to publish to NPM. See below for how to set it up
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-    - run: npm publish --tag beta
+    - run: npm publish --provenance --access public --tag beta
       if: "github.event.release.prerelease"
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
