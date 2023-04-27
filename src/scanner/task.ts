@@ -25,7 +25,8 @@ const walkDir = async (curPath: string, options: WalkOptions) => {
   const itemWalkResult = await Promise.all(items.map(async (item): Promise<ManifestItem[]> => {
     const realPath = path.resolve(curPath, item);
     const extname = path.extname(realPath);
-    if (isExclude(item, extname, options.exclude, options.extensions)) {
+    const relativePath = path.relative(baseDir, realPath);
+    if (isExclude(relativePath, options.exclude, options.extensions)) {
       return [];
     }
     const itemStat = await fs.stat(realPath);

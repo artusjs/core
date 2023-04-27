@@ -30,12 +30,13 @@ export const existsAsync = async (filePath: string): Promise<boolean> => {
   }
 };
 
-export const isExclude = (filename: string, extname: string, exclude: string[], extensions: string[]): boolean => {
+export const isExclude = (targetPath: string, exclude: string[], extensions: string[]): boolean => {
   let result = false;
   if (!result && exclude) {
-    result = isMatch(filename, exclude);
+    result = isMatch(targetPath, exclude, true);
   }
 
+  const extname = path.extname(targetPath);
   if (!result && extname) {
     result = !extensions.includes(extname);
   }
