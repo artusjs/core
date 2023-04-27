@@ -52,7 +52,7 @@ export class ArtusScanner implements ScannerType {
 
     // Add Task of options.plugin
     if (this.options.plugin) {
-      await handlePluginConfig(this.options.plugin, '.', scanCtx);
+      await handlePluginConfig(this.options.plugin, root, scanCtx);
     }
 
     // Run task queue

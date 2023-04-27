@@ -128,7 +128,10 @@ export const handlePluginConfig = async (
 export const runTask = async (taskItem: ScanTaskItem, scanCtx: ScanContext) => {
   const { curPath = '', refName, checkPackageVersion } = taskItem;
   const { root, refMap, options } = scanCtx;
-  const basePath = path.resolve(root, curPath);
+  let basePath = curPath;
+  if (!path.isAbsolute(basePath)) {
+    basePath = path.resolve(root, curPath);
+  }
   if (refMap[refName]) {
     // Already scanned
     const refItem = refMap[refName];
