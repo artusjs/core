@@ -197,6 +197,7 @@ Object {
     "default": Object {
       "a": Object {
         "enable": false,
+        "refName": "../plugins/plugin_a",
       },
       "b": Object {
         "enable": false,
@@ -211,8 +212,12 @@ Object {
         "refName": "../plugins/plugin_d",
       },
       "plugin-with-entry-a": Object {
-        "enable": false,
+        "enable": true,
         "refName": "../plugins/plugin_with_entry_a",
+      },
+      "plugin-with-entry-b": Object {
+        "enable": true,
+        "refName": "../plugins/plugin_with_entry_b",
       },
       "plugin-with-entry-c": Object {
         "enable": false,
@@ -223,7 +228,7 @@ Object {
         "refName": "../plugins/preset_a",
       },
       "preset_b": Object {
-        "enable": false,
+        "enable": true,
         "refName": "../plugins/preset_b",
       },
       "preset_c": Object {
@@ -233,6 +238,34 @@ Object {
     },
   },
   "refMap": Object {
+    "../plugins/plugin_a": Object {
+      "items": Array [],
+      "packageVersion": undefined,
+      "pluginMetadata": Object {
+        "dependencies": Array [
+          Object {
+            "name": "plugin-b",
+          },
+          Object {
+            "name": "plugin-c",
+            "optional": true,
+          },
+        ],
+        "name": "plugin-a",
+      },
+    },
+    "../plugins/plugin_b": Object {
+      "items": Array [],
+      "packageVersion": undefined,
+      "pluginMetadata": Object {
+        "dependencies": Array [
+          Object {
+            "name": "plugin-c",
+          },
+        ],
+        "name": "plugin-b",
+      },
+    },
     "../plugins/plugin_d": Object {
       "items": Array [],
       "packageVersion": undefined,
@@ -244,6 +277,20 @@ Object {
           },
         ],
         "name": "plugin-d",
+      },
+    },
+    "../plugins/plugin_with_entry_a": Object {
+      "items": Array [],
+      "packageVersion": undefined,
+      "pluginMetadata": Object {
+        "name": "plugin-with-entry-a",
+      },
+    },
+    "../plugins/plugin_with_entry_b": Object {
+      "items": Array [],
+      "packageVersion": undefined,
+      "pluginMetadata": Object {
+        "name": "plugin-with-entry-b",
       },
     },
     "../plugins/preset_a": Object {
@@ -263,6 +310,25 @@ Object {
       "packageVersion": undefined,
       "pluginMetadata": Object {
         "name": "preset_a",
+      },
+    },
+    "../plugins/preset_b": Object {
+      "items": Array [
+        Object {
+          "extname": ".ts",
+          "filename": "plugin.default.ts",
+          "loader": "config",
+          "loaderState": Object {
+            "exportNames": Array [],
+          },
+          "path": "../plugins/preset_b/config/plugin.default",
+          "source": "plugin",
+          "unitName": "preset_b",
+        },
+      ],
+      "packageVersion": undefined,
+      "pluginMetadata": Object {
+        "name": "preset_b",
       },
     },
     "../plugins/preset_c": Object {

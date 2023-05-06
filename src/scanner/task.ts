@@ -123,16 +123,17 @@ export class ScanTaskRunner {
         checkPackageVersion: ref.isPackage,
       };
       const waitingTaskList = this.waitingTaskMap.get(pluginName) ?? [];
+      // Use unshift to make the items later in the list have higher priority
       if (isPluginEnabled) {
         // Ref need scan immediately and add all waiting task to queue
-        this.taskQueue.push(curRefTask);
+        this.taskQueue.unshift(curRefTask);
         for (const waitingTask of waitingTaskList) {
-          this.taskQueue.push(waitingTask);
+          this.taskQueue.unshift(waitingTask);
         }
         this.waitingTaskMap.delete(pluginName);
       } else {
         // Need waiting to detect enabled, push refTask to waitingList
-        waitingTaskList.push(curRefTask);
+        waitingTaskList.unshift(curRefTask);
         this.waitingTaskMap.set(pluginName, waitingTaskList);
       }
     }
