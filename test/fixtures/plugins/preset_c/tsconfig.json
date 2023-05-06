@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "target": "ES6",
+    "moduleResolution": "node"
+  },
+  "rootDir": "./src",
+  "exclude": []
+}

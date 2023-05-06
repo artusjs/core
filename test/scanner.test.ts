@@ -46,5 +46,46 @@ describe('test/scanner.test.ts', () => {
     const manifest = await scanner.scan(path.resolve(__dirname, './fixtures/app_without_config'));
     expect(manifest?.refMap?.[DEFAULT_APP_REF]?.items?.find(item => item.loader === 'config')).toBeUndefined();
   });
+
+  it('should scan application with nesting preset a which defined in options', async () => {
+    const scanner = new ArtusScanner({
+      needWriteFile: false,
+      configDir: 'config',
+      extensions: ['.ts'],
+      plugin: {
+        preset_a: {
+          enable: true,
+          path: path.resolve(__dirname, './fixtures/plugins/preset_a'),
+        },
+      },
+    });
+    let manifest = await scanner.scan(path.resolve(__dirname, './fixtures/app_empty'));
+    manifest = formatManifestForWindowsTest(manifest);
+    expect(manifest).toMatchSnapshot();
+  });
+
+  it('should scan application with single preset b which defined in config', async () => {
+    const scanner = new ArtusScanner({ needWriteFile: false, extensions: ['.ts'], configDir: 'config' });
+    let manifest = await scanner.scan(path.resolve(__dirname, './fixtures/app_with_preset_b'));
+    manifest = formatManifestForWindowsTest(manifest);
+    expect(manifest).toMatchSnapshot();
+  });
+  
+  it('should scan application with single preset c which defined in options', async () => {
+    const scanner = new ArtusScanner({
+      needWriteFile: false,
+      configDir: 'config',
+      extensions: ['.ts'],
+      plugin: {
+        preset_c: {
+          enable: true,
+          path: path.resolve(__dirname, './fixtures/plugins/preset_c'),
+        },
+      },
+    });
+    let manifest = await scanner.scan(path.resolve(__dirname, './fixtures/app_empty'));
+    manifest = formatManifestForWindowsTest(manifest);
+    expect(manifest).toMatchSnapshot();
+  });
 });
 

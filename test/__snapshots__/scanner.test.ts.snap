@@ -190,3 +190,271 @@ Object {
   "version": "2",
 }
 `;
+
+exports[`test/scanner.test.ts should scan application with nesting preset a which defined in options 1`] = `
+Object {
+  "pluginConfig": Object {
+    "default": Object {
+      "a": Object {
+        "enable": false,
+      },
+      "b": Object {
+        "enable": false,
+        "refName": "../plugins/plugin_b",
+      },
+      "c": Object {
+        "enable": false,
+        "refName": "../plugins/plugin_c",
+      },
+      "d": Object {
+        "enable": true,
+        "refName": "../plugins/plugin_d",
+      },
+      "plugin-with-entry-a": Object {
+        "enable": false,
+        "refName": "../plugins/plugin_with_entry_a",
+      },
+      "plugin-with-entry-c": Object {
+        "enable": false,
+        "refName": "../plugins/plugin_with_entry_c",
+      },
+      "preset_a": Object {
+        "enable": true,
+        "refName": "../plugins/preset_a",
+      },
+      "preset_b": Object {
+        "enable": false,
+        "refName": "../plugins/preset_b",
+      },
+      "preset_c": Object {
+        "enable": true,
+        "refName": "../plugins/preset_c",
+      },
+    },
+  },
+  "refMap": Object {
+    "../plugins/plugin_d": Object {
+      "items": Array [],
+      "packageVersion": undefined,
+      "pluginMetadata": Object {
+        "dependencies": Array [
+          Object {
+            "name": "plugin-e",
+            "optional": true,
+          },
+        ],
+        "name": "plugin-d",
+      },
+    },
+    "../plugins/preset_a": Object {
+      "items": Array [
+        Object {
+          "extname": ".ts",
+          "filename": "plugin.default.ts",
+          "loader": "config",
+          "loaderState": Object {
+            "exportNames": Array [],
+          },
+          "path": "../plugins/preset_a/config/plugin.default",
+          "source": "plugin",
+          "unitName": "preset_a",
+        },
+      ],
+      "packageVersion": undefined,
+      "pluginMetadata": Object {
+        "name": "preset_a",
+      },
+    },
+    "../plugins/preset_c": Object {
+      "items": Array [
+        Object {
+          "extname": ".ts",
+          "filename": "plugin.default.ts",
+          "loader": "config",
+          "loaderState": Object {
+            "exportNames": Array [],
+          },
+          "path": "../plugins/preset_c/config/plugin.default",
+          "source": "plugin",
+          "unitName": "preset_c",
+        },
+      ],
+      "packageVersion": undefined,
+      "pluginMetadata": Object {
+        "name": "preset_c",
+      },
+    },
+    "_app": Object {
+      "items": Array [],
+      "packageVersion": undefined,
+    },
+  },
+  "version": "2",
+}
+`;
+
+exports[`test/scanner.test.ts should scan application with single preset b which defined in config 1`] = `
+Object {
+  "pluginConfig": Object {
+    "default": Object {
+      "a": Object {
+        "enable": true,
+        "refName": "../plugins/plugin_a",
+      },
+      "b": Object {
+        "enable": true,
+        "refName": "../plugins/plugin_b",
+      },
+      "plugin-with-entry-b": Object {
+        "enable": true,
+        "refName": "../plugins/plugin_with_entry_b",
+      },
+      "preset_b": Object {
+        "enable": true,
+        "refName": "../plugins/preset_b",
+      },
+    },
+  },
+  "refMap": Object {
+    "../plugins/plugin_a": Object {
+      "items": Array [],
+      "packageVersion": undefined,
+      "pluginMetadata": Object {
+        "dependencies": Array [
+          Object {
+            "name": "plugin-b",
+          },
+          Object {
+            "name": "plugin-c",
+            "optional": true,
+          },
+        ],
+        "name": "plugin-a",
+      },
+    },
+    "../plugins/plugin_b": Object {
+      "items": Array [],
+      "packageVersion": undefined,
+      "pluginMetadata": Object {
+        "dependencies": Array [
+          Object {
+            "name": "plugin-c",
+          },
+        ],
+        "name": "plugin-b",
+      },
+    },
+    "../plugins/plugin_with_entry_b": Object {
+      "items": Array [],
+      "packageVersion": undefined,
+      "pluginMetadata": Object {
+        "name": "plugin-with-entry-b",
+      },
+    },
+    "../plugins/preset_b": Object {
+      "items": Array [
+        Object {
+          "extname": ".ts",
+          "filename": "plugin.default.ts",
+          "loader": "config",
+          "loaderState": Object {
+            "exportNames": Array [],
+          },
+          "path": "../plugins/preset_b/config/plugin.default",
+          "source": "plugin",
+          "unitName": "preset_b",
+        },
+      ],
+      "packageVersion": undefined,
+      "pluginMetadata": Object {
+        "name": "preset_b",
+      },
+    },
+    "_app": Object {
+      "items": Array [
+        Object {
+          "extname": ".ts",
+          "filename": "plugin.default.ts",
+          "loader": "config",
+          "loaderState": Object {
+            "exportNames": Array [],
+          },
+          "path": "config/plugin.default",
+          "source": "app",
+          "unitName": "_app",
+        },
+      ],
+      "packageVersion": undefined,
+    },
+  },
+  "version": "2",
+}
+`;
+
+exports[`test/scanner.test.ts should scan application with single preset c which defined in options 1`] = `
+Object {
+  "pluginConfig": Object {
+    "default": Object {
+      "b": Object {
+        "enable": false,
+        "refName": "../plugins/plugin_b",
+      },
+      "c": Object {
+        "enable": false,
+        "refName": "../plugins/plugin_c",
+      },
+      "d": Object {
+        "enable": true,
+        "refName": "../plugins/plugin_d",
+      },
+      "plugin-with-entry-c": Object {
+        "enable": false,
+        "refName": "../plugins/plugin_with_entry_c",
+      },
+      "preset_c": Object {
+        "enable": true,
+        "refName": "../plugins/preset_c",
+      },
+    },
+  },
+  "refMap": Object {
+    "../plugins/plugin_d": Object {
+      "items": Array [],
+      "packageVersion": undefined,
+      "pluginMetadata": Object {
+        "dependencies": Array [
+          Object {
+            "name": "plugin-e",
+            "optional": true,
+          },
+        ],
+        "name": "plugin-d",
+      },
+    },
+    "../plugins/preset_c": Object {
+      "items": Array [
+        Object {
+          "extname": ".ts",
+          "filename": "plugin.default.ts",
+          "loader": "config",
+          "loaderState": Object {
+            "exportNames": Array [],
+          },
+          "path": "../plugins/preset_c/config/plugin.default",
+          "source": "plugin",
+          "unitName": "preset_c",
+        },
+      ],
+      "packageVersion": undefined,
+      "pluginMetadata": Object {
+        "name": "preset_c",
+      },
+    },
+    "_app": Object {
+      "items": Array [],
+      "packageVersion": undefined,
+    },
+  },
+  "version": "2",
+}
+`;
