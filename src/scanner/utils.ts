@@ -64,7 +64,10 @@ export const loadConfigItemList = async <T = Record<string, any>>(configItemList
     id: ArtusInjectEnum.Application,
     value: scanCtx.app,
   });
-  const loaderFactory = new LoaderFactory(container);
+  container.set({
+    type: LoaderFactory,
+  });
+  const loaderFactory = container.get(LoaderFactory);
   await loaderFactory.loadItemList(configItemList);
   return Object.fromEntries(loaderFactory.configurationHandler.configStore.entries()) as Record<string, T>;
 };

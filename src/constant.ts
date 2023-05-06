@@ -8,7 +8,6 @@ export enum ArtusInjectEnum {
   Config = 'artus#config',
   DefaultContainerName = 'artus#default_container',
   EnvList = 'artus#env_list',
-  LifecycleManager = 'artus#lifecycle_manager',
 }
 
 export enum ARTUS_DEFAULT_CONFIG_ENV {

@@ -1,6 +1,7 @@
-import { Constructable, Container } from '@artus/injection';
+import { Constructable, Container, Inject, Injectable } from '@artus/injection';
 import { Application, ApplicationLifecycle } from '../types';
 import {
+  ArtusInjectEnum,
   HOOK_NAME_META_PREFIX,
 } from '../constant';
 
@@ -10,6 +11,7 @@ export type HookFunction = <T = unknown>(hookProps: {
   payload?: T
 }) => void | Promise<void>;
 
+@Injectable()
 export class LifecycleManager {
   public enable = true; // Enabled default, will NOT emit when enable is false
 
@@ -22,14 +24,13 @@ export class LifecycleManager {
     'beforeClose', // 应用即将关闭
   ];
   private hookFnMap: Map<string, HookFunction[]> = new Map();
-  private app: Application;
-  private container: Container;
   private hookUnitSet: Set<Constructable<ApplicationLifecycle>> = new Set();
 
-  constructor(app: Application, container: Container) {
-    this.app = app;
-    this.container = container;
-  }
+  @Inject(ArtusInjectEnum.Application)
+  private app: Application;
+
+  @Inject()
+  private container: Container;
 
   insertHook(existHookName: string, newHookName: string) {
     const startIndex = this.hookList.findIndex(val => val === existHookName);

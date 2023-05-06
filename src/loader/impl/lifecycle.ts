@@ -1,5 +1,4 @@
 import { Constructable, Container } from '@artus/injection';
-import { ArtusInjectEnum } from '../../constant';
 import { LifecycleManager } from '../../lifecycle';
 import { ApplicationLifecycle } from '../../types';
 import { DefineLoader } from '../decorator';
@@ -15,7 +14,7 @@ class LifecycleLoader implements Loader {
   }
 
   get lifecycleManager(): LifecycleManager {
-    return this.container.get(ArtusInjectEnum.LifecycleManager);
+    return this.container.get(LifecycleManager);
   }
 
   async load(item: ManifestItem) {

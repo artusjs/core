@@ -1,6 +1,6 @@
 import * as path from 'path';
-import { Container } from '@artus/injection';
-import { ArtusInjectEnum, DEFAULT_LOADER, LOADER_NAME_META, DEFAULT_LOADER_LIST_WITH_ORDER, DEFAULT_APP_REF } from '../constant';
+import { Container, Injectable, Inject } from '@artus/injection';
+import { DEFAULT_LOADER, LOADER_NAME_META, DEFAULT_LOADER_LIST_WITH_ORDER, DEFAULT_APP_REF } from '../constant';
 import {
   Manifest,
   ManifestItem,
@@ -13,6 +13,7 @@ import LoaderEventEmitter, { LoaderEventListener } from './loader_event';
 import { PluginConfigItem, PluginFactory } from '../plugin';
 import { Logger, LoggerType } from '../logger';
 
+@Injectable()
 export class LoaderFactory {
   public static loaderClazzMap: Map<string, LoaderConstructor> = new Map();
 
@@ -21,16 +22,13 @@ export class LoaderFactory {
     this.loaderClazzMap.set(loaderName, clazz);
   }
 
+  @Inject()
   private container: Container;
-  private loaderEmitter: LoaderEventEmitter;
 
-  constructor(container: Container) {
-    this.container = container;
-    this.loaderEmitter = new LoaderEventEmitter();
-  }
+  private loaderEmitter: LoaderEventEmitter = new LoaderEventEmitter();
 
   get lifecycleManager(): LifecycleManager {
-    return this.container.get(ArtusInjectEnum.LifecycleManager);
+    return this.container.get(LifecycleManager);
   }
 
   get configurationHandler(): ConfigurationHandler {

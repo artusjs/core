@@ -15,7 +15,7 @@ describe('test/loader.test.ts', () => {
   describe('module with ts', () => {
     it('should load module testServiceA.ts and testServiceB.ts', async () => {
       const container = initTestContainer();
-      const loaderFactory = new LoaderFactory(container);
+      const loaderFactory = container.get(LoaderFactory);
 
       // Manifest Version 1
       const manifest = require('./fixtures/module_with_ts/src/index').default;
@@ -27,7 +27,7 @@ describe('test/loader.test.ts', () => {
   describe('module with js', () => {
     it('should load module testServiceA.js and testServiceB.js', async () => {
       const container = initTestContainer();
-      const loaderFactory = new LoaderFactory(container);
+      const loaderFactory = container.get(LoaderFactory);
 
       const manifest = require('./fixtures/module_with_js/src/index');
       await loaderFactory.loadManifest(manifest);
@@ -54,7 +54,7 @@ describe('test/loader.test.ts', () => {
       const { default: manifest } = require('./fixtures/module_with_custom_loader/src/index');
 
       const container = initTestContainer();
-      const loaderFactory = new LoaderFactory(container);
+      const loaderFactory = container.get(LoaderFactory);
 
       const { loader: loaderName } = await findLoaderName({
         filename: 'test_clazz.ts',
@@ -81,7 +81,7 @@ describe('test/loader.test.ts', () => {
   describe('loader event', () => {
     it('should emit loader event', async () => {
       const container = initTestContainer();
-      const loaderFactory = new LoaderFactory(container);
+      const loaderFactory = container.get(LoaderFactory);
       const cb = jest.fn();
       loaderFactory.addLoaderListener('module', {
         before: () => {
@@ -96,7 +96,7 @@ describe('test/loader.test.ts', () => {
 
     it('should remove listener success', async () => {
       const container = initTestContainer();
-      const loaderFactory = new LoaderFactory(container);
+      const loaderFactory = container.get(LoaderFactory);
       const cb = jest.fn();
       loaderFactory.addLoaderListener('module', {
         before: () => {
@@ -113,7 +113,7 @@ describe('test/loader.test.ts', () => {
 
     it('should remove listener success with stage', async () => {
       const container = initTestContainer();
-      const loaderFactory = new LoaderFactory(container);
+      const loaderFactory = container.get(LoaderFactory);
       const cb = jest.fn();
       const afterCallback = jest.fn();
       loaderFactory.addLoaderListener('module', {

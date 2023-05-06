@@ -12,21 +12,15 @@ export class ArtusApplication implements Application {
   public manifest?: Manifest;
   public container: Container;
 
-  protected lifecycleManager: LifecycleManager;
-  protected loaderFactory: LoaderFactory;
-
   constructor(opts?: ApplicationInitOptions) {
     this.container = new Container(opts?.containerName ?? ArtusInjectEnum.DefaultContainerName);
-    this.lifecycleManager = new LifecycleManager(this, this.container);
-    this.loaderFactory = new LoaderFactory(this.container);
 
     if (opts?.env) {
       const envList = [].concat(opts.env);
       this.container.set({ id: ArtusInjectEnum.EnvList, value: envList });
     }
-
-    this.addLoaderListener();
     this.loadDefaultClass();
+    this.addLoaderListener();
 
     process.on('SIGINT', () => this.close(true));
     process.on('SIGTERM', () => this.close(true));
@@ -40,6 +34,14 @@ export class ArtusApplication implements Application {
     return this.container.get(ConfigurationHandler);
   }
 
+  get lifecycleManager(): LifecycleManager {
+    return this.container.get(LifecycleManager);
+  }
+
+  get loaderFactory(): LoaderFactory {
+    return this.container.get(LoaderFactory);
+  }
+
   get logger(): LoggerType {
     return this.container.get(Logger);
   }
@@ -48,10 +50,11 @@ export class ArtusApplication implements Application {
     // load Artus default clazz
     this.container.set({ id: Container, value: this.container });
     this.container.set({ id: ArtusInjectEnum.Application, value: this });
-    this.container.set({ id: ArtusInjectEnum.LifecycleManager, value: this.lifecycleManager });
     this.container.set({ id: ArtusInjectEnum.Config, value: {} });
 
     this.container.set({ type: ConfigurationHandler });
+    this.container.set({ type: LoaderFactory });
+    this.container.set({ type: LifecycleManager });
     this.container.set({ type: Logger });
   }
 
