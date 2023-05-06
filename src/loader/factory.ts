@@ -1,6 +1,6 @@
 import * as path from 'path';
 import { Container } from '@artus/injection';
-import { ArtusInjectEnum, DEFAULT_LOADER, LOADER_NAME_META, DEFAULT_LOADER_LIST_WITH_ORDER, ARTUS_DEFAULT_CONFIG_ENV, ARTUS_SERVER_ENV, DEFAULT_APP_REF } from '../constant';
+import { ArtusInjectEnum, DEFAULT_LOADER, LOADER_NAME_META, DEFAULT_LOADER_LIST_WITH_ORDER, DEFAULT_APP_REF } from '../constant';
 import {
   Manifest,
   ManifestItem,
@@ -62,7 +62,6 @@ export class LoaderFactory {
   async loadManifest(
     manifest: Manifest,
     root: string = process.cwd(),
-    envList: string[] = [process.env[ARTUS_SERVER_ENV] ?? ARTUS_DEFAULT_CONFIG_ENV.DEV],
   ): Promise<void> {
     if (!('version' in manifest) || manifest.version !== '2') {
       throw new Error(`invalid manifest, @artus/core@2.x only support manifest version 2.`);
@@ -70,13 +69,12 @@ export class LoaderFactory {
     // Manifest Version 2 is supported mainly
 
     // Merge plugin config with ref
-    const validEnvList = [ARTUS_DEFAULT_CONFIG_ENV.DEFAULT as string].concat(envList);
-    for (const env of validEnvList) {
+    for (const [env, pluginConfig] of Object.entries(manifest.pluginConfig ?? {})) {
       this.configurationHandler.setConfig(env, {
-        plugin: manifest.pluginConfig?.[env] ?? {},
+        plugin: pluginConfig,
       });
     }
-    const mergedPluginConfig: Record<string, PluginConfigItem> = this.configurationHandler.getAllConfig()?.plugin ?? {};
+    const mergedPluginConfig: Record<string, PluginConfigItem> = this.configurationHandler.getMergedConfig()?.plugin ?? {};
     for (const [pluginName, pluginConfigItem] of Object.entries(mergedPluginConfig)) {
       const refItem = manifest.refMap[pluginConfigItem.refName];
       if (!refItem) {

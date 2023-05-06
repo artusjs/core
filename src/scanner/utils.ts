@@ -54,6 +54,10 @@ export const loadConfigItemList = async <T = Record<string, any>>(configItemList
 
   const container = new Container('_');
   container.set({
+    id: Container,
+    value: container,
+  });
+  container.set({
     type: ConfigurationHandler,
   });
   container.set({

@@ -7,9 +7,8 @@ export enum ArtusInjectEnum {
   Application = 'artus#application',
   Config = 'artus#config',
   DefaultContainerName = 'artus#default_container',
-  Frameworks = 'artus#framework-config',
-  LifecycleManager = 'artus#lifecycle-manager',
-  Packages = 'artus#packages',
+  EnvList = 'artus#env_list',
+  LifecycleManager = 'artus#lifecycle_manager',
 }
 
 export enum ARTUS_DEFAULT_CONFIG_ENV {

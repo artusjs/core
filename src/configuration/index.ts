@@ -1,5 +1,5 @@
-import { Injectable } from '@artus/injection';
-import { ARTUS_DEFAULT_CONFIG_ENV, ARTUS_SERVER_ENV } from '../constant';
+import { Container, Inject, Injectable } from '@artus/injection';
+import { ArtusInjectEnum, ARTUS_DEFAULT_CONFIG_ENV, ARTUS_SERVER_ENV } from '../constant';
 import { ManifestItem } from '../loader';
 import { mergeConfig } from '../loader/utils/merge';
 import compatibleRequire from '../utils/compatible_require';
@@ -21,19 +21,16 @@ export default class ConfigurationHandler {
 
   public configStore: Map<string, ConfigObject> = new Map();
 
-  getMergedConfig(env?: string | string[]): ConfigObject {
-    let currentEnvList: string[] = [];
-    if (Array.isArray(env)) {
-      currentEnvList = env;
-    } else if (env) {
-      currentEnvList = [env];
-    } else if (process.env[ARTUS_SERVER_ENV]) {
-      currentEnvList = [process.env[ARTUS_SERVER_ENV]];
-    } else {
-      currentEnvList = [ARTUS_DEFAULT_CONFIG_ENV.DEV];
+  @Inject()
+  private container: Container;
+
+  getMergedConfig(): ConfigObject {
+    let envList: string[] = this.container.get(ArtusInjectEnum.EnvList, { noThrow: true });
+    if (!envList) {
+      envList = process.env[ARTUS_SERVER_ENV] ? [process.env[ARTUS_SERVER_ENV]] : [ARTUS_DEFAULT_CONFIG_ENV.DEV];
     }
     const defaultConfig = this.configStore.get(ARTUS_DEFAULT_CONFIG_ENV.DEFAULT) ?? {};
-    const envConfigList = currentEnvList.map(currentEnv => (this.configStore.get(currentEnv) ?? {}));
+    const envConfigList = envList.map(currentEnv => (this.configStore.get(currentEnv) ?? {}));
     return mergeConfig(defaultConfig, ...envConfigList);
   }
 

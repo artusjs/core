@@ -10,7 +10,6 @@ import { Logger, LoggerType } from './logger';
 
 export class ArtusApplication implements Application {
   public manifest?: Manifest;
-  public envList?: string[];
   public container: Container;
 
   protected lifecycleManager: LifecycleManager;
@@ -22,7 +21,8 @@ export class ArtusApplication implements Application {
     this.loaderFactory = new LoaderFactory(this.container);
 
     if (opts?.env) {
-      this.envList = [].concat(opts.env);
+      const envList = [].concat(opts.env);
+      this.container.set({ id: ArtusInjectEnum.EnvList, value: envList });
     }
 
     this.addLoaderListener();
@@ -34,14 +34,6 @@ export class ArtusApplication implements Application {
 
   get config(): Record<string, any> {
     return this.container.get(ArtusInjectEnum.Config);
-  }
-
-  get frameworks(): Record<string, any> {
-    return this.container.get(ArtusInjectEnum.Frameworks);
-  }
-
-  get packages(): Record<string, any> {
-    return this.container.get(ArtusInjectEnum.Packages);
   }
 
   get configurationHandler(): ConfigurationHandler {
@@ -107,12 +99,18 @@ export class ArtusApplication implements Application {
       .addLoaderListener('config', {
         before: () => this.lifecycleManager.emitHook('configWillLoad'),
         after: () => {
-          this.container.set({
-            id: ArtusInjectEnum.Config,
-            value: this.configurationHandler.getMergedConfig(this.envList),
-          });
+          this.updateConfig();
           return this.lifecycleManager.emitHook('configDidLoad');
         },
       });
+  }
+
+  protected updateConfig() {
+    const oldConfig = this.container.get(ArtusInjectEnum.Config, { noThrow: true }) ?? {};
+    const newConfig = this.configurationHandler.getMergedConfig() ?? {};
+    this.container.set({
+      id: ArtusInjectEnum.Config,
+      value: Object.assign(oldConfig, newConfig),
+    });
   }
 }
