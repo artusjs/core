@@ -1,4 +1,4 @@
-import { Constructable, Container, Inject, Injectable } from '@artus/injection';
+import { Constructable, Container, Inject, Injectable, ScopeEnum } from '@artus/injection';
 import { Application, ApplicationLifecycle } from '../types';
 import {
   ArtusInjectEnum,
@@ -11,7 +11,9 @@ export type HookFunction = <T = unknown>(hookProps: {
   payload?: T
 }) => void | Promise<void>;
 
-@Injectable()
+@Injectable({
+  scope: ScopeEnum.SINGLETON,
+})
 export class LifecycleManager {
   public enable = true; // Enabled default, will NOT emit when enable is false
 

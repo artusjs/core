@@ -49,8 +49,10 @@ export const loadConfigItemList = async <T = Record<string, any>>(configItemList
   if (!configItemList.length) {
     return {};
   }
-
+  const enabledLifecycleManager = app.lifecycleManager.enable;
+  app.lifecycleManager.enable = false;
   await app.loaderFactory.loadItemList(configItemList);
+  app.lifecycleManager.enable = enabledLifecycleManager;
   return Object.fromEntries(app.configurationHandler.configStore.entries()) as Record<string, T>;
 };
 

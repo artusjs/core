@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { Container, Injectable, Inject } from '@artus/injection';
+import { Container, Injectable, Inject, ScopeEnum } from '@artus/injection';
 import { DEFAULT_LOADER, LOADER_NAME_META, DEFAULT_LOADER_LIST_WITH_ORDER, DEFAULT_APP_REF } from '../constant';
 import {
   Manifest,
@@ -13,7 +13,9 @@ import LoaderEventEmitter, { LoaderEventListener } from './loader_event';
 import { PluginConfigItem, PluginFactory } from '../plugin';
 import { Logger, LoggerType } from '../logger';
 
-@Injectable()
+@Injectable({
+  scope: ScopeEnum.SINGLETON,
+})
 export class LoaderFactory {
   public static loaderClazzMap: Map<string, LoaderConstructor> = new Map();
 
