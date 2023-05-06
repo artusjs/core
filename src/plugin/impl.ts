@@ -55,9 +55,9 @@ export class Plugin implements PluginType {
       const instance = pluginMap.get(pluginName);
       if (!instance || !instance.enable) {
         if (optional) {
-          this.logger?.warn(`Plugin ${this.name} need have optional dependence: ${pluginName}.`);
+          this.logger?.warn(`Plugin ${this.name} need have optional dependency: ${pluginName}.`);
         } else {
-          throw new Error(`Plugin ${this.name} need have dependence: ${pluginName}.`);
+          throw new Error(`Plugin ${this.name} need have dependency: ${pluginName}.`);
         }
       }
     }

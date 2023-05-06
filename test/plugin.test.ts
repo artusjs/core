@@ -130,7 +130,7 @@ describe('test/app.test.ts', () => {
       };
       expect(async () => {
         await PluginFactory.createFromConfig(mockPluginConfig);
-      }).rejects.toThrowError(new Error(`Plugin plugin-a need have dependence: plugin-b.`));
+      }).rejects.toThrowError(new Error(`Plugin plugin-a need have dependency: plugin-b.`));
     });
 
     it('should throw if dependence disabled', async () => {
@@ -171,7 +171,7 @@ describe('test/app.test.ts', () => {
       };
       expect(async () => {
         await PluginFactory.createFromConfig(mockPluginConfig);
-      }).rejects.toThrowError(new Error(`Plugin plugin-a need have dependence: plugin-b.`));
+      }).rejects.toThrowError(new Error(`Plugin plugin-a need have dependency: plugin-b.`));
     });
 
     it('should not throw if optional dependence missing', async () => {
@@ -201,7 +201,7 @@ describe('test/app.test.ts', () => {
         expect(plugin).toBeInstanceOf(Plugin);
         expect(plugin.enable).toBeTruthy();
       });
-      expect(mockWarnFn).toBeCalledWith(`Plugin plugin-d need have optional dependence: plugin-e.`);
+      expect(mockWarnFn).toBeCalledWith(`Plugin plugin-d need have optional dependency: plugin-e.`);
 
       // restore warn
       console.warn = originWarn;
