@@ -74,7 +74,10 @@ export class LoaderFactory {
         plugin: pluginConfig,
       });
     }
-    const mergedPluginConfig: Record<string, PluginConfigItem> = this.configurationHandler.getMergedConfig()?.plugin ?? {};
+    const mergedPluginConfig: Record<string, PluginConfigItem> = Object.assign(
+      {},
+      this.configurationHandler.getMergedConfig()?.plugin ?? {},
+    ); // shallow copy to avoid side effect of writing metadata
     for (const [pluginName, pluginConfigItem] of Object.entries(mergedPluginConfig)) {
       const refItem = manifest.refMap[pluginConfigItem.refName];
       if (!refItem) {
