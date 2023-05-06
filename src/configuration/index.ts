@@ -42,6 +42,10 @@ export default class ConfigurationHandler {
     return mergeConfig(defaultConfig, ...keys.map(key => this.configStore.get(key) ?? {}));
   }
 
+  clearStore(): void {
+    this.configStore.clear();
+  }
+
   setConfig(env: string, config: ConfigObject) {
     const storedConfig = this.configStore.get(env) ?? {};
     this.configStore.set(env, mergeConfig(storedConfig, config));

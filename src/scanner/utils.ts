@@ -1,15 +1,13 @@
 import 'reflect-metadata';
 import * as path from 'path';
 import *  as fs from 'fs/promises';
-import { Container } from '@artus/injection';
 import { isMatch } from '../utils';
 import compatibleRequire from '../utils/compatible_require';
-import { ArtusInjectEnum, PLUGIN_META_FILENAME } from '../constant';
+import { PLUGIN_META_FILENAME } from '../constant';
 import { PluginConfigItem } from '../plugin';
 import { getInlinePackageEntryPath, getPackagePath } from '../plugin/common';
-import { ScanContext } from './types';
-import { LoaderFactory, ManifestItem } from '../loader';
-import ConfigurationHandler from '../configuration';
+import { Application } from '../types';
+import { ManifestItem } from '../loader';
 
 export const getPackageVersion = async (basePath: string): Promise<string | undefined> => {
   try {
@@ -47,35 +45,19 @@ export const isPluginAsync = (basePath: string): Promise<boolean> => {
   return existsAsync(path.resolve(basePath, PLUGIN_META_FILENAME));
 };
 
-export const loadConfigItemList = async <T = Record<string, any>>(configItemList: ManifestItem[], scanCtx: ScanContext): Promise<Record<string, T>> => {
+export const loadConfigItemList = async <T = Record<string, any>>(configItemList: ManifestItem[], app: Application): Promise<Record<string, T>> => {
   if (!configItemList.length) {
     return {};
   }
 
-  const container = new Container('_');
-  container.set({
-    id: Container,
-    value: container,
-  });
-  container.set({
-    type: ConfigurationHandler,
-  });
-  container.set({
-    id: ArtusInjectEnum.Application,
-    value: scanCtx.app,
-  });
-  container.set({
-    type: LoaderFactory,
-  });
-  const loaderFactory = container.get(LoaderFactory);
-  await loaderFactory.loadItemList(configItemList);
-  return Object.fromEntries(loaderFactory.configurationHandler.configStore.entries()) as Record<string, T>;
+  await app.loaderFactory.loadItemList(configItemList);
+  return Object.fromEntries(app.configurationHandler.configStore.entries()) as Record<string, T>;
 };
 
 export const resolvePluginConfigItemRef = async (
   pluginConfigItem: PluginConfigItem,
   baseDir: string,
-  scanCtx: ScanContext,
+  root: string,
 ): Promise<{
   name: string;
   path: string;
@@ -89,7 +71,7 @@ export const resolvePluginConfigItemRef = async (
       isPackage: true,
     };
   } else if (pluginConfigItem.path) {
-    const refName = path.isAbsolute(pluginConfigItem.path) ? path.relative(scanCtx.root, pluginConfigItem.path) : pluginConfigItem.path;
+    const refName = path.isAbsolute(pluginConfigItem.path) ? path.relative(root, pluginConfigItem.path) : pluginConfigItem.path;
     let refPath = refName;
 
     const packageJsonPath = path.resolve(pluginConfigItem.path, 'package.json');
@@ -103,7 +85,5 @@ export const resolvePluginConfigItemRef = async (
     };
   }
   return null;
-
-
 };
 
