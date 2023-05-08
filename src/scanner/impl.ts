@@ -32,11 +32,7 @@ export class ArtusScanner implements ScannerType {
     }
 
     // Init scan-task queue with a root task
-    const taskQueue: ScanTaskItem[] = [{
-      curPath: '.',
-      refName: DEFAULT_APP_REF,
-      isPackage: false,
-    }];
+    const taskQueue: ScanTaskItem[] = [];
 
     // Init scan-task scanner
     const app = this.options.app ?? new ArtusApplication();
@@ -51,6 +47,13 @@ export class ArtusScanner implements ScannerType {
     if (this.options.plugin) {
       await taskRunner.handlePluginConfig(this.options.plugin, root);
     }
+
+    // Add Root Task(make it as top/start)
+    taskQueue.unshift({
+      curPath: '.',
+      refName: DEFAULT_APP_REF,
+      isPackage: false,
+    });
 
     // Run task queue
     while (taskQueue.length > 0) {
