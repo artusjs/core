@@ -65,6 +65,14 @@ export const resolvePluginConfigItemRef = async (
   path: string;
   isPackage: boolean;
 } | null> => {
+  if (pluginConfigItem.refName) {
+    // For Unit-test
+    return {
+      name: pluginConfigItem.refName,
+      path: pluginConfigItem.path ?? pluginConfigItem.refName,
+      isPackage: !!pluginConfigItem.package,
+    };
+  }
   if (pluginConfigItem.package) {
     const refPath = getPackagePath(pluginConfigItem.package, [baseDir]);
     return {

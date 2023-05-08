@@ -20,7 +20,7 @@ export class ScanTaskRunner {
     private app: Application,
     private taskQueue: ScanTaskItem[],
     private options: ScannerOptions,
-  ) {}
+  ) { }
 
   /*
   * Handler for walk directories and files recursively
@@ -120,7 +120,7 @@ export class ScanTaskRunner {
       const curRefTask: ScanTaskItem = {
         curPath: ref.path,
         refName: ref.name,
-        checkPackageVersion: ref.isPackage,
+        isPackage: ref.isPackage,
       };
       const waitingTaskList = this.waitingTaskMap.get(pluginName) ?? [];
       // Use unshift to make the items later in the list have higher priority
@@ -147,19 +147,23 @@ export class ScanTaskRunner {
   * Handler of single scan task(only a ref)
   */
   public async run(taskItem: ScanTaskItem): Promise<void> {
-    const { curPath = '', refName, checkPackageVersion } = taskItem;
+    const { curPath = '', refName, isPackage } = taskItem;
     let basePath = curPath;
     if (!path.isAbsolute(basePath)) {
       basePath = path.resolve(this.root, curPath);
     }
+    const packageVersion = await getPackageVersion(
+      (refName === DEFAULT_APP_REF || !isPackage)
+        ? basePath
+        : refName,
+    );
     if (this.refMap[refName]) {
       // Already scanned
       const refItem = this.refMap[refName];
-      if (checkPackageVersion && refItem.packageVersion) {
-        const curPackageVersion = await getPackageVersion(refName === DEFAULT_APP_REF ? basePath : refName);
-        if (curPackageVersion && curPackageVersion !== refItem.packageVersion) {
+      if (refItem.packageVersion) {
+        if (packageVersion && packageVersion !== refItem.packageVersion) {
           // Do NOT allow multi-version of plugin package
-          throw new Error(`${refName} has multi version of ${curPackageVersion}, ${refItem.packageVersion}`);
+          throw new Error(`${refName} has multi version of ${packageVersion}, ${refItem.packageVersion}`);
         }
       }
       return;
@@ -175,7 +179,7 @@ export class ScanTaskRunner {
       unitName: refName,
     };
     const refItem: RefMapItem = {
-      packageVersion: await getPackageVersion(basePath),
+      packageVersion,
       items: [],
     };
 

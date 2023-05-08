@@ -9,7 +9,7 @@ describe('test/scanner.test.ts', () => {
     const scanner = new ArtusScanner({ needWriteFile: false, extensions: ['.ts'] });
     let manifest = await scanner.scan(path.resolve(__dirname, './fixtures/app_koa_with_ts'));
     expect(manifest.version).toBe('2');
-    
+
     manifest = formatManifestForWindowsTest(manifest);
     expect(manifest).toMatchSnapshot();
 
@@ -70,7 +70,7 @@ describe('test/scanner.test.ts', () => {
     manifest = formatManifestForWindowsTest(manifest);
     expect(manifest).toMatchSnapshot();
   });
-  
+
   it('should scan application with single preset c which defined in options', async () => {
     const scanner = new ArtusScanner({
       needWriteFile: false,
@@ -86,6 +86,22 @@ describe('test/scanner.test.ts', () => {
     let manifest = await scanner.scan(path.resolve(__dirname, './fixtures/app_empty'));
     manifest = formatManifestForWindowsTest(manifest);
     expect(manifest).toMatchSnapshot();
+  });
+
+  it('should find multipie version and fail', async () => {
+    const scanner = new ArtusScanner({
+      needWriteFile: false,
+      configDir: 'config',
+      extensions: ['.ts'],
+      plugin: {
+        a: {
+          enable: true,
+          refName: 'test',
+          path: path.resolve(__dirname, './fixtures/plugins/plugin_a_other_ver'),
+        },
+      },
+    });
+    await expect(scanner.scan(path.resolve(__dirname, './fixtures/app_with_plugin_version_check'))).rejects.toThrowErrorMatchingSnapshot();
   });
 });
 

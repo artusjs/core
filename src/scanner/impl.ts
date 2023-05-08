@@ -35,7 +35,7 @@ export class ArtusScanner implements ScannerType {
     const taskQueue: ScanTaskItem[] = [{
       curPath: '.',
       refName: DEFAULT_APP_REF,
-      checkPackageVersion: false, // Don't check app version
+      isPackage: false,
     }];
 
     // Init scan-task scanner
@@ -46,7 +46,7 @@ export class ArtusScanner implements ScannerType {
       taskQueue,
       this.options,
     );
-    
+
     // Add Task of options.plugin
     if (this.options.plugin) {
       await taskRunner.handlePluginConfig(this.options.plugin, root);
@@ -73,7 +73,7 @@ export class ArtusScanner implements ScannerType {
 
     // Clean up
     app.configurationHandler.clearStore();
-    
+
     return manifestResult;
   }
 }

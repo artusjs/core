@@ -43,6 +43,6 @@ export interface ScannerType {
 export interface ScanTaskItem {
   curPath: string;
   refName: string;
-  checkPackageVersion: boolean;
+  isPackage: boolean;
 }
 
