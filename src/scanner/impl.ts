@@ -1,10 +1,9 @@
 import path from 'path';
 import { writeFile } from 'fs/promises';
-import { DEFAULT_APP_REF, DEFAULT_CONFIG_DIR, DEFAULT_EXCLUDES, DEFAULT_MANIFEST_FILENAME, DEFAULT_MODULE_EXTENSIONS, ScanPolicy } from '../constant';
+import { DEFAULT_CONFIG_DIR, DEFAULT_EXCLUDES, DEFAULT_MANIFEST_FILENAME, DEFAULT_MODULE_EXTENSIONS, ScanPolicy } from '../constant';
 import { Manifest } from '../loader';
-import { ScannerOptions, ScannerType, ScanTaskItem } from './types';
+import { ScannerOptions, ScannerType } from './types';
 import { ScanTaskRunner } from './task';
-import { ArtusApplication } from '../application';
 
 export class ArtusScanner implements ScannerType {
   private options: ScannerOptions;
@@ -31,35 +30,14 @@ export class ArtusScanner implements ScannerType {
       root = path.resolve(root);
     }
 
-    // Init scan-task queue with a root task
-    const taskQueue: ScanTaskItem[] = [];
-
     // Init scan-task scanner
-    const app = this.options.app ?? new ArtusApplication();
     const taskRunner = new ScanTaskRunner(
       root,
-      app,
-      taskQueue,
       this.options,
     );
 
-    // Add Task of options.plugin
-    if (this.options.plugin) {
-      await taskRunner.handlePluginConfig(this.options.plugin, root);
-    }
-
-    // Add Root Task(make it as top/start)
-    taskQueue.unshift({
-      curPath: '.',
-      refName: DEFAULT_APP_REF,
-      isPackage: false,
-    });
-
-    // Run task queue
-    while (taskQueue.length > 0) {
-      const taskItem = taskQueue.shift();
-      await taskRunner.run(taskItem);
-    }
+    // Start scan
+    await taskRunner.runAll();
 
     // Dump manifest
     const manifestResult: Manifest = taskRunner.dump();
@@ -73,9 +51,6 @@ export class ArtusScanner implements ScannerType {
         JSON.stringify(manifestResult, null, 2),
       );
     }
-
-    // Clean up
-    app.configurationHandler.clearStore();
 
     return manifestResult;
   }

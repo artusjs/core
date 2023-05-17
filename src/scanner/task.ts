@@ -8,19 +8,22 @@ import { mergeConfig } from '../loader/utils/merge';
 import { loadMetaFile } from '../utils/load_meta_file';
 import { ARTUS_DEFAULT_CONFIG_ENV, DEFAULT_APP_REF, PLUGIN_META_FILENAME } from '../constant';
 import { Application } from '../types';
+import { ArtusApplication } from '../application';
 
 export class ScanTaskRunner {
   private waitingTaskMap: Map<string, ScanTaskItem[]> = new Map(); // Key is pluginName, waiting to detect enabled
   private enabledPluginSet: Set<string> = new Set(); // Key is pluginName
   private pluginConfigMap: PluginConfigEnvMap = {};
   private refMap: RefMap = {};
+  private taskQueue: ScanTaskItem[] = [];
+  private app: Application;
 
   constructor(
     private root: string,
-    private app: Application,
-    private taskQueue: ScanTaskItem[],
     private options: ScannerOptions,
-  ) { }
+  ) {
+    this.app = options.app ?? new ArtusApplication();
+  }
 
   /*
   * Handler for walk directories and files recursively
@@ -225,6 +228,28 @@ export class ScanTaskRunner {
     }
 
     this.refMap[refName] = refItem;
+  }
+
+  public async runAll(): Promise<void> {
+    // Add Task of options.plugin
+    if (this.options.plugin) {
+      await this.handlePluginConfig(this.options.plugin, this.root);
+    }
+
+    // Add Root Task(make it as top/start)
+    this.taskQueue.unshift({
+      curPath: '.',
+      refName: DEFAULT_APP_REF,
+      isPackage: false,
+    });
+
+    // Run task queue
+    while (this.taskQueue.length > 0) {
+      const taskItem = this.taskQueue.shift();
+      await this.run(taskItem);
+    }
+    // Clean up
+    this.app.configurationHandler.clearStore();
   }
 
   public dump(): Manifest {
