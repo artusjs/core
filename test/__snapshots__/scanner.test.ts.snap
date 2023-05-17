@@ -28,6 +28,7 @@ Object {
     "@artus/injection": Object {
       "items": Array [],
       "packageVersion": undefined,
+      "relativedPath": "../../../node_modules/@artus/injection/lib",
     },
     "_app": Object {
       "items": Array [
@@ -153,6 +154,7 @@ Object {
         },
       ],
       "packageVersion": undefined,
+      "relativedPath": "",
     },
     "src/redis_plugin": Object {
       "items": Array [
@@ -178,6 +180,7 @@ Object {
         ],
         "name": "redis",
       },
+      "relativedPath": "src/redis_plugin",
     },
     "src/test_duplicate_plugin": Object {
       "items": Array [],
@@ -185,11 +188,14 @@ Object {
       "pluginMetadata": Object {
         "name": "testDuplicate",
       },
+      "relativedPath": "src/test_duplicate_plugin",
     },
   },
   "version": "2",
 }
 `;
+
+exports[`test/scanner.test.ts should find multi path with same version and fail 1`] = `"test has multi path with same version in ../plugins/plugin_a_same_ver and ../plugins/plugin_a"`;
 
 exports[`test/scanner.test.ts should find multipie version and fail 1`] = `"test has multi version of 0.0.1-alpha.0, 0.0.1"`;
 
@@ -255,6 +261,7 @@ Object {
         ],
         "name": "plugin-a",
       },
+      "relativedPath": "../plugins/plugin_a",
     },
     "../plugins/plugin_b": Object {
       "items": Array [],
@@ -267,6 +274,7 @@ Object {
         ],
         "name": "plugin-b",
       },
+      "relativedPath": "../plugins/plugin_b",
     },
     "../plugins/plugin_d": Object {
       "items": Array [],
@@ -280,6 +288,7 @@ Object {
         ],
         "name": "plugin-d",
       },
+      "relativedPath": "../plugins/plugin_d",
     },
     "../plugins/plugin_with_entry_a": Object {
       "items": Array [],
@@ -287,6 +296,7 @@ Object {
       "pluginMetadata": Object {
         "name": "plugin-with-entry-a",
       },
+      "relativedPath": "../plugins/plugin_with_entry_a/mock_lib",
     },
     "../plugins/plugin_with_entry_b": Object {
       "items": Array [],
@@ -294,6 +304,7 @@ Object {
       "pluginMetadata": Object {
         "name": "plugin-with-entry-b",
       },
+      "relativedPath": "../plugins/plugin_with_entry_b/mock_lib",
     },
     "../plugins/preset_a": Object {
       "items": Array [
@@ -313,6 +324,7 @@ Object {
       "pluginMetadata": Object {
         "name": "preset_a",
       },
+      "relativedPath": "../plugins/preset_a",
     },
     "../plugins/preset_b": Object {
       "items": Array [
@@ -332,6 +344,7 @@ Object {
       "pluginMetadata": Object {
         "name": "preset_b",
       },
+      "relativedPath": "../plugins/preset_b",
     },
     "../plugins/preset_c": Object {
       "items": Array [
@@ -351,10 +364,12 @@ Object {
       "pluginMetadata": Object {
         "name": "preset_c",
       },
+      "relativedPath": "../plugins/preset_c",
     },
     "_app": Object {
       "items": Array [],
       "packageVersion": undefined,
+      "relativedPath": "",
     },
   },
   "version": "2",
@@ -399,6 +414,7 @@ Object {
         ],
         "name": "plugin-a",
       },
+      "relativedPath": "../plugins/plugin_a",
     },
     "../plugins/plugin_b": Object {
       "items": Array [],
@@ -411,6 +427,7 @@ Object {
         ],
         "name": "plugin-b",
       },
+      "relativedPath": "../plugins/plugin_b",
     },
     "../plugins/plugin_with_entry_b": Object {
       "items": Array [],
@@ -418,6 +435,7 @@ Object {
       "pluginMetadata": Object {
         "name": "plugin-with-entry-b",
       },
+      "relativedPath": "../plugins/plugin_with_entry_b/mock_lib",
     },
     "../plugins/preset_b": Object {
       "items": Array [
@@ -437,6 +455,7 @@ Object {
       "pluginMetadata": Object {
         "name": "preset_b",
       },
+      "relativedPath": "../plugins/preset_b",
     },
     "_app": Object {
       "items": Array [
@@ -453,6 +472,7 @@ Object {
         },
       ],
       "packageVersion": undefined,
+      "relativedPath": "",
     },
   },
   "version": "2",
@@ -498,6 +518,7 @@ Object {
         ],
         "name": "plugin-d",
       },
+      "relativedPath": "../plugins/plugin_d",
     },
     "../plugins/preset_c": Object {
       "items": Array [
@@ -517,10 +538,12 @@ Object {
       "pluginMetadata": Object {
         "name": "preset_c",
       },
+      "relativedPath": "../plugins/preset_c",
     },
     "_app": Object {
       "items": Array [],
       "packageVersion": undefined,
+      "relativedPath": "",
     },
   },
   "version": "2",

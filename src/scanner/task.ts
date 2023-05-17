@@ -150,21 +150,32 @@ export class ScanTaskRunner {
     const { curPath = '', refName, isPackage } = taskItem;
     let basePath = curPath;
     if (!path.isAbsolute(basePath)) {
+      // basePath must be absolute path
       basePath = path.resolve(this.root, curPath);
     }
+
+    // pre-scan check for multi-version package
+    const relativedPath = path.relative(this.root, basePath);
     const packageVersion = await getPackageVersion(
       (refName === DEFAULT_APP_REF || !isPackage)
         ? basePath
         : refName,
     );
+
     if (this.refMap[refName]) {
       // Already scanned
+      if (refName === DEFAULT_APP_REF) {
+        // No need to check app level
+        return;
+      }
       const refItem = this.refMap[refName];
-      if (refItem.packageVersion) {
-        if (packageVersion && packageVersion !== refItem.packageVersion) {
-          // Do NOT allow multi-version of plugin package
-          throw new Error(`${refName} has multi version of ${packageVersion}, ${refItem.packageVersion}`);
-        }
+      if (refItem.packageVersion && packageVersion && packageVersion !== refItem.packageVersion) {
+        // Do NOT allow multi-version of plugin package by different version number
+        throw new Error(`${refName} has multi version of ${packageVersion}, ${refItem.packageVersion}`);
+      }
+      if (refItem.relativedPath && relativedPath && relativedPath !== refItem.relativedPath) {
+        // Do NOT allow multi-version of plugin package by different path
+        throw new Error(`${refName} has multi path with same version in ${relativedPath} and ${refItem.relativedPath}`);
       }
       return;
     }
@@ -179,6 +190,7 @@ export class ScanTaskRunner {
       unitName: refName,
     };
     const refItem: RefMapItem = {
+      relativedPath,
       packageVersion,
       items: [],
     };

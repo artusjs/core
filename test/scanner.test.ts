@@ -103,5 +103,21 @@ describe('test/scanner.test.ts', () => {
     });
     await expect(scanner.scan(path.resolve(__dirname, './fixtures/app_with_plugin_version_check'))).rejects.toThrowErrorMatchingSnapshot();
   });
+  it('should find multi path with same version and fail', async () => {
+    const scanner = new ArtusScanner({
+      needWriteFile: false,
+      configDir: 'config',
+      extensions: ['.ts'],
+      plugin: {
+        a: {
+          enable: true,
+          refName: 'test',
+          path: path.resolve(__dirname, './fixtures/plugins/plugin_a_same_ver'),
+        },
+      },
+    });
+    await expect(scanner.scan(path.resolve(__dirname, './fixtures/app_with_plugin_version_check'))).rejects.toThrowErrorMatchingSnapshot();
+  });
+
 });
 

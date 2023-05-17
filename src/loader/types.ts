@@ -6,6 +6,7 @@ import { PluginConfig, PluginMetadata } from '../plugin/types';
 export type PluginConfigEnvMap = Record<string, PluginConfig>;
 
 export interface RefMapItem {
+  relativedPath?: string;
   packageVersion?: string;
   pluginMetadata?: PluginMetadata;
   items: ManifestItem[];
