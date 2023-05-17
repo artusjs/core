@@ -195,10 +195,6 @@ Object {
 }
 `;
 
-exports[`test/scanner.test.ts should find multi path with same version and fail 1`] = `"test has multi path with same version in ../plugins/plugin_a_same_ver and ../plugins/plugin_a"`;
-
-exports[`test/scanner.test.ts should find multipie version and fail 1`] = `"test has multi version of 0.0.1-alpha.0, 0.0.1"`;
-
 exports[`test/scanner.test.ts should scan application with nesting preset a which defined in options 1`] = `
 Object {
   "pluginConfig": Object {

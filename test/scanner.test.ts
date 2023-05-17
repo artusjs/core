@@ -1,5 +1,6 @@
 import 'reflect-metadata';
 import { ArtusScanner } from '../src/scanner';
+import os from 'os';
 import path from 'path';
 import { DEFAULT_APP_REF, ScanPolicy } from '../src';
 import { formatManifestForWindowsTest } from './utils';
@@ -101,7 +102,7 @@ describe('test/scanner.test.ts', () => {
         },
       },
     });
-    await expect(scanner.scan(path.resolve(__dirname, './fixtures/app_with_plugin_version_check'))).rejects.toThrowErrorMatchingSnapshot();
+    await expect(scanner.scan(path.resolve(__dirname, './fixtures/app_with_plugin_version_check'))).rejects.toThrowError(new Error('test has multi version of 0.0.1-alpha.0, 0.0.1'));
   });
   it('should find multi path with same version and fail', async () => {
     const scanner = new ArtusScanner({
@@ -116,7 +117,13 @@ describe('test/scanner.test.ts', () => {
         },
       },
     });
-    await expect(scanner.scan(path.resolve(__dirname, './fixtures/app_with_plugin_version_check'))).rejects.toThrowErrorMatchingSnapshot();
+    await expect(scanner.scan(path.resolve(__dirname, './fixtures/app_with_plugin_version_check'))).rejects.toThrowError(
+      new Error(
+        os.platform() !== 'win32' ?
+          `test has multi path with same version in ../plugins/plugin_a_same_ver and ../plugins/plugin_a` :
+          `test has multi path with same version in ..\\plugins\\plugin_a_same_ver and ..\\plugins\\plugin_a`,
+      ),
+    );
   });
 
 });

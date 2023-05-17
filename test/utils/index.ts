@@ -41,6 +41,7 @@ export function formatManifestForWindowsTest(manifest: Manifest) {
   for (const [refName, refItem] of Object.entries(manifest.refMap)) {
     newRefMap[refName.replace(pathReg, '/')] = {
       ...refItem,
+      relativedPath: refItem.relativedPath.replace(pathReg, '/'),
       items: refItem.items.map(item => ({
         ...item,
         path: item.path.replace(pathReg, '/'),
