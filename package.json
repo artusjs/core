@@ -1,6 +1,6 @@
 {
   "name": "@artus/core",
-  "version": "1.0.9",
+  "version": "2.0.0",
   "description": "Core package of Artus",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -12,10 +12,6 @@
     "./injection": {
       "types": "./lib/injection.d.ts",
       "default": "./lib/injection.js"
-    },
-    "./pipeline": {
-      "types": "./lib/pipeline.d.ts",
-      "default": "./lib/pipeline.js"
     },
     "./utils/*": {
       "types": "./lib/utils/*.d.ts",
@@ -66,7 +62,6 @@
   },
   "dependencies": {
     "@artus/injection": "^0.5.1",
-    "@artus/pipeline": "^0.2.2",
     "deepmerge": "^4.2.2",
     "minimatch": "^5.0.1"
   },

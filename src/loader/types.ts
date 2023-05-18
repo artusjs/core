@@ -1,14 +1,26 @@
 import { Container } from '@artus/injection';
 import { ScanPolicy } from '../constant';
-import { PluginConfigItem } from '../plugin/types';
+import { PluginConfig, PluginMetadata } from '../plugin/types';
 
-interface Manifest {
+// Key: Env => PluginName => Value: PluginConfigItem
+export type PluginConfigEnvMap = Record<string, PluginConfig>;
+
+export interface RefMapItem {
+  relativedPath?: string;
+  packageVersion?: string;
+  pluginMetadata?: PluginMetadata;
   items: ManifestItem[];
-  pluginConfig?: Record<string, PluginConfigItem>;
-  relative?: boolean;
+}
+// Key: RefName => RefMapItem
+export type RefMap = Record<string, RefMapItem>;
+
+export interface Manifest {
+  version: '2';
+  pluginConfig: PluginConfigEnvMap;
+  refMap: RefMap;
 }
 
-interface ManifestItem<LoaderState = unknown> extends Record<string, any> {
+export interface ManifestItem<LoaderState = unknown> extends Record<string, any> {
   path: string;
   extname: string;
   filename: string;
@@ -18,7 +30,7 @@ interface ManifestItem<LoaderState = unknown> extends Record<string, any> {
   loaderState?: LoaderState;
 }
 
-interface LoaderFindOptions {
+export interface LoaderFindOptions {
   filename: string;
   root: string;
   baseDir: string;
@@ -26,32 +38,23 @@ interface LoaderFindOptions {
   policy?: ScanPolicy;
 }
 
-interface LoaderFindResult {
+export interface LoaderFindResult {
   loaderName: string;
   loaderState?: unknown;
 }
 
-interface LoaderHookUnit {
+export interface LoaderHookUnit {
   before?: Function;
   after?: Function;
 }
 
-interface LoaderConstructor {
-  new (container: Container): Loader;
+export interface LoaderConstructor {
+  new(container: Container): Loader;
   is?(opts: LoaderFindOptions): Promise<boolean>;
   onFind?(opts: LoaderFindOptions): Promise<any>;
 }
-interface Loader {
+export interface Loader {
   state?: any;
   load(item: ManifestItem): Promise<any>;
 }
 
-export {
-  Manifest,
-  ManifestItem,
-  LoaderHookUnit,
-  LoaderConstructor,
-  Loader,
-  LoaderFindOptions,
-  LoaderFindResult,
-};

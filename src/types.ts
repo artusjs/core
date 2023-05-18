@@ -1,7 +1,7 @@
 import { Container } from '@artus/injection';
-import { BaseContext } from '@artus/pipeline';
-import { HookFunction } from './lifecycle';
-import { Manifest } from './loader';
+import ConfigurationHandler, { ConfigObject } from './configuration';
+import { HookFunction, LifecycleManager } from './lifecycle';
+import { LoaderFactory, Manifest } from './loader';
 import { LoggerType } from './logger';
 
 export interface ApplicationLifecycle {
@@ -15,16 +15,19 @@ export interface ApplicationLifecycle {
 
 export interface ApplicationInitOptions {
   containerName?: string;
-  env: string;
+  env: string | string[];
 }
 
 export interface Application {
   container: Container;
 
   manifest?: Manifest;
-  config?: Record<string, any>;
 
   // getter
+  config: ConfigObject;
+  configurationHandler: ConfigurationHandler;
+  lifecycleManager: LifecycleManager;
+  loaderFactory: LoaderFactory;
   logger: LoggerType
 
   load(manifest: Manifest): Promise<this>;
@@ -32,8 +35,3 @@ export interface Application {
   registerHook(hookName: string, hookFn: HookFunction): void;
 }
 
-export interface TriggerType {
-  use(...args): void | Promise<void>;
-  initContext(...args): BaseContext | Promise<BaseContext>;
-  startPipeline(...args): Promise<void>;
-}

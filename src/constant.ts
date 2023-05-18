@@ -7,9 +7,7 @@ export enum ArtusInjectEnum {
   Application = 'artus#application',
   Config = 'artus#config',
   DefaultContainerName = 'artus#default_container',
-  Frameworks = 'artus#framework-config',
-  LifecycleManager = 'artus#lifecycle-manager',
-  Packages = 'artus#packages',
+  EnvList = 'artus#env_list',
 }
 
 export enum ARTUS_DEFAULT_CONFIG_ENV {
@@ -30,7 +28,6 @@ export const ARTUS_SERVER_ENV = 'ARTUS_SERVER_ENV';
 
 export const HOOK_NAME_META_PREFIX = 'hookName:';
 export const HOOK_FILE_LOADER = 'appHook:fileLoader';
-export const HOOK_CONFIG_HANDLE = 'appHook:configHandle::';
 
 export const DEFAULT_EXCLUDES = [
   'test',
@@ -43,6 +40,8 @@ export const DEFAULT_EXCLUDES = [
   'LICENSE',
   'pnpm-lock.yaml',
 ];
+export const DEFAULT_MODULE_EXTENSIONS = ['.js', '.json', '.node'];
+export const DEFAULT_APP_REF = '_app';
 
 export const FRAMEWORK_PATTERN = 'framework.*';
 export const PLUGIN_CONFIG_PATTERN = 'plugin.*';
@@ -62,5 +61,6 @@ export const DEFAULT_LOADER_LIST_WITH_ORDER = [
 ];
 
 export const DEFAULT_CONFIG_DIR = 'src/config';
+export const DEFAULT_MANIFEST_FILENAME = 'manifest.json';
 
 export const SHOULD_OVERWRITE_VALUE = 'shouldOverwrite';

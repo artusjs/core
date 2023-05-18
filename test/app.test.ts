@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import axios from 'axios';
 import assert from 'assert';
-import { ArtusInjectEnum, ConfigurationHandler } from '../src';
+import { ArtusApplication, ArtusInjectEnum, ConfigurationHandler, LifecycleManager, LoaderFactory } from '../src';
 
 describe('test/app.test.ts', () => {
   describe('app koa with ts', () => {
@@ -23,9 +23,10 @@ describe('test/app.test.ts', () => {
         } = await import('./fixtures/app_koa_with_ts/src/bootstrap');
 
         // Check Artus Default Class Inject to Contianer
-        expect(() => app.container.get(ArtusInjectEnum.Application)).not.toThrow();
-        expect(() => app.container.get(ArtusInjectEnum.LifecycleManager)).not.toThrow();
-        expect(() => app.container.get(ConfigurationHandler)).not.toThrow();
+        expect(app.container.get(ArtusInjectEnum.Application)).toBeInstanceOf(ArtusApplication);
+        expect(app.container.get(LifecycleManager)).toBeInstanceOf(LifecycleManager);
+        expect(app.container.get(LoaderFactory)).toBeInstanceOf(LoaderFactory);
+        expect(app.container.get(ConfigurationHandler)).toBeInstanceOf(ConfigurationHandler);
 
         await main();
         

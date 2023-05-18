@@ -1,0 +1,547 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test/scanner.test.ts should be scan application 1`] = `
+Object {
+  "pluginConfig": Object {
+    "default": Object {
+      "mysql": Object {
+        "enable": false,
+        "refName": "src/mysql_plugin",
+      },
+      "redis": Object {
+        "enable": true,
+        "refName": "src/redis_plugin",
+      },
+      "testDuplicate": Object {
+        "enable": false,
+        "refName": "@artus/injection",
+      },
+    },
+    "dev": Object {
+      "testDuplicate": Object {
+        "enable": true,
+        "refName": "src/test_duplicate_plugin",
+      },
+    },
+  },
+  "refMap": Object {
+    "@artus/injection": Object {
+      "items": Array [],
+      "packageVersion": undefined,
+      "relativedPath": "../../../node_modules/@artus/injection/lib",
+    },
+    "_app": Object {
+      "items": Array [
+        Object {
+          "extname": ".ts",
+          "filename": "config.default.ts",
+          "loader": "config",
+          "loaderState": Object {
+            "exportNames": Array [],
+          },
+          "path": "src/config/config.default",
+          "source": "app",
+          "unitName": "_app",
+        },
+        Object {
+          "extname": ".ts",
+          "filename": "config.dev.ts",
+          "loader": "config",
+          "loaderState": Object {
+            "exportNames": Array [],
+          },
+          "path": "src/config/config.dev",
+          "source": "app",
+          "unitName": "_app",
+        },
+        Object {
+          "extname": ".ts",
+          "filename": "plugin.default.ts",
+          "loader": "config",
+          "loaderState": Object {
+            "exportNames": Array [],
+          },
+          "path": "src/config/plugin.default",
+          "source": "app",
+          "unitName": "_app",
+        },
+        Object {
+          "extname": ".ts",
+          "filename": "plugin.dev.ts",
+          "loader": "config",
+          "loaderState": Object {
+            "exportNames": Array [],
+          },
+          "path": "src/config/plugin.dev",
+          "source": "app",
+          "unitName": "_app",
+        },
+        Object {
+          "extname": ".ts",
+          "filename": "hello.ts",
+          "loader": "module",
+          "loaderState": Object {
+            "exportNames": Array [
+              "default",
+            ],
+          },
+          "path": "src/controllers/hello",
+          "source": "app",
+          "unitName": "_app",
+        },
+        Object {
+          "extname": ".json",
+          "filename": "exception.json",
+          "loader": "exception",
+          "loaderState": Object {
+            "exportNames": Array [],
+          },
+          "path": "src/exception",
+          "source": "app",
+          "unitName": "_app",
+        },
+        Object {
+          "extname": ".ts",
+          "filename": "default.ts",
+          "loader": "exception-filter",
+          "loaderState": Object {
+            "exportNames": Array [
+              "MockExceptionFilter",
+            ],
+          },
+          "path": "src/filter/default",
+          "source": "app",
+          "unitName": "_app",
+        },
+        Object {
+          "extname": ".ts",
+          "filename": "koa_app.ts",
+          "loader": "module",
+          "loaderState": Object {
+            "exportNames": Array [
+              "default",
+            ],
+          },
+          "path": "src/koa_app",
+          "source": "app",
+          "unitName": "_app",
+        },
+        Object {
+          "extname": ".ts",
+          "filename": "lifecycle.ts",
+          "loader": "lifecycle-hook-unit",
+          "loaderState": Object {
+            "exportNames": Array [
+              "default",
+            ],
+          },
+          "path": "src/lifecycle",
+          "source": "app",
+          "unitName": "_app",
+        },
+        Object {
+          "extname": ".ts",
+          "filename": "hello.ts",
+          "loader": "module",
+          "loaderState": Object {
+            "exportNames": Array [
+              "default",
+            ],
+          },
+          "path": "src/services/hello",
+          "source": "app",
+          "unitName": "_app",
+        },
+      ],
+      "packageVersion": undefined,
+      "relativedPath": "",
+    },
+    "src/redis_plugin": Object {
+      "items": Array [
+        Object {
+          "extname": ".ts",
+          "filename": "app.ts",
+          "loader": "lifecycle-hook-unit",
+          "loaderState": Object {
+            "exportNames": Array [
+              "default",
+            ],
+          },
+          "path": "src/redis_plugin/app",
+          "source": "plugin",
+          "unitName": "redis",
+        },
+      ],
+      "packageVersion": undefined,
+      "pluginMetadata": Object {
+        "exclude": Array [
+          "not_to_be_scanned_dir",
+          "not_to_be_scanned_file.ts",
+        ],
+        "name": "redis",
+      },
+      "relativedPath": "src/redis_plugin",
+    },
+    "src/test_duplicate_plugin": Object {
+      "items": Array [],
+      "packageVersion": undefined,
+      "pluginMetadata": Object {
+        "name": "testDuplicate",
+      },
+      "relativedPath": "src/test_duplicate_plugin",
+    },
+  },
+  "version": "2",
+}
+`;
+
+exports[`test/scanner.test.ts should scan application with nesting preset a which defined in options 1`] = `
+Object {
+  "pluginConfig": Object {
+    "default": Object {
+      "a": Object {
+        "enable": false,
+        "refName": "../plugins/plugin_a",
+      },
+      "b": Object {
+        "enable": false,
+        "refName": "../plugins/plugin_b",
+      },
+      "c": Object {
+        "enable": false,
+        "refName": "../plugins/plugin_c",
+      },
+      "d": Object {
+        "enable": true,
+        "refName": "../plugins/plugin_d",
+      },
+      "plugin-with-entry-a": Object {
+        "enable": true,
+        "refName": "../plugins/plugin_with_entry_a",
+      },
+      "plugin-with-entry-b": Object {
+        "enable": true,
+        "refName": "../plugins/plugin_with_entry_b",
+      },
+      "plugin-with-entry-c": Object {
+        "enable": false,
+        "refName": "../plugins/plugin_with_entry_c",
+      },
+      "preset_a": Object {
+        "enable": true,
+        "refName": "../plugins/preset_a",
+      },
+      "preset_b": Object {
+        "enable": true,
+        "refName": "../plugins/preset_b",
+      },
+      "preset_c": Object {
+        "enable": true,
+        "refName": "../plugins/preset_c",
+      },
+    },
+  },
+  "refMap": Object {
+    "../plugins/plugin_a": Object {
+      "items": Array [],
+      "packageVersion": "0.0.1",
+      "pluginMetadata": Object {
+        "dependencies": Array [
+          Object {
+            "name": "plugin-b",
+          },
+          Object {
+            "name": "plugin-c",
+            "optional": true,
+          },
+        ],
+        "name": "plugin-a",
+      },
+      "relativedPath": "../plugins/plugin_a",
+    },
+    "../plugins/plugin_b": Object {
+      "items": Array [],
+      "packageVersion": undefined,
+      "pluginMetadata": Object {
+        "dependencies": Array [
+          Object {
+            "name": "plugin-c",
+          },
+        ],
+        "name": "plugin-b",
+      },
+      "relativedPath": "../plugins/plugin_b",
+    },
+    "../plugins/plugin_d": Object {
+      "items": Array [],
+      "packageVersion": undefined,
+      "pluginMetadata": Object {
+        "dependencies": Array [
+          Object {
+            "name": "plugin-e",
+            "optional": true,
+          },
+        ],
+        "name": "plugin-d",
+      },
+      "relativedPath": "../plugins/plugin_d",
+    },
+    "../plugins/plugin_with_entry_a": Object {
+      "items": Array [],
+      "packageVersion": undefined,
+      "pluginMetadata": Object {
+        "name": "plugin-with-entry-a",
+      },
+      "relativedPath": "../plugins/plugin_with_entry_a/mock_lib",
+    },
+    "../plugins/plugin_with_entry_b": Object {
+      "items": Array [],
+      "packageVersion": undefined,
+      "pluginMetadata": Object {
+        "name": "plugin-with-entry-b",
+      },
+      "relativedPath": "../plugins/plugin_with_entry_b/mock_lib",
+    },
+    "../plugins/preset_a": Object {
+      "items": Array [
+        Object {
+          "extname": ".ts",
+          "filename": "plugin.default.ts",
+          "loader": "config",
+          "loaderState": Object {
+            "exportNames": Array [],
+          },
+          "path": "../plugins/preset_a/config/plugin.default",
+          "source": "plugin",
+          "unitName": "preset_a",
+        },
+      ],
+      "packageVersion": undefined,
+      "pluginMetadata": Object {
+        "name": "preset_a",
+      },
+      "relativedPath": "../plugins/preset_a",
+    },
+    "../plugins/preset_b": Object {
+      "items": Array [
+        Object {
+          "extname": ".ts",
+          "filename": "plugin.default.ts",
+          "loader": "config",
+          "loaderState": Object {
+            "exportNames": Array [],
+          },
+          "path": "../plugins/preset_b/config/plugin.default",
+          "source": "plugin",
+          "unitName": "preset_b",
+        },
+      ],
+      "packageVersion": undefined,
+      "pluginMetadata": Object {
+        "name": "preset_b",
+      },
+      "relativedPath": "../plugins/preset_b",
+    },
+    "../plugins/preset_c": Object {
+      "items": Array [
+        Object {
+          "extname": ".ts",
+          "filename": "plugin.default.ts",
+          "loader": "config",
+          "loaderState": Object {
+            "exportNames": Array [],
+          },
+          "path": "../plugins/preset_c/config/plugin.default",
+          "source": "plugin",
+          "unitName": "preset_c",
+        },
+      ],
+      "packageVersion": undefined,
+      "pluginMetadata": Object {
+        "name": "preset_c",
+      },
+      "relativedPath": "../plugins/preset_c",
+    },
+    "_app": Object {
+      "items": Array [],
+      "packageVersion": undefined,
+      "relativedPath": "",
+    },
+  },
+  "version": "2",
+}
+`;
+
+exports[`test/scanner.test.ts should scan application with single preset b which defined in config 1`] = `
+Object {
+  "pluginConfig": Object {
+    "default": Object {
+      "a": Object {
+        "enable": true,
+        "refName": "../plugins/plugin_a",
+      },
+      "b": Object {
+        "enable": true,
+        "refName": "../plugins/plugin_b",
+      },
+      "plugin-with-entry-b": Object {
+        "enable": true,
+        "refName": "../plugins/plugin_with_entry_b",
+      },
+      "preset_b": Object {
+        "enable": true,
+        "refName": "../plugins/preset_b",
+      },
+    },
+  },
+  "refMap": Object {
+    "../plugins/plugin_a": Object {
+      "items": Array [],
+      "packageVersion": "0.0.1",
+      "pluginMetadata": Object {
+        "dependencies": Array [
+          Object {
+            "name": "plugin-b",
+          },
+          Object {
+            "name": "plugin-c",
+            "optional": true,
+          },
+        ],
+        "name": "plugin-a",
+      },
+      "relativedPath": "../plugins/plugin_a",
+    },
+    "../plugins/plugin_b": Object {
+      "items": Array [],
+      "packageVersion": undefined,
+      "pluginMetadata": Object {
+        "dependencies": Array [
+          Object {
+            "name": "plugin-c",
+          },
+        ],
+        "name": "plugin-b",
+      },
+      "relativedPath": "../plugins/plugin_b",
+    },
+    "../plugins/plugin_with_entry_b": Object {
+      "items": Array [],
+      "packageVersion": undefined,
+      "pluginMetadata": Object {
+        "name": "plugin-with-entry-b",
+      },
+      "relativedPath": "../plugins/plugin_with_entry_b/mock_lib",
+    },
+    "../plugins/preset_b": Object {
+      "items": Array [
+        Object {
+          "extname": ".ts",
+          "filename": "plugin.default.ts",
+          "loader": "config",
+          "loaderState": Object {
+            "exportNames": Array [],
+          },
+          "path": "../plugins/preset_b/config/plugin.default",
+          "source": "plugin",
+          "unitName": "preset_b",
+        },
+      ],
+      "packageVersion": undefined,
+      "pluginMetadata": Object {
+        "name": "preset_b",
+      },
+      "relativedPath": "../plugins/preset_b",
+    },
+    "_app": Object {
+      "items": Array [
+        Object {
+          "extname": ".ts",
+          "filename": "plugin.default.ts",
+          "loader": "config",
+          "loaderState": Object {
+            "exportNames": Array [],
+          },
+          "path": "config/plugin.default",
+          "source": "app",
+          "unitName": "_app",
+        },
+      ],
+      "packageVersion": undefined,
+      "relativedPath": "",
+    },
+  },
+  "version": "2",
+}
+`;
+
+exports[`test/scanner.test.ts should scan application with single preset c which defined in options 1`] = `
+Object {
+  "pluginConfig": Object {
+    "default": Object {
+      "b": Object {
+        "enable": false,
+        "refName": "../plugins/plugin_b",
+      },
+      "c": Object {
+        "enable": false,
+        "refName": "../plugins/plugin_c",
+      },
+      "d": Object {
+        "enable": true,
+        "refName": "../plugins/plugin_d",
+      },
+      "plugin-with-entry-c": Object {
+        "enable": false,
+        "refName": "../plugins/plugin_with_entry_c",
+      },
+      "preset_c": Object {
+        "enable": true,
+        "refName": "../plugins/preset_c",
+      },
+    },
+  },
+  "refMap": Object {
+    "../plugins/plugin_d": Object {
+      "items": Array [],
+      "packageVersion": undefined,
+      "pluginMetadata": Object {
+        "dependencies": Array [
+          Object {
+            "name": "plugin-e",
+            "optional": true,
+          },
+        ],
+        "name": "plugin-d",
+      },
+      "relativedPath": "../plugins/plugin_d",
+    },
+    "../plugins/preset_c": Object {
+      "items": Array [
+        Object {
+          "extname": ".ts",
+          "filename": "plugin.default.ts",
+          "loader": "config",
+          "loaderState": Object {
+            "exportNames": Array [],
+          },
+          "path": "../plugins/preset_c/config/plugin.default",
+          "source": "plugin",
+          "unitName": "preset_c",
+        },
+      ],
+      "packageVersion": undefined,
+      "pluginMetadata": Object {
+        "name": "preset_c",
+      },
+      "relativedPath": "../plugins/preset_c",
+    },
+    "_app": Object {
+      "items": Array [],
+      "packageVersion": undefined,
+      "relativedPath": "",
+    },
+  },
+  "version": "2",
+}
+`;

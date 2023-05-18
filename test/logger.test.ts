@@ -4,12 +4,13 @@ import { LoggerLevel, LoggerOptions } from '../src/logger';
 
 import TestLoggerClazz from './fixtures/logger/src/test_clazz';
 import TestCustomLoggerClazz from './fixtures/logger/src/test_custom_clazz';
+import { DEFAULT_EMPTY_MANIFEST } from './utils';
 
 interface AppConfigWithLoggerOptions extends Record<string, any> {
   logger?: LoggerOptions;
 }
 
-const _getAppWithConfig = async (config: AppConfigWithLoggerOptions = {}, manifest: Manifest = { items: [] }) => {
+const _getAppWithConfig = async (config: AppConfigWithLoggerOptions = {}, manifest: Manifest = DEFAULT_EMPTY_MANIFEST) => {
   const app = new ArtusApplication();
   await app.load(manifest);
   app.container.set({

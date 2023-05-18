@@ -1,45 +1,44 @@
 import * as path from 'path';
-import { isInjectable, Container } from '@artus/injection';
-import { ArtusInjectEnum, DEFAULT_LOADER, HOOK_FILE_LOADER, LOADER_NAME_META, ScanPolicy, DEFAULT_LOADER_LIST_WITH_ORDER } from '../constant';
+import { Container, Injectable, Inject, ScopeEnum } from '@artus/injection';
+import { DEFAULT_LOADER, LOADER_NAME_META, DEFAULT_LOADER_LIST_WITH_ORDER, DEFAULT_APP_REF } from '../constant';
 import {
   Manifest,
   ManifestItem,
   LoaderConstructor,
   Loader,
-  LoaderFindOptions,
-  LoaderFindResult,
 } from './types';
 import ConfigurationHandler from '../configuration';
 import { LifecycleManager } from '../lifecycle';
-import compatibleRequire from '../utils/compatible_require';
 import LoaderEventEmitter, { LoaderEventListener } from './loader_event';
-import { isClass } from '../utils/is';
+import { PluginConfigItem, PluginFactory } from '../plugin';
+import { Logger, LoggerType } from '../logger';
 
+@Injectable({
+  scope: ScopeEnum.SINGLETON,
+})
 export class LoaderFactory {
-  private container: Container;
-  private static loaderClazzMap: Map<string, LoaderConstructor> = new Map();
-  private loaderEmitter: LoaderEventEmitter;
+  public static loaderClazzMap: Map<string, LoaderConstructor> = new Map();
 
   static register(clazz: LoaderConstructor) {
     const loaderName = Reflect.getMetadata(LOADER_NAME_META, clazz);
     this.loaderClazzMap.set(loaderName, clazz);
   }
 
-  constructor(container: Container) {
-    this.container = container;
-    this.loaderEmitter = new LoaderEventEmitter();
-  }
+  @Inject()
+  private container: Container;
 
-  static create(container: Container): LoaderFactory {
-    return new LoaderFactory(container);
-  }
+  private loaderEmitter: LoaderEventEmitter = new LoaderEventEmitter();
 
   get lifecycleManager(): LifecycleManager {
-    return this.container.get(ArtusInjectEnum.LifecycleManager);
+    return this.container.get(LifecycleManager);
   }
 
   get configurationHandler(): ConfigurationHandler {
     return this.container.get(ConfigurationHandler);
+  }
+
+  get logger(): LoggerType {
+    return this.container.get(Logger);
   }
 
   addLoaderListener(eventName: string, listener: LoaderEventListener) {
@@ -60,8 +59,53 @@ export class LoaderFactory {
     return new LoaderClazz(this.container);
   }
 
-  async loadManifest(manifest: Manifest, root?: string): Promise<void> {
-    await this.loadItemList(manifest.items, root);
+  async loadManifest(
+    manifest: Manifest,
+    root: string = process.cwd(),
+  ): Promise<void> {
+    if (!('version' in manifest) || manifest.version !== '2') {
+      throw new Error(`invalid manifest, @artus/core@2.x only support manifest version 2.`);
+    }
+    // Manifest Version 2 is supported mainly
+
+    // Merge plugin config with ref
+    for (const [env, pluginConfig] of Object.entries(manifest.pluginConfig ?? {})) {
+      this.configurationHandler.setConfig(env, {
+        plugin: pluginConfig,
+      });
+    }
+    const mergedPluginConfig: Record<string, PluginConfigItem> = Object.assign(
+      {},
+      this.configurationHandler.getMergedConfig()?.plugin ?? {},
+    ); // shallow copy to avoid side effect of writing metadata
+    for (const [pluginName, pluginConfigItem] of Object.entries(mergedPluginConfig)) {
+      const refItem = manifest.refMap[pluginConfigItem.refName];
+      if (!refItem) {
+        continue;
+      }
+      mergedPluginConfig[pluginName] = {
+        ...pluginConfigItem,
+        metadata: refItem.pluginMetadata, 
+      };
+    }
+
+    // sort ref(plugin) firstly
+    const sortedPluginList = await PluginFactory.createFromConfig(mergedPluginConfig, {
+      logger: this.logger,
+    });
+
+    // Merge itemList
+    let itemList: ManifestItem[] = [];
+    const sortedRefNameList: (string | null)[] = sortedPluginList
+      .map(plugin => ((plugin.enable && mergedPluginConfig[plugin.name]?.refName) || null))
+      .concat([DEFAULT_APP_REF]);
+    for (const refName of sortedRefNameList) {
+      const refItem = manifest.refMap[refName];
+      itemList = itemList.concat(refItem.items);
+    }
+
+    // Load final item list(non-ordered)
+    await this.loadItemList(itemList, root);
   }
 
   async loadItemList(itemList: ManifestItem[] = [], root?: string): Promise<void> {
@@ -73,15 +117,19 @@ export class LoaderFactory {
         // compatible for custom loader
         itemMap.set(item.loader, []);
       }
+      let resolvedPath = item.path;
+      if (root && !path.isAbsolute(resolvedPath)) {
+        resolvedPath = path.resolve(root, resolvedPath);
+      }
       itemMap.get(item.loader)!.push({
         ...item,
-        path: root ? path.join(root, item.path) : item.path,
+        path: resolvedPath,
         loader: item.loader ?? DEFAULT_LOADER,
       });
     }
 
     // trigger loader
-    for (const [ loaderName, itemList ] of itemMap) {
+    for (const [loaderName, itemList] of itemMap) {
       await this.loaderEmitter.emitBefore(loaderName);
 
       for (const item of itemList) {
@@ -100,78 +148,5 @@ export class LoaderFactory {
     const loader = this.getLoader(loaderName);
     loader.state = item.loaderState;
     return loader.load(item);
-  }
-
-  async findLoader(opts: LoaderFindOptions): Promise<LoaderFindResult | null> {
-    const { loader: loaderName, exportNames } = await this.findLoaderName(opts);
-
-    if (!loaderName) {
-      return null;
-    }
-
-    const loaderClazz = LoaderFactory.loaderClazzMap.get(loaderName);
-    if (!loaderClazz) {
-      throw new Error(`Cannot find loader '${loaderName}'`);
-    }
-    const result: LoaderFindResult = {
-      loaderName,
-      loaderState: { exportNames },
-    };
-    if (loaderClazz.onFind) {
-      result.loaderState = await loaderClazz.onFind(opts);
-    }
-    return result;
-  }
-
-  async findLoaderName(opts: LoaderFindOptions): Promise<{ loader: string | null, exportNames: string[] }> {
-    for (const [loaderName, LoaderClazz] of LoaderFactory.loaderClazzMap.entries()) {
-      if (await LoaderClazz.is?.(opts)) {
-        return { loader: loaderName, exportNames: [] };
-      }
-    }
-    const { root, filename, policy = ScanPolicy.All } = opts;
-
-    // require file for find loader
-    const allExport = await compatibleRequire(path.join(root, filename), true);
-    const exportNames: string[] = [];
-
-    let loaders = Object.entries(allExport)
-      .map(([name, targetClazz]) => {
-        if (!isClass(targetClazz)) {
-          // The file is not export with default class
-          return null;
-        }
-
-        if (policy === ScanPolicy.NamedExport && name === 'default') {
-          return null;
-        }
-
-        if (policy === ScanPolicy.DefaultExport && name !== 'default') {
-          return null;
-        }
-
-        // get loader from reflect metadata
-        const loaderMd = Reflect.getMetadata(HOOK_FILE_LOADER, targetClazz);
-        if (loaderMd?.loader) {
-          exportNames.push(name);
-          return loaderMd.loader;
-        }
-
-        // default loder with @Injectable
-        const injectableMd = isInjectable(targetClazz);
-        if (injectableMd) {
-          exportNames.push(name);
-          return DEFAULT_LOADER;
-        }
-      })
-      .filter(v => v);
-
-    loaders = Array.from(new Set(loaders));
-
-    if (loaders.length > 1) {
-      throw new Error(`Not support multiple loaders for ${path.join(root, filename)}`);
-    }
-
-    return { loader: loaders[0] ?? null, exportNames };
   }
 }

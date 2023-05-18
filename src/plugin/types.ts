@@ -18,11 +18,14 @@ export interface PluginDependencyItem {
 }
 
 export interface PluginConfigItem {
-  enable: boolean;
+  enable?: boolean;
   path?: string;
   package?: string;
+  refName?: string;
+  metadata?: PluginMetadata;
 }
 
+export type PluginConfig = Record<string, PluginConfigItem>;
 export type PluginMap = Map<string, PluginType>;
 
 export interface PluginType {

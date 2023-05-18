@@ -1,103 +1,99 @@
 import 'reflect-metadata';
 import * as path from 'path';
 import *  as fs from 'fs/promises';
-import { existsSync } from 'fs';
-import { Container } from '@artus/injection';
-import {
-  ArtusInjectEnum,
-  DEFAULT_LOADER,
-  PLUGIN_META_FILENAME,
-} from '../constant';
-import { LoaderFactory, ManifestItem } from '../loader';
-import { WalkOptions } from './types';
 import { isMatch } from '../utils';
+import compatibleRequire from '../utils/compatible_require';
+import { PLUGIN_META_FILENAME } from '../constant';
+import { PluginConfigItem } from '../plugin';
+import { getInlinePackageEntryPath, getPackagePath } from '../plugin/common';
+import { Application } from '../types';
+import { ManifestItem } from '../loader';
 
-export class ScanUtils {
-  static loaderFactory: LoaderFactory = LoaderFactory.create(new Container(ArtusInjectEnum.DefaultContainerName));
+export const getPackageVersion = async (basePath: string): Promise<string | undefined> => {
+  try {
+    const packageJsonPath = path.resolve(basePath, 'package.json');
+    const packageJson = await compatibleRequire(packageJsonPath);
+    return packageJson?.version;
+  } catch (error) {
+    return undefined;
+  }
+};
 
-  static async walk(root: string, options: WalkOptions) {
-    const { source, unitName, baseDir, configDir } = options;
-    if (!existsSync(root)) {
-      // TODO: use artus logger instead
-      console.warn(`[scan->walk] ${root} is not exists.`);
-      return;
-    }
+export const existsAsync = async (filePath: string): Promise<boolean> => {
+  try {
+    await fs.access(filePath);
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
 
-    const stat = await fs.stat(root);
-    if (!stat.isDirectory()) {
-      return;
-    }
-
-    const items = await fs.readdir(root);
-    for (const item of items) {
-      const realPath = path.resolve(root, item);
-      const extname = path.extname(realPath);
-      if (this.isExclude(item, extname, options.exclude, options.extensions)) {
-        continue;
-      }
-      const itemStat = await fs.stat(realPath);
-      if (itemStat.isDirectory()) {
-        // ignore plugin dir
-        if (this.exist(realPath, [PLUGIN_META_FILENAME])) {
-          continue;
-        }
-        await ScanUtils.walk(realPath, options);
-        continue;
-      }
-
-      if (itemStat.isFile()) {
-        if (!extname) {
-          // Exclude file without extname
-          continue;
-        }
-        const filename = path.basename(realPath);
-        const filenameWithoutExt = path.basename(realPath, extname);
-        const loaderFindResult = await ScanUtils.loaderFactory.findLoader({
-          filename,
-          root,
-          baseDir,
-          configDir,
-          policy: options.policy,
-        });
-        if (!loaderFindResult) {
-          continue;
-        }
-        const { loaderName, loaderState } = loaderFindResult;
-        const item: ManifestItem = {
-          path: options.extensions.includes(extname) ? path.resolve(root, filenameWithoutExt) : realPath,
-          extname,
-          filename,
-          loader: loaderName,
-          source,
-        };
-        if (loaderState) {
-          item.loaderState = loaderState;
-        }
-        unitName && (item.unitName = unitName);
-        const itemList = options.itemMap.get(item.loader ?? DEFAULT_LOADER);
-        if (Array.isArray(itemList)) {
-          itemList.push(item);
-        }
-      }
-    }
+export const isExclude = (targetPath: string, exclude: string[], extensions: string[]): boolean => {
+  let result = false;
+  if (!result && exclude) {
+    result = isMatch(targetPath, exclude, true);
   }
 
-  static isExclude(filename: string, extname: string,
-    exclude: string[], extensions: string[]): boolean {
-    let result = false;
-    if (!result && exclude) {
-      result = isMatch(filename, exclude);
-    }
-
-    if (!result && extname) {
-      result = !extensions.includes(extname);
-    }
-    return result;
+  const extname = path.extname(targetPath);
+  if (!result && extname) {
+    result = !extensions.includes(extname);
   }
+  return result;
+};
 
-  static exist(dir: string, filenames: string[]): boolean {
-    return filenames.some(filename => {
-      return existsSync(path.resolve(dir, `${filename}`));
-    });
+export const isPluginAsync = (basePath: string): Promise<boolean> => {
+  return existsAsync(path.resolve(basePath, PLUGIN_META_FILENAME));
+};
+
+export const loadConfigItemList = async <T = Record<string, any>>(configItemList: ManifestItem[], app: Application): Promise<Record<string, T>> => {
+  if (!configItemList.length) {
+    return {};
   }
-}
+  const enabledLifecycleManager = app.lifecycleManager.enable;
+  app.lifecycleManager.enable = false;
+  await app.loaderFactory.loadItemList(configItemList);
+  app.lifecycleManager.enable = enabledLifecycleManager;
+  return Object.fromEntries(app.configurationHandler.configStore.entries()) as Record<string, T>;
+};
+
+export const resolvePluginConfigItemRef = async (
+  pluginConfigItem: PluginConfigItem,
+  baseDir: string,
+  root: string,
+): Promise<{
+  name: string;
+  path: string;
+  isPackage: boolean;
+} | null> => {
+  if (pluginConfigItem.refName) {
+    // For Unit-test
+    return {
+      name: pluginConfigItem.refName,
+      path: pluginConfigItem.path ?? pluginConfigItem.refName,
+      isPackage: !!pluginConfigItem.package,
+    };
+  }
+  if (pluginConfigItem.package) {
+    const refPath = getPackagePath(pluginConfigItem.package, [baseDir]);
+    return {
+      name: pluginConfigItem.package,
+      path: refPath,
+      isPackage: true,
+    };
+  } else if (pluginConfigItem.path) {
+    const refName = path.isAbsolute(pluginConfigItem.path) ? path.relative(root, pluginConfigItem.path) : pluginConfigItem.path;
+    let refPath = refName;
+
+    const packageJsonPath = path.resolve(pluginConfigItem.path, 'package.json');
+    if (await existsAsync(packageJsonPath)) {
+      refPath = await getInlinePackageEntryPath(pluginConfigItem.path);
+    }
+    return {
+      name: refName,
+      path: refPath,
+      isPackage: false,
+    };
+  }
+  return null;
+};
+
