@@ -248,8 +248,6 @@ export class ScanTaskRunner {
       const taskItem = this.taskQueue.shift();
       await this.run(taskItem);
     }
-    // Clean up
-    this.app.configurationHandler.clearStore();
   }
 
   public dump(): Manifest {

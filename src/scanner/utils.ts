@@ -8,6 +8,7 @@ import { PluginConfigItem } from '../plugin';
 import { getInlinePackageEntryPath, getPackagePath } from '../plugin/common';
 import { Application } from '../types';
 import { ManifestItem } from '../loader';
+import { ConfigObject } from '../configuration';
 
 export const getPackageVersion = async (basePath: string): Promise<string | undefined> => {
   try {
@@ -45,15 +46,26 @@ export const isPluginAsync = (basePath: string): Promise<boolean> => {
   return existsAsync(path.resolve(basePath, PLUGIN_META_FILENAME));
 };
 
-export const loadConfigItemList = async <T = Record<string, any>>(configItemList: ManifestItem[], app: Application): Promise<Record<string, T>> => {
+export const loadConfigItemList = async <T = ConfigObject>(configItemList: ManifestItem[], app: Application): Promise<Record<string, T>> => {
   if (!configItemList.length) {
     return {};
   }
+
+  // Use temp Map to store config
+  const configEnvMap: Map<string, T> = new Map();
+  const stashedConfigStore = app.configurationHandler.configStore;
+  app.configurationHandler.configStore = configEnvMap;
+
+  // Load all config items without hook
   const enabledLifecycleManager = app.lifecycleManager.enable;
   app.lifecycleManager.enable = false;
   await app.loaderFactory.loadItemList(configItemList);
   app.lifecycleManager.enable = enabledLifecycleManager;
-  return Object.fromEntries(app.configurationHandler.configStore.entries()) as Record<string, T>;
+
+  // Restore config store
+  app.configurationHandler.configStore = stashedConfigStore;
+
+  return Object.fromEntries(configEnvMap.entries());
 };
 
 export const resolvePluginConfigItemRef = async (
