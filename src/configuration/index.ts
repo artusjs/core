@@ -34,14 +34,6 @@ export default class ConfigurationHandler {
     return mergeConfig(defaultConfig, ...envConfigList);
   }
 
-  getAllConfig(): ConfigObject {
-    const defaultConfig = this.configStore.get(ARTUS_DEFAULT_CONFIG_ENV.DEFAULT) ?? {};
-    const keys = Array.from(this.configStore.keys()).filter(
-      key => key !== ARTUS_DEFAULT_CONFIG_ENV.DEFAULT,
-    );
-    return mergeConfig(defaultConfig, ...keys.map(key => this.configStore.get(key) ?? {}));
-  }
-
   clearStore(): void {
     this.configStore.clear();
   }
