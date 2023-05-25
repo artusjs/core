@@ -3,7 +3,7 @@ name: NPM Publish
 on:
   release:
     # This specifies that the build will be triggered when we publish a release
-    types: 
+    types:
       - published
 
 jobs:
@@ -30,6 +30,7 @@ jobs:
         # Specifies the registry, this field is required!
         registry-url: https://registry.npmjs.org/
     # clean install of your projects' deps. We use "npm ci" to avoid package lock changes
+    - run: npm install -g npm@latest
     - run: npm install
     # set up git since we will later push to the repo
     - run: git config --global user.name "Artus Version Bot"
