@@ -27,6 +27,8 @@ describe('test/exception_filter.test.ts', () => {
         ['custom', 'TestCustomError'],
         ['wrapped', 'APP:WRAPPED_ERROR'],
         ['APP:TEST_ERROR', 'APP:TEST_ERROR'],
+        ['inherit', 'TestInheritError'],
+        ['defaultInherit', 'TestDefaultInheritError'],
       ]) {
         const mockErrorService = app.container.get(MockErrorService);
         try {
