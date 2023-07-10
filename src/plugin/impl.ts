@@ -51,7 +51,12 @@ export class Plugin implements PluginType {
   }
 
   public checkDepExisted(pluginMap: PluginMap) {
-    for (const { name: pluginName, optional } of this.metadata.dependencies ?? []) {
+    if (!this.metadata.dependencies) {
+      return;
+    }
+
+    for (let i = 0; i < this.metadata.dependencies.length; i++) {
+      const { name: pluginName, optional } = this.metadata.dependencies[i];
       const instance = pluginMap.get(pluginName);
       if (!instance || !instance.enable) {
         if (optional) {
@@ -59,13 +64,16 @@ export class Plugin implements PluginType {
         } else {
           throw new Error(`Plugin ${this.name} need have dependency: ${pluginName}.`);
         }
+      } else {
+        // Plugin exist and enabled, need calc edge
+        this.metadata.dependencies[i]._enabled = true;
       }
     }
   }
 
   public getDepEdgeList(): [string, string][] {
     return this.metadata.dependencies
-      ?.filter(({ optional }) => !optional)
+      ?.filter(({ optional, _enabled }) => !optional || _enabled)
       ?.map(({ name: depPluginName }) => [this.name, depPluginName]) ?? [];
   }
 

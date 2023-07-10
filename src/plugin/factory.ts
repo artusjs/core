@@ -20,9 +20,11 @@ export class PluginFactory {
     let pluginDepEdgeList: [string, string][] = [];
     // Topological sort plugins
     for (const [_name, pluginInstance] of pluginInstanceMap) {
+      console.log(pluginInstance);
       pluginInstance.checkDepExisted(pluginInstanceMap);
       pluginDepEdgeList = pluginDepEdgeList.concat(pluginInstance.getDepEdgeList());
     }
+    console.log(pluginDepEdgeList);
     const pluginSortResult: string[] = topologicalSort(pluginInstanceMap, pluginDepEdgeList);
     if (pluginSortResult.length !== pluginInstanceMap.size) {
       const diffPlugin = [...pluginInstanceMap.keys()].filter(name => !pluginSortResult.includes(name));

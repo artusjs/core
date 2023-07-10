@@ -15,6 +15,9 @@ export interface PluginMetadata {
 export interface PluginDependencyItem {
   name: string;
   optional?: boolean;
+
+  // Only exist on runtime, cannot config in meta.json
+  _enabled?: boolean;
 }
 
 export interface PluginConfigItem {
