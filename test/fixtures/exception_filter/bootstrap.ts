@@ -24,6 +24,8 @@ async function main() {
                 "TestAppCodeExceptionHandler",
                 "TestWrappedExceptionHandler",
                 "TestCustomExceptionHandler",
+                "TestDefaultInheritExceptionHandler",
+                "TestInheritExceptionHandler",
               ],
             },
             source: "app",

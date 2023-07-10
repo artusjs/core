@@ -1,6 +1,6 @@
 import { ArtusStdError, Catch, Inject } from '../../../src';
 import { ExceptionFilterType } from '../../../src/exception/types';
-import { TestCustomError, TestWrappedError } from './error';
+import { TestBaseError, TestCustomError, TestWrappedError } from './error';
 
 @Catch()
 export class TestDefaultExceptionHandler implements ExceptionFilterType {
@@ -38,6 +38,26 @@ export class TestCustomExceptionHandler implements ExceptionFilterType {
   mockSet: Set<string>;
 
   async catch(err: TestCustomError) {
+    this.mockSet.add(err.name);
+  }
+}
+
+@Catch(Error)
+export class TestDefaultInheritExceptionHandler implements ExceptionFilterType {
+  @Inject('mock_exception_set')
+  mockSet: Set<string>;
+
+  async catch(err: Error) {
+    this.mockSet.add(err.name);
+  }
+}
+
+@Catch(TestBaseError)
+export class TestInheritExceptionHandler implements ExceptionFilterType {
+  @Inject('mock_exception_set')
+  mockSet: Set<string>;
+
+  async catch(err: TestBaseError) {
     this.mockSet.add(err.name);
   }
 }

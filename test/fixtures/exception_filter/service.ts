@@ -1,6 +1,6 @@
 import { Injectable } from '@artus/injection';
 import { ArtusStdError } from '../../../src';
-import { TestCustomError, TestWrappedError } from './error';
+import { TestCustomError, TestDefaultInheritError, TestInheritError, TestWrappedError } from './error';
 
 @Injectable()
 export default class MockErrorService {
@@ -13,6 +13,10 @@ export default class MockErrorService {
         throw new TestCustomError();
       case "wrapped":
         throw new TestWrappedError();
+      case "inherit":
+        throw new TestInheritError();
+      case "defaultInherit":
+        throw new TestDefaultInheritError();
       default:
         throw new ArtusStdError(target);
     }
