@@ -278,7 +278,7 @@ Object {
       "pluginMetadata": Object {
         "dependencies": Array [
           Object {
-            "name": "plugin-e",
+            "name": "plugin-c",
             "optional": true,
           },
         ],
@@ -508,7 +508,7 @@ Object {
       "pluginMetadata": Object {
         "dependencies": Array [
           Object {
-            "name": "plugin-e",
+            "name": "plugin-c",
             "optional": true,
           },
         ],

@@ -2,7 +2,7 @@
   "name": "plugin-d",
   "dependencies": [
       {
-          "name": "plugin-e",
+          "name": "plugin-c",
           "optional": true
       }
   ]
