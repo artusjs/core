@@ -35,9 +35,11 @@ export function topologicalSort(pluginInstanceMap: Map<string, PluginType>, plug
 }
 
 // A util function of get package path for plugin
-export function getPackagePath(packageName: string, paths?: string[]): string {
-  const opts = paths ? { paths } : undefined;
-  return path.resolve(require.resolve(packageName, opts), '..');
+export function getPackagePath(packageName: string, paths: string[] = []): string {
+  const opts = {
+    paths: paths.concat(__dirname),
+  };
+  return path.dirname(require.resolve(packageName, opts));
 }
 
 export async function getInlinePackageEntryPath(packagePath: string): Promise<string> {
