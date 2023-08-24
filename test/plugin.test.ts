@@ -11,44 +11,27 @@ describe('test/plugin.test.ts', () => {
         'plugin-a': {
           enable: true,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin_a`),
-          manifest: {
-            pluginMeta: {
-              path: path.resolve(__dirname, `${pluginPrefix}/plugin_a/meta.js`),
-              extname: '.js',
-              filename: 'meta.js',
-            },
-          },
         },
         'plugin-b': {
           enable: true,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin_b`),
-          manifest: {
-            pluginMeta: {
-              path: path.resolve(__dirname, `${pluginPrefix}/plugin_b/meta.js`),
-              extname: '.js',
-              filename: 'meta.js',
-            },
-          },
         },
         'plugin-c': {
           enable: true,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin_c`),
-          manifest: {
-            pluginMeta: {
-              path: path.resolve(__dirname, `${pluginPrefix}/plugin_c/meta.js`),
-              extname: '.js',
-              filename: 'meta.js',
-            },
-          },
+        },
+        'plugin-d': {
+          enable: true,
+          path: path.resolve(__dirname, `${pluginPrefix}/plugin_d`),
         },
       };
       const pluginList = await PluginFactory.createFromConfig(mockPluginConfig);
-      expect(pluginList.length).toEqual(3);
+      expect(pluginList.length).toEqual(4);
       pluginList.forEach(plugin => {
         expect(plugin).toBeInstanceOf(Plugin);
         expect(plugin.enable).toBeTruthy();
       });
-      expect(pluginList.map(plugin => plugin.name)).toStrictEqual(['plugin-c', 'plugin-b', 'plugin-a']);
+      expect(pluginList.map(plugin => plugin.name)).toStrictEqual(['plugin-c', 'plugin-b', 'plugin-a', 'plugin-d']);
     });
 
     it('should not load plugin with wrong order', async () => {
@@ -56,60 +39,29 @@ describe('test/plugin.test.ts', () => {
         'plugin-a': {
           enable: true,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin_a`),
-          manifest: {
-            pluginMeta: {
-              path: path.resolve(__dirname, `${pluginPrefix}/plugin_a/meta.js`),
-              extname: '.js',
-              filename: 'meta.js',
-            },
-          },
         },
         'plugin-b': {
           enable: true,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin_b`),
-          manifest: {
-            pluginMeta: {
-              path: path.resolve(__dirname, `${pluginPrefix}/plugin_b/meta.js`),
-              extname: '.js',
-              filename: 'meta.js',
-            },
-          },
         },
         'plugin-c': {
           enable: true,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin_c`),
-          manifest: {
-            pluginMeta: {
-              path: path.resolve(__dirname, `${pluginPrefix}/plugin_c/meta.js`),
-              extname: '.js',
-              filename: 'meta.js',
-            },
-          },
+        },
+        'plugin-d': {
+          enable: true,
+          path: path.resolve(__dirname, `${pluginPrefix}/plugin_d`),
         },
         'plugin-wrong-a': {
           enable: true,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin_wrong_a`),
-          manifest: {
-            pluginMeta: {
-              path: path.resolve(__dirname, `${pluginPrefix}/plugin_wrong_a/meta.js`),
-              extname: '.js',
-              filename: 'meta.js',
-            },
-          },
         },
         'plugin-wrong-b': {
           enable: true,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin_wrong_b`),
-          manifest: {
-            pluginMeta: {
-              path: path.resolve(__dirname, `${pluginPrefix}/plugin_wrong_b/meta.js`),
-              extname: '.js',
-              filename: 'meta.js',
-            },
-          },
         },
       };
-      expect(async () => {
+      await expect(async () => {
         await PluginFactory.createFromConfig(mockPluginConfig);
       }).rejects.toThrowError(new Error(`Circular dependency found in plugins: plugin-wrong-a, plugin-wrong-b`));
     });
@@ -119,13 +71,6 @@ describe('test/plugin.test.ts', () => {
         'plugin-a': {
           enable: true,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin_a`),
-          manifest: {
-            pluginMeta: {
-              path: path.resolve(__dirname, `${pluginPrefix}/plugin_a/meta.js`),
-              extname: '.js',
-              filename: 'meta.js',
-            },
-          },
         },
       };
       expect(async () => {
@@ -138,38 +83,17 @@ describe('test/plugin.test.ts', () => {
         'plugin-a': {
           enable: true,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin_a`),
-          manifest: {
-            pluginMeta: {
-              path: path.resolve(__dirname, `${pluginPrefix}/plugin_a/meta.js`),
-              extname: '.js',
-              filename: 'meta.js',
-            },
-          },
         },
         'plugin-b': {
           enable: false,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin_b`),
-          manifest: {
-            pluginMeta: {
-              path: path.resolve(__dirname, `${pluginPrefix}/plugin_b/meta.js`),
-              extname: '.js',
-              filename: 'meta.js',
-            },
-          },
         },
         'plugin-c': {
           enable: true,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin_c`),
-          manifest: {
-            pluginMeta: {
-              path: path.resolve(__dirname, `${pluginPrefix}/plugin_c/meta.js`),
-              extname: '.js',
-              filename: 'meta.js',
-            },
-          },
         },
       };
-      expect(async () => {
+      await expect(async () => {
         await PluginFactory.createFromConfig(mockPluginConfig);
       }).rejects.toThrowError(new Error(`Plugin plugin-a need have dependency: plugin-b.`));
     });
@@ -179,13 +103,6 @@ describe('test/plugin.test.ts', () => {
         'plugin-d': {
           enable: true,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin_d`),
-          manifest: {
-            pluginMeta: {
-              path: path.resolve(__dirname, `${pluginPrefix}/plugin_d/meta.js`),
-              extname: '.js',
-              filename: 'meta.js',
-            },
-          },
         },
       };
 
@@ -209,27 +126,13 @@ describe('test/plugin.test.ts', () => {
 
     it('should not throw if optional dependence disabled', async () => {
       const mockPluginConfig = {
-        'plugin-c': {
+        'plugin-b': {
           enable: false,
-          path: path.resolve(__dirname, `${pluginPrefix}/plugin_c`),
-          manifest: {
-            pluginMeta: {
-              path: path.resolve(__dirname, `${pluginPrefix}/plugin_c/meta.js`),
-              extname: '.js',
-              filename: 'meta.js',
-            },
-          },
+          path: path.resolve(__dirname, `${pluginPrefix}/plugin_b`),
         },
         'plugin-d': {
           enable: true,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin_d`),
-          manifest: {
-            pluginMeta: {
-              path: path.resolve(__dirname, `${pluginPrefix}/plugin_d/meta.js`),
-              extname: '.js',
-              filename: 'meta.js',
-            },
-          },
         },
       };
 
@@ -256,24 +159,10 @@ describe('test/plugin.test.ts', () => {
         'plugin-d': {
           enable: true,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin_d`),
-          manifest: {
-            pluginMeta: {
-              path: path.resolve(__dirname, `${pluginPrefix}/plugin_d/meta.js`),
-              extname: '.js',
-              filename: 'meta.js',
-            },
-          },
         },
         'plugin-c': {
           enable: true,
           path: path.resolve(__dirname, `${pluginPrefix}/plugin_c`),
-          manifest: {
-            pluginMeta: {
-              path: path.resolve(__dirname, `${pluginPrefix}/plugin_c/meta.js`),
-              extname: '.js',
-              filename: 'meta.js',
-            },
-          },
         },
       };
 
