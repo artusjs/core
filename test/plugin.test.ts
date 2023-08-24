@@ -4,7 +4,7 @@ import { Logger, Plugin, PluginFactory } from '../src';
 
 const pluginPrefix = 'fixtures/plugins';
 
-describe('test/app.test.ts', () => {
+describe('test/plugin.test.ts', () => {
   describe('app with config', () => {
     it('should load plugin with dep order', async () => {
       const mockPluginConfig = {
@@ -111,7 +111,7 @@ describe('test/app.test.ts', () => {
       };
       expect(async () => {
         await PluginFactory.createFromConfig(mockPluginConfig);
-      }).rejects.toThrowError(new Error(`There is a cycle in the dependencies, wrong plugin is plugin-wrong-a,plugin-wrong-b.`));
+      }).rejects.toThrowError(new Error(`Circular dependency found in plugins: plugin-wrong-a, plugin-wrong-b`));
     });
 
     it('should throw if dependencies missing', async () => {
