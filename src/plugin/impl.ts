@@ -2,9 +2,8 @@ import path from 'path';
 import { loadMetaFile } from '../utils/load_meta_file';
 import { exists } from '../utils/fs';
 import { PLUGIN_META_FILENAME } from '../constant';
-import { PluginConfigItem, PluginCreateOptions, PluginMap, PluginMetadata, PluginType } from './types';
+import { PluginConfigItem, PluginMetadata, PluginType } from './types';
 import { getPackagePath } from './common';
-import { LoggerType } from '../logger';
 
 export class Plugin implements PluginType {
   public name: string;
@@ -13,9 +12,7 @@ export class Plugin implements PluginType {
   public metadata: Partial<PluginMetadata>;
   public metaFilePath = '';
 
-  private logger?: LoggerType;
-
-  constructor(name: string, configItem: PluginConfigItem, opts?: PluginCreateOptions) {
+  constructor(name: string, configItem: PluginConfigItem) {
     this.name = name;
     this.enable = configItem.enable ?? false;
     if (this.enable) {
@@ -34,10 +31,9 @@ export class Plugin implements PluginType {
     if (configItem.metadata) {
       this.metadata = configItem.metadata;
     }
-    this.logger = opts?.logger;
   }
 
-  async init() {
+  public async init() {
     if (!this.enable) {
       return;
     }
@@ -48,33 +44,6 @@ export class Plugin implements PluginType {
     if (this.metadata.name !== this.name) {
       throw new Error(`${this.name} metadata invalid, name is ${this.metadata.name}`);
     }
-  }
-
-  public checkDepExisted(pluginMap: PluginMap) {
-    if (!this.metadata.dependencies) {
-      return;
-    }
-
-    for (let i = 0; i < this.metadata.dependencies.length; i++) {
-      const { name: pluginName, optional } = this.metadata.dependencies[i];
-      const instance = pluginMap.get(pluginName);
-      if (!instance || !instance.enable) {
-        if (optional) {
-          this.logger?.warn(`Plugin ${this.name} need have optional dependency: ${pluginName}.`);
-        } else {
-          throw new Error(`Plugin ${this.name} need have dependency: ${pluginName}.`);
-        }
-      } else {
-        // Plugin exist and enabled, need calc edge
-        this.metadata.dependencies[i]._enabled = true;
-      }
-    }
-  }
-
-  public getDepEdgeList(): [string, string][] {
-    return this.metadata.dependencies
-      ?.filter(({ optional, _enabled }) => !optional || _enabled)
-      ?.map(({ name: depPluginName }) => [this.name, depPluginName]) ?? [];
   }
 
   private async checkAndLoadMetadata() {

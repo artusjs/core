@@ -1,62 +1,86 @@
-import path from 'path';
-import compatibleRequire from '../utils/compatible_require';
-import { PluginType } from './types';
+import path from "path";
+import compatibleRequire from "../utils/compatible_require";
+import { PluginType } from "./types";
+import { LoggerType } from "../logger";
 
-// A utils function that toplogical sort plugins
-export function topologicalSort(pluginInstanceMap: Map<string, PluginType>, pluginDepEdgeList: [string, string][]): string[] {
-  const res: string[] = [];
-  const indegree: Map<string, number> = new Map();
+export function sortPlugins(
+  pluginInstanceMap: Map<string, PluginType>,
+  logger: LoggerType,
+): PluginType[] {
+  const sortedPlugins: PluginType[] = [];
+  const visited: Record<string, boolean> = {};
 
-  pluginDepEdgeList.forEach(([to]) => {
-    indegree.set(to, (indegree.get(to) ?? 0) + 1);
-  });
-
-  const queue: string[] = [];
-
-  for (const [name] of pluginInstanceMap) {
-    if (!indegree.has(name)) {
-      queue.push(name);
+  const visit = (pluginName: string, depChain: string[] = []) => {
+    if (depChain.includes(pluginName)) {
+      throw new Error(
+        `Circular dependency found in plugins: ${depChain.join(", ")}`,
+      );
     }
-  }
 
-  while(queue.length) {
-    const cur = queue.shift()!;
-    res.push(cur);
-    for (const [to, from] of pluginDepEdgeList) {
-      if (from === cur) {
-        indegree.set(to, (indegree.get(to) ?? 0) - 1);
-        if (indegree.get(to) === 0) {
-          queue.push(to);
+    if (visited[pluginName]) return;
+
+    visited[pluginName] = true;
+
+    const plugin = pluginInstanceMap.get(pluginName);
+    if (plugin) {
+      for (const dep of plugin.metadata.dependencies ?? []) {
+        const depPlugin = pluginInstanceMap.get(dep.name);
+        if (!depPlugin || !depPlugin.enable) {
+          if (dep.optional) {
+            logger?.warn(
+              `Plugin ${plugin.name} need have optional dependency: ${dep.name}.`,
+            );
+          } else {
+            throw new Error(
+              `Plugin ${plugin.name} need have dependency: ${dep.name}.`,
+            );
+          }
+        } else {
+          // Plugin exist and enabled, need visit
+          visit(dep.name, depChain.concat(pluginName));
         }
       }
+      sortedPlugins.push(plugin);
     }
+  };
+
+  for (const pluginName of pluginInstanceMap.keys()) {
+    visit(pluginName);
   }
-  return res;
+
+  return sortedPlugins;
 }
 
 // A util function of get package path for plugin
-export function getPackagePath(packageName: string, paths: string[] = []): string {
+export function getPackagePath(
+  packageName: string,
+  paths: string[] = [],
+): string {
   const opts = {
     paths: paths.concat(__dirname),
   };
   return path.dirname(require.resolve(packageName, opts));
 }
 
-export async function getInlinePackageEntryPath(packagePath: string): Promise<string> {
+export async function getInlinePackageEntryPath(
+  packagePath: string,
+): Promise<string> {
   const pkgJson = await compatibleRequire(`${packagePath}/package.json`);
-  let entryFilePath = '';
+  let entryFilePath = "";
   if (pkgJson.exports) {
     if (Array.isArray(pkgJson.exports)) {
       throw new Error(`inline package multi exports is not supported`);
-    } else if (typeof pkgJson.exports === 'string') {
+    } else if (typeof pkgJson.exports === "string") {
       entryFilePath = pkgJson.exports;
-    } else if (pkgJson.exports?.['.']) {
-      entryFilePath = pkgJson.exports['.'];
+    } else if (pkgJson.exports?.["."]) {
+      entryFilePath = pkgJson.exports["."];
     }
   }
   if (!entryFilePath && pkgJson.main) {
     entryFilePath = pkgJson.main;
   }
   // will use package root path if no entry file found
-  return entryFilePath ? path.resolve(packagePath, entryFilePath, '..') : packagePath;
+  return entryFilePath
+    ? path.resolve(packagePath, entryFilePath, "..")
+    : packagePath;
 }

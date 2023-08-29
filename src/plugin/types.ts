@@ -39,6 +39,4 @@ export interface PluginType {
   metaFilePath: string;
 
   init(): Promise<void>;
-  checkDepExisted(map: PluginMap): void;
-  getDepEdgeList(): [string, string][];
 }
