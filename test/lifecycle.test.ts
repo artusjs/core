@@ -46,9 +46,9 @@ describe('test/lifecycle.test.ts', () => {
       'pluginA_didReady',
       'pluginB_didReady',
       'app_didReady',
-      'pluginA_beforeClose',
-      'pluginB_beforeClose',
       'app_beforeClose',
+      'pluginB_beforeClose',
+      'pluginA_beforeClose',
     ]);
   });
 
@@ -84,9 +84,9 @@ describe('test/lifecycle.test.ts', () => {
       'pluginA_didReady',
       'pluginB_didReady',
       'app_didReady',
-      'pluginA_beforeClose',
-      'pluginB_beforeClose',
       'app_beforeClose',
+      'pluginB_beforeClose',
+      'pluginA_beforeClose',
     ]);
   });
 
