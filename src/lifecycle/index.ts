@@ -70,7 +70,7 @@ export class LifecycleManager {
     }
   }
 
-  async emitHook<T = unknown>(hookName: string, payload?: T) {
+  async emitHook<T = unknown>(hookName: string, payload?: T, reverse = false) {
     if (!this.enable) {
       return;
     }
@@ -83,6 +83,9 @@ export class LifecycleManager {
     }
     // lifecycle hook should only trigger one time
     this.hookFnMap.delete(hookName);
+    if (reverse) {
+      fnList.reverse();
+    }
     for (const hookFn of fnList) {
       await hookFn({
         app: this.app,

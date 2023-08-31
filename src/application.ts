@@ -80,7 +80,8 @@ export class ArtusApplication implements Application {
 
   async close(exit = false) {
     try {
-      await this.lifecycleManager.emitHook('beforeClose');
+      // reverse emitHook to avoid plugin closed before app hook
+      await this.lifecycleManager.emitHook('beforeClose', null, true);
     } catch (e) {
       throw new Error(e);
     }
