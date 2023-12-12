@@ -3,5 +3,9 @@
   "compilerOptions": {
     "rootDir": "./src"
   },
-  "exclude": ["lib", "test", "**/*.test.ts"]
+  "exclude": [
+    "lib",
+    "test",
+    "**/*.test.ts"
+  ]
 }
