@@ -56,7 +56,7 @@ class ConfigLoader implements Loader {
   }
 
   protected async loadConfigFile(item: ManifestItem): Promise<Record<string, any>> {
-    const originConfigObj = await compatibleRequire(item.path);
+    const originConfigObj = await compatibleRequire(item.path + item.extname);
     let configObj = originConfigObj;
     if (typeof originConfigObj === 'function') {
       const app = this.container.get(ArtusInjectEnum.Application);
