@@ -10,7 +10,7 @@ export default {
     _app: {
       items: [
         {
-          path: path.resolve(rootDir, "./test_clazz.ts"),
+          path: path.resolve(rootDir, "./test_clazz"),
           extname: ".ts",
           filename: "test_clazz.ts",
           loader: "test-custom-loader",

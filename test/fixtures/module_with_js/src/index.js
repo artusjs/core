@@ -10,14 +10,14 @@ module.exports = {
       items: [
         {
           id: "testServiceA",
-          path: path.resolve(rootDir, "./test_service_a.js"),
+          path: path.resolve(rootDir, "./test_service_a"),
           extname: ".js",
           filename: "test_service_a.js",
         },
         {
           id: "testServiceB",
           scope: "Execution",
-          path: path.resolve(rootDir, "./test_service_b.js"),
+          path: path.resolve(rootDir, "./test_service_b"),
           extname: ".js",
           filename: "test_service_b.js",
         },

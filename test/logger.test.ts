@@ -33,7 +33,7 @@ describe('test/logger.test.ts', () => {
 
   describe('log message with default level (INFO)', () => {
     it('should log message with Logger from Contianer', async () => {
-      const { default: manifest } = await import('./fixtures/logger/src');
+      const { default: manifest } = require('./fixtures/logger/src');
       const app = await _getAppWithConfig({}, manifest);
 
       const testClazz = app.container.get(TestLoggerClazz);
@@ -60,7 +60,7 @@ describe('test/logger.test.ts', () => {
     });
 
     it('should log message with Logger from Contianer and log method', async () => {
-      const { default: manifest } = await import('./fixtures/logger/src');
+      const { default: manifest } = require('./fixtures/logger/src');
       const app = await _getAppWithConfig({}, manifest);
 
       const testClazz = app.container.get(TestLoggerClazz);
@@ -89,7 +89,7 @@ describe('test/logger.test.ts', () => {
 
   describe('log message with custom level (TRACE)', () => {
     it('should log message with Logger from Contianer', async () => {
-      const { default: manifest } = await import('./fixtures/logger/src');
+      const { default: manifest } = require('./fixtures/logger/src');
       const app = await _getAppWithConfig({
         logger: {
           level: LoggerLevel.TRACE,
@@ -122,7 +122,7 @@ describe('test/logger.test.ts', () => {
     });
 
     it('should log message with Logger from Contianer and log method', async () => {
-      const { default: manifest } = await import('./fixtures/logger/src');
+      const { default: manifest } = require('./fixtures/logger/src');
       const app = await _getAppWithConfig({
         logger: {
           level: LoggerLevel.TRACE,
@@ -157,7 +157,7 @@ describe('test/logger.test.ts', () => {
 
   describe('log message with custom Logger', () => {
     it('should log message with custom method', async () => {
-      const { manifestWithCustomLogger: manifest } = await import('./fixtures/logger/src');
+      const { manifestWithCustomLogger: manifest } = require('./fixtures/logger/src');
       const app = await _getAppWithConfig({}, manifest);
       const testClazz = app.container.get(TestCustomLoggerClazz);
 
