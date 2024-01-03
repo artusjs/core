@@ -18,7 +18,7 @@ describe('test/exception_filter.test.ts', () => {
     try {
       const {
         main,
-      } = await import('./fixtures/exception_filter/bootstrap');
+      } = require('./fixtures/exception_filter/bootstrap');
 
       const app = await main();
       const mockSet: Set<string> = app.container.get('mock_exception_set');
@@ -47,7 +47,7 @@ describe('test/exception_filter.test.ts', () => {
     try {
       const {
         main,
-      } = await import('./fixtures/exception_invalid_filter/bootstrap');
+      } = require('./fixtures/exception_invalid_filter/bootstrap');
 
       expect(() => main()).rejects.toThrow(new Error(`invalid ExceptionFilter TestInvalidFilter`));
     } catch (error) {

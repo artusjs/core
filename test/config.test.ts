@@ -5,7 +5,7 @@ describe("test/config.test.ts", () => {
   describe("app with config", () => {
     it("should config load on application", async () => {
       process.env[ARTUS_SERVER_ENV] = "production";
-      const { main } = await import("./fixtures/app_with_config/bootstrap");
+      const { main } = require("./fixtures/app_with_config/bootstrap");
       const app = await main();
       expect(app.config).toEqual({
         name: "test-for-config",

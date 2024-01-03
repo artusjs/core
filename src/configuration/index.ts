@@ -44,7 +44,7 @@ export default class ConfigurationHandler {
   }
 
   async setConfigByFile(fileItem: ManifestItem) {
-    const configContent: ConfigObject = await compatibleRequire(fileItem.path);
+    const configContent: ConfigObject = await compatibleRequire(fileItem.path + fileItem.extname);
     if (configContent) {
       const env = ConfigurationHandler.getEnvFromFilename(fileItem.filename);
       this.setConfig(env, configContent);

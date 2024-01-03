@@ -7,6 +7,8 @@
       "jest",
       "reflect-metadata"
     ],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext"
   },
   "exclude": [
     "lib",

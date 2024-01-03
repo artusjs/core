@@ -7,7 +7,7 @@ describe('test/app.test.ts', () => {
   describe('app koa with ts', () => {
     it('should run app', async () => {
       // Skip Controller
-      const HelloController = await import('./fixtures/app_koa_with_ts/src/controllers/hello');
+      const HelloController = require('./fixtures/app_koa_with_ts/src/controllers/hello');
       assert(HelloController);
       expect(await new HelloController.default().index()).toStrictEqual({
         content: 'Hello Artus',
@@ -20,7 +20,7 @@ describe('test/app.test.ts', () => {
           app,
           main,
           isListening,
-        } = await import('./fixtures/app_koa_with_ts/src/bootstrap');
+        } = require('./fixtures/app_koa_with_ts/src/bootstrap');
 
         // Check Artus Default Class Inject to Contianer
         expect(app.container.get(ArtusInjectEnum.Application)).toBeInstanceOf(ArtusApplication);
@@ -29,7 +29,7 @@ describe('test/app.test.ts', () => {
         expect(app.container.get(ConfigurationHandler)).toBeInstanceOf(ConfigurationHandler);
 
         await main();
-        
+
         const testResponse = await axios.get('http://127.0.0.1:3000', {
           headers: {
             'x-hello-artus': 'true',

@@ -10,12 +10,12 @@ export default {
     _app: {
       items: [
         {
-          path: path.resolve(rootDir, "./test_service_a.ts"),
+          path: path.resolve(rootDir, "./test_service_a"),
           extname: ".ts",
           filename: "test_service_a.ts",
         },
         {
-          path: path.resolve(rootDir, "./test_service_b.ts"),
+          path: path.resolve(rootDir, "./test_service_b"),
           extname: ".ts",
           filename: "test_service_b.ts",
         },

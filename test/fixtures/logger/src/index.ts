@@ -10,7 +10,7 @@ const defaultManifest: Manifest = {
     _app: {
       items: [
         {
-          path: path.resolve(rootDir, "./test_clazz.ts"),
+          path: path.resolve(rootDir, "./test_clazz"),
           extname: ".ts",
           filename: "test_clazz.ts",
         },
@@ -27,12 +27,12 @@ export const manifestWithCustomLogger: Manifest = {
       items: [
         ...defaultManifest.refMap._app.items,
         {
-          path: path.resolve(rootDir, "./test_custom_clazz.ts"),
+          path: path.resolve(rootDir, "./test_custom_clazz"),
           extname: ".ts",
           filename: "test_custom_clazz.ts",
         },
         {
-          path: path.resolve(rootDir, "./custom_logger.ts"),
+          path: path.resolve(rootDir, "./custom_logger"),
           extname: ".ts",
           filename: "custom_logger.ts",
         },
