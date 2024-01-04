@@ -15,10 +15,14 @@ export default async function compatibleRequire(path: string, origin = false): P
     /* eslint-disable-next-line @typescript-eslint/no-var-requires */
     requiredModule = tslib.__importStar(require(path));
     assert(requiredModule, `module '${path}' exports is undefined`);
-  } catch {
-    requiredModule = await import(path);
-    assert(requiredModule, `module '${path}' exports is undefined`);
-    requiredModule = requiredModule.__esModule ? requiredModule.default ?? requiredModule : requiredModule;
+  } catch (err) {
+    if (err.code === 'ERR_REQUIRE_ESM') {
+      requiredModule = await import(path);
+      assert(requiredModule, `module '${path}' exports is undefined`);
+      requiredModule = requiredModule.__esModule ? requiredModule.default ?? requiredModule : requiredModule;
+    } else {
+      throw err;
+    }
   }
 
   return origin ? requiredModule : (requiredModule.default || requiredModule);
