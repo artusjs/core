@@ -1,6 +1,6 @@
 import * as path from 'path';
 import { Container, Injectable, Inject, ScopeEnum } from '@artus/injection';
-import { DEFAULT_LOADER, LOADER_NAME_META, DEFAULT_LOADER_LIST_WITH_ORDER, DEFAULT_APP_REF } from '../constant';
+import { DEFAULT_LOADER, LOADER_NAME_META, DEFAULT_LOADER_LIST_WITH_ORDER, DEFAULT_APP_REF, ARTUS_DEFAULT_CONFIG_ENV } from '../constant';
 import {
   Manifest,
   ManifestItem,
@@ -10,8 +10,9 @@ import {
 import ConfigurationHandler from '../configuration';
 import { LifecycleManager } from '../lifecycle';
 import LoaderEventEmitter, { LoaderEventListener } from './loader_event';
-import { PluginConfigItem, PluginFactory } from '../plugin';
+import { PluginConfig, PluginFactory } from '../plugin';
 import { Logger, LoggerType } from '../logger';
+import { mergeConfig } from './utils/merge';
 
 @Injectable({
   scope: ScopeEnum.SINGLETON,
@@ -69,15 +70,20 @@ export class LoaderFactory {
     // Manifest Version 2 is supported mainly
 
     // Merge plugin config with ref
-    for (const [env, pluginConfig] of Object.entries(manifest.pluginConfig ?? {})) {
-      this.configurationHandler.setConfig(env, {
-        plugin: pluginConfig,
-      });
-    }
-    const mergedPluginConfig: Record<string, PluginConfigItem> = Object.assign(
-      {},
-      this.configurationHandler.getMergedConfig()?.plugin ?? {},
-    ); // shallow copy to avoid side effect of writing metadata
+    const mergeRef = (refName: string) => {
+      if (!refName || !manifest.refMap?.[refName]) {
+        return {};
+      }
+      const pluginConfig = this.configurationHandler.mergeConfigByStore(manifest.refMap[refName].pluginConfig ?? {});
+      return mergeConfig(...Object.values(pluginConfig).map(({ refName }) => mergeRef(refName)).concat(pluginConfig));
+    };
+    const mergedPluginConfig = mergeConfig(manifest.extraPluginConfig ?? {}, ...[
+      ...Object.values(manifest.extraPluginConfig ?? {}).map(({ refName }) => refName),
+      DEFAULT_APP_REF,
+    ].map(mergeRef)) as PluginConfig;
+    this.configurationHandler.setConfig(ARTUS_DEFAULT_CONFIG_ENV.DEFAULT, {
+      plugin: mergedPluginConfig,
+    }); // For compatible
     for (const [pluginName, pluginConfigItem] of Object.entries(mergedPluginConfig)) {
       const refItem = manifest.refMap[pluginConfigItem.refName];
       if (!refItem) {

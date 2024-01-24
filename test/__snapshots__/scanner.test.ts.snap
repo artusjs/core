@@ -2,32 +2,12 @@
 
 exports[`test/scanner.test.ts should be scan application 1`] = `
 {
-  "pluginConfig": {
-    "default": {
-      "mysql": {
-        "enable": false,
-        "refName": "src/mysql_plugin",
-      },
-      "redis": {
-        "enable": true,
-        "refName": "src/redis_plugin",
-      },
-      "testDuplicate": {
-        "enable": false,
-        "refName": "@artus/injection",
-      },
-    },
-    "dev": {
-      "testDuplicate": {
-        "enable": true,
-        "refName": "src/test_duplicate_plugin",
-      },
-    },
-  },
+  "extraPluginConfig": {},
   "refMap": {
     "@artus/injection": {
       "items": [],
       "packageVersion": undefined,
+      "pluginConfig": {},
       "relativedPath": "../../../node_modules/@artus/injection/lib",
     },
     "_app": {
@@ -154,6 +134,28 @@ exports[`test/scanner.test.ts should be scan application 1`] = `
         },
       ],
       "packageVersion": undefined,
+      "pluginConfig": {
+        "default": {
+          "mysql": {
+            "enable": false,
+            "refName": "src/mysql_plugin",
+          },
+          "redis": {
+            "enable": true,
+            "refName": "src/redis_plugin",
+          },
+          "testDuplicate": {
+            "enable": false,
+            "refName": "@artus/injection",
+          },
+        },
+        "dev": {
+          "testDuplicate": {
+            "enable": true,
+            "refName": "src/test_duplicate_plugin",
+          },
+        },
+      },
       "relativedPath": "",
     },
     "src/redis_plugin": {
@@ -173,6 +175,7 @@ exports[`test/scanner.test.ts should be scan application 1`] = `
         },
       ],
       "packageVersion": undefined,
+      "pluginConfig": {},
       "pluginMetadata": {
         "exclude": [
           "not_to_be_scanned_dir",
@@ -185,6 +188,7 @@ exports[`test/scanner.test.ts should be scan application 1`] = `
     "src/test_duplicate_plugin": {
       "items": [],
       "packageVersion": undefined,
+      "pluginConfig": {},
       "pluginMetadata": {
         "name": "testDuplicate",
       },
@@ -197,54 +201,17 @@ exports[`test/scanner.test.ts should be scan application 1`] = `
 
 exports[`test/scanner.test.ts should scan application with nesting preset a which defined in options 1`] = `
 {
-  "pluginConfig": {
-    "default": {
-      "a": {
-        "enable": false,
-        "refName": "../plugins/plugin_a",
-      },
-      "b": {
-        "enable": false,
-        "refName": "../plugins/plugin_b",
-      },
-      "c": {
-        "enable": false,
-        "refName": "../plugins/plugin_c",
-      },
-      "d": {
-        "enable": true,
-        "refName": "../plugins/plugin_d",
-      },
-      "plugin-with-entry-a": {
-        "enable": true,
-        "refName": "../plugins/plugin_with_entry_a",
-      },
-      "plugin-with-entry-b": {
-        "enable": true,
-        "refName": "../plugins/plugin_with_entry_b",
-      },
-      "plugin-with-entry-c": {
-        "enable": false,
-        "refName": "../plugins/plugin_with_entry_c",
-      },
-      "preset_a": {
-        "enable": true,
-        "refName": "../plugins/preset_a",
-      },
-      "preset_b": {
-        "enable": true,
-        "refName": "../plugins/preset_b",
-      },
-      "preset_c": {
-        "enable": true,
-        "refName": "../plugins/preset_c",
-      },
+  "extraPluginConfig": {
+    "preset_a": {
+      "enable": true,
+      "refName": "../plugins/preset_a",
     },
   },
   "refMap": {
     "../plugins/plugin_a": {
       "items": [],
       "packageVersion": "0.0.1",
+      "pluginConfig": {},
       "pluginMetadata": {
         "dependencies": [
           {
@@ -262,6 +229,7 @@ exports[`test/scanner.test.ts should scan application with nesting preset a whic
     "../plugins/plugin_b": {
       "items": [],
       "packageVersion": undefined,
+      "pluginConfig": {},
       "pluginMetadata": {
         "dependencies": [
           {
@@ -275,6 +243,7 @@ exports[`test/scanner.test.ts should scan application with nesting preset a whic
     "../plugins/plugin_d": {
       "items": [],
       "packageVersion": undefined,
+      "pluginConfig": {},
       "pluginMetadata": {
         "dependencies": [
           {
@@ -289,6 +258,7 @@ exports[`test/scanner.test.ts should scan application with nesting preset a whic
     "../plugins/plugin_with_entry_a": {
       "items": [],
       "packageVersion": undefined,
+      "pluginConfig": {},
       "pluginMetadata": {
         "name": "plugin-with-entry-a",
       },
@@ -297,6 +267,7 @@ exports[`test/scanner.test.ts should scan application with nesting preset a whic
     "../plugins/plugin_with_entry_b": {
       "items": [],
       "packageVersion": undefined,
+      "pluginConfig": {},
       "pluginMetadata": {
         "name": "plugin-with-entry-b",
       },
@@ -317,6 +288,25 @@ exports[`test/scanner.test.ts should scan application with nesting preset a whic
         },
       ],
       "packageVersion": undefined,
+      "pluginConfig": {
+        "default": {
+          "a": {
+            "enable": false,
+          },
+          "plugin-with-entry-a": {
+            "enable": true,
+            "refName": "../plugins/plugin_with_entry_a",
+          },
+          "preset_b": {
+            "enable": true,
+            "refName": "../plugins/preset_b",
+          },
+          "preset_c": {
+            "enable": true,
+            "refName": "../plugins/preset_c",
+          },
+        },
+      },
       "pluginMetadata": {
         "name": "preset_a",
       },
@@ -337,6 +327,22 @@ exports[`test/scanner.test.ts should scan application with nesting preset a whic
         },
       ],
       "packageVersion": undefined,
+      "pluginConfig": {
+        "default": {
+          "a": {
+            "enable": true,
+            "refName": "../plugins/plugin_a",
+          },
+          "b": {
+            "enable": true,
+            "refName": "../plugins/plugin_b",
+          },
+          "plugin-with-entry-b": {
+            "enable": true,
+            "refName": "../plugins/plugin_with_entry_b",
+          },
+        },
+      },
       "pluginMetadata": {
         "name": "preset_b",
       },
@@ -357,6 +363,26 @@ exports[`test/scanner.test.ts should scan application with nesting preset a whic
         },
       ],
       "packageVersion": undefined,
+      "pluginConfig": {
+        "default": {
+          "b": {
+            "enable": false,
+            "refName": "../plugins/plugin_b",
+          },
+          "c": {
+            "enable": false,
+            "refName": "../plugins/plugin_c",
+          },
+          "d": {
+            "enable": true,
+            "refName": "../plugins/plugin_d",
+          },
+          "plugin-with-entry-c": {
+            "enable": false,
+            "refName": "../plugins/plugin_with_entry_c",
+          },
+        },
+      },
       "pluginMetadata": {
         "name": "preset_c",
       },
@@ -365,6 +391,7 @@ exports[`test/scanner.test.ts should scan application with nesting preset a whic
     "_app": {
       "items": [],
       "packageVersion": undefined,
+      "pluginConfig": {},
       "relativedPath": "",
     },
   },
@@ -374,30 +401,12 @@ exports[`test/scanner.test.ts should scan application with nesting preset a whic
 
 exports[`test/scanner.test.ts should scan application with single preset b which defined in config 1`] = `
 {
-  "pluginConfig": {
-    "default": {
-      "a": {
-        "enable": true,
-        "refName": "../plugins/plugin_a",
-      },
-      "b": {
-        "enable": true,
-        "refName": "../plugins/plugin_b",
-      },
-      "plugin-with-entry-b": {
-        "enable": true,
-        "refName": "../plugins/plugin_with_entry_b",
-      },
-      "preset_b": {
-        "enable": true,
-        "refName": "../plugins/preset_b",
-      },
-    },
-  },
+  "extraPluginConfig": {},
   "refMap": {
     "../plugins/plugin_a": {
       "items": [],
       "packageVersion": "0.0.1",
+      "pluginConfig": {},
       "pluginMetadata": {
         "dependencies": [
           {
@@ -415,6 +424,7 @@ exports[`test/scanner.test.ts should scan application with single preset b which
     "../plugins/plugin_b": {
       "items": [],
       "packageVersion": undefined,
+      "pluginConfig": {},
       "pluginMetadata": {
         "dependencies": [
           {
@@ -428,6 +438,7 @@ exports[`test/scanner.test.ts should scan application with single preset b which
     "../plugins/plugin_with_entry_b": {
       "items": [],
       "packageVersion": undefined,
+      "pluginConfig": {},
       "pluginMetadata": {
         "name": "plugin-with-entry-b",
       },
@@ -448,6 +459,22 @@ exports[`test/scanner.test.ts should scan application with single preset b which
         },
       ],
       "packageVersion": undefined,
+      "pluginConfig": {
+        "default": {
+          "a": {
+            "enable": true,
+            "refName": "../plugins/plugin_a",
+          },
+          "b": {
+            "enable": true,
+            "refName": "../plugins/plugin_b",
+          },
+          "plugin-with-entry-b": {
+            "enable": true,
+            "refName": "../plugins/plugin_with_entry_b",
+          },
+        },
+      },
       "pluginMetadata": {
         "name": "preset_b",
       },
@@ -468,6 +495,14 @@ exports[`test/scanner.test.ts should scan application with single preset b which
         },
       ],
       "packageVersion": undefined,
+      "pluginConfig": {
+        "default": {
+          "preset_b": {
+            "enable": true,
+            "refName": "../plugins/preset_b",
+          },
+        },
+      },
       "relativedPath": "",
     },
   },
@@ -477,34 +512,17 @@ exports[`test/scanner.test.ts should scan application with single preset b which
 
 exports[`test/scanner.test.ts should scan application with single preset c which defined in options 1`] = `
 {
-  "pluginConfig": {
-    "default": {
-      "b": {
-        "enable": false,
-        "refName": "../plugins/plugin_b",
-      },
-      "c": {
-        "enable": false,
-        "refName": "../plugins/plugin_c",
-      },
-      "d": {
-        "enable": true,
-        "refName": "../plugins/plugin_d",
-      },
-      "plugin-with-entry-c": {
-        "enable": false,
-        "refName": "../plugins/plugin_with_entry_c",
-      },
-      "preset_c": {
-        "enable": true,
-        "refName": "../plugins/preset_c",
-      },
+  "extraPluginConfig": {
+    "preset_c": {
+      "enable": true,
+      "refName": "../plugins/preset_c",
     },
   },
   "refMap": {
     "../plugins/plugin_d": {
       "items": [],
       "packageVersion": undefined,
+      "pluginConfig": {},
       "pluginMetadata": {
         "dependencies": [
           {
@@ -531,6 +549,26 @@ exports[`test/scanner.test.ts should scan application with single preset c which
         },
       ],
       "packageVersion": undefined,
+      "pluginConfig": {
+        "default": {
+          "b": {
+            "enable": false,
+            "refName": "../plugins/plugin_b",
+          },
+          "c": {
+            "enable": false,
+            "refName": "../plugins/plugin_c",
+          },
+          "d": {
+            "enable": true,
+            "refName": "../plugins/plugin_d",
+          },
+          "plugin-with-entry-c": {
+            "enable": false,
+            "refName": "../plugins/plugin_with_entry_c",
+          },
+        },
+      },
       "pluginMetadata": {
         "name": "preset_c",
       },
@@ -539,6 +577,7 @@ exports[`test/scanner.test.ts should scan application with single preset c which
     "_app": {
       "items": [],
       "packageVersion": undefined,
+      "pluginConfig": {},
       "relativedPath": "",
     },
   },

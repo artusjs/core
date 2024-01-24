@@ -9,6 +9,7 @@ describe("test/config.test.ts", () => {
       const app = await main();
       expect(app.config).toEqual({
         name: "test-for-config",
+        plugin: {},
         test: 1,
         arr: [4, 5, 6],
       });

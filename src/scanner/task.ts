@@ -2,18 +2,17 @@ import path from 'path';
 import * as fs from 'fs/promises';
 import { ScannerOptions, ScanTaskItem, WalkOptions } from './types';
 import { existsAsync, getPackageVersion, isExclude, isPluginAsync, loadConfigItemList, resolvePluginConfigItemRef } from './utils';
-import { findLoader, Manifest, ManifestItem, PluginConfigEnvMap, RefMap, RefMapItem } from '../loader';
+import { findLoader, Manifest, ManifestItem, RefMap, RefMapItem } from '../loader';
 import { PluginConfig, PluginMetadata } from '../plugin';
-import { mergeConfig } from '../loader/utils/merge';
 import { loadMetaFile } from '../utils/load_meta_file';
-import { ARTUS_DEFAULT_CONFIG_ENV, DEFAULT_APP_REF, PLUGIN_META_FILENAME } from '../constant';
+import { DEFAULT_APP_REF, PLUGIN_META_FILENAME } from '../constant';
 import { Application } from '../types';
 import { ArtusApplication } from '../application';
 
 export class ScanTaskRunner {
   private waitingTaskMap: Map<string, ScanTaskItem[]> = new Map(); // Key is pluginName, waiting to detect enabled
   private enabledPluginSet: Set<string> = new Set(); // Key is pluginName
-  private pluginConfigMap: PluginConfigEnvMap = {};
+  private extraPluginConfig: PluginConfig = {};
   private refMap: RefMap = {};
   private taskQueue: ScanTaskItem[] = [];
   private app: Application;
@@ -99,14 +98,13 @@ export class ScanTaskRunner {
   public async handlePluginConfig(
     pluginConfig: PluginConfig,
     basePath: string,
-    env: string = ARTUS_DEFAULT_CONFIG_ENV.DEFAULT,
-  ): Promise<void> {
-    const tPluginConfig: PluginConfig = {};
+  ): Promise<PluginConfig> {
+    const res: PluginConfig = {};
     for (const [pluginName, pluginConfigItem] of Object.entries(pluginConfig)) {
       // Set temp pluginConfig in manifest
-      tPluginConfig[pluginName] = {};
+      res[pluginName] = {};
       if (pluginConfigItem.enable !== undefined) {
-        tPluginConfig[pluginName].enable = pluginConfigItem.enable;
+        res[pluginName].enable = pluginConfigItem.enable;
       }
       if (pluginConfigItem.enable) {
         this.enabledPluginSet.add(pluginName);
@@ -118,7 +116,7 @@ export class ScanTaskRunner {
       if (!ref?.name) {
         continue;
       }
-      tPluginConfig[pluginName].refName = ref.name;
+      res[pluginName].refName = ref.name;
       // Generate and push scan task
       const curRefTask: ScanTaskItem = {
         curPath: ref.path,
@@ -140,9 +138,7 @@ export class ScanTaskRunner {
         this.waitingTaskMap.set(pluginName, waitingTaskList);
       }
     }
-    // Reverse Merge, The prior of top-level(exists) is higher
-    const existsPluginConfig = this.pluginConfigMap[env] ?? {};
-    this.pluginConfigMap[env] = mergeConfig(tPluginConfig, existsPluginConfig) as PluginConfig;
+    return res;
   }
 
 
@@ -195,6 +191,7 @@ export class ScanTaskRunner {
     const refItem: RefMapItem = {
       relativedPath,
       packageVersion,
+      pluginConfig: {},
       items: [],
     };
 
@@ -217,7 +214,7 @@ export class ScanTaskRunner {
       if (!pluginConfig) {
         continue;
       }
-      await this.handlePluginConfig(pluginConfig, basePath, env);
+      refItem.pluginConfig[env] = await this.handlePluginConfig(pluginConfig, basePath);
     }
 
     if (this.options.useRelativePath) {
@@ -233,7 +230,7 @@ export class ScanTaskRunner {
   public async runAll(): Promise<void> {
     // Add Task of options.plugin
     if (this.options.plugin) {
-      await this.handlePluginConfig(this.options.plugin, this.root);
+      this.extraPluginConfig = await this.handlePluginConfig(this.options.plugin, this.root);
     }
 
     // Add Root Task(make it as top/start)
@@ -253,8 +250,8 @@ export class ScanTaskRunner {
   public dump(): Manifest {
     return {
       version: '2',
-      pluginConfig: this.pluginConfigMap,
       refMap: this.refMap,
+      extraPluginConfig: this.extraPluginConfig,
     };
   }
 }

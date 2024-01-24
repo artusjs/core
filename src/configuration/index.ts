@@ -5,9 +5,7 @@ import { mergeConfig } from '../loader/utils/merge';
 import compatibleRequire from '../utils/compatible_require';
 
 export type ConfigObject = Record<string, any>;
-export type FrameworkObject = { path: string; env: string };
 export type PackageObject = ConfigObject;
-export type FrameworkOptions = { env: string; unitName: string };
 
 @Injectable()
 export default class ConfigurationHandler {
@@ -19,28 +17,32 @@ export default class ConfigurationHandler {
     return env;
   }
 
-  public configStore: Map<string, ConfigObject> = new Map();
+  public configStore: Record<string, ConfigObject> = {};
 
   @Inject()
   private container: Container;
 
   getMergedConfig(): ConfigObject {
+    return this.mergeConfigByStore(this.configStore);
+  }
+
+  mergeConfigByStore(store: Record<string, ConfigObject>): ConfigObject {
     let envList: string[] = this.container.get(ArtusInjectEnum.EnvList, { noThrow: true });
     if (!envList) {
       envList = process.env[ARTUS_SERVER_ENV] ? [process.env[ARTUS_SERVER_ENV]] : [ARTUS_DEFAULT_CONFIG_ENV.DEV];
     }
-    const defaultConfig = this.configStore.get(ARTUS_DEFAULT_CONFIG_ENV.DEFAULT) ?? {};
-    const envConfigList = envList.map(currentEnv => (this.configStore.get(currentEnv) ?? {}));
+    const defaultConfig = store[ARTUS_DEFAULT_CONFIG_ENV.DEFAULT] ?? {};
+    const envConfigList = envList.map(currentEnv => (store[currentEnv] ?? {}));
     return mergeConfig(defaultConfig, ...envConfigList);
   }
 
   clearStore(): void {
-    this.configStore.clear();
+    this.configStore = {};
   }
 
   setConfig(env: string, config: ConfigObject) {
-    const storedConfig = this.configStore.get(env) ?? {};
-    this.configStore.set(env, mergeConfig(storedConfig, config));
+    const storedConfig = this.configStore[env] ?? {};
+    this.configStore[env] = mergeConfig(storedConfig, config);
   }
 
   async setConfigByFile(fileItem: ManifestItem) {
