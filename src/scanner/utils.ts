@@ -52,7 +52,7 @@ export const loadConfigItemList = async <T = ConfigObject>(configItemList: Manif
   }
 
   // Use temp Map to store config
-  const configEnvMap: Map<string, T> = new Map();
+  const configEnvMap: Record<string, T> = {};
   const stashedConfigStore = app.configurationHandler.configStore;
   app.configurationHandler.configStore = configEnvMap;
 
@@ -65,7 +65,7 @@ export const loadConfigItemList = async <T = ConfigObject>(configItemList: Manif
   // Restore config store
   app.configurationHandler.configStore = stashedConfigStore;
 
-  return Object.fromEntries(configEnvMap.entries());
+  return configEnvMap;
 };
 
 export const resolvePluginConfigItemRef = async (

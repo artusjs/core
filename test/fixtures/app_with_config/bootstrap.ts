@@ -7,9 +7,9 @@ async function main() {
   const app = new ArtusApplication();
   await app.load({
     version: "2",
-    pluginConfig: {},
     refMap: {
       _app: {
+        pluginConfig: {},
         items: [
           {
             path: path.resolve(__dirname, "./app"),

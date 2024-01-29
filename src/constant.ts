@@ -53,7 +53,6 @@ export const DEFAULT_LOADER_LIST_WITH_ORDER = [
   'exception',
   'exception-filter',
   'plugin-meta',
-  'framework-config',
   'package-json',
   'module',
   'lifecycle-hook-unit',

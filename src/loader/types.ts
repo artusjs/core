@@ -9,6 +9,7 @@ export interface RefMapItem {
   relativedPath?: string;
   packageVersion?: string;
   pluginMetadata?: PluginMetadata;
+  pluginConfig: PluginConfigEnvMap;
   items: ManifestItem[];
 }
 // Key: RefName => RefMapItem
@@ -16,8 +17,8 @@ export type RefMap = Record<string, RefMapItem>;
 
 export interface Manifest {
   version: '2';
-  pluginConfig: PluginConfigEnvMap;
   refMap: RefMap;
+  extraPluginConfig?: PluginConfig;
 }
 
 export interface ManifestItem<LoaderState = unknown> extends Record<string, any> {

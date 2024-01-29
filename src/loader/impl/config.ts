@@ -41,11 +41,6 @@ class ConfigLoader implements Loader {
   async load(item: ManifestItem) {
     const { namespace, env } = getConfigMetaFromFilename(item.filename);
     let configObj = await this.loadConfigFile(item);
-    // if (namespace === 'plugin') {
-    // configObj = {
-    //  plugin: await PluginFactory.formatPluginConfig(configObj, item),
-    // };
-    // } else
     if (namespace) {
       configObj = {
         [namespace]: configObj,

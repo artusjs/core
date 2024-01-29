@@ -5,9 +5,9 @@ const rootDir = path.resolve(__dirname, "./");
 
 export default {
   version: "2",
-  pluginConfig: {},
   refMap: {
     _app: {
+      pluginConfig: {},
       items: [
         {
           path: path.resolve(rootDir, "./test_service_a"),

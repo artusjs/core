@@ -5,9 +5,9 @@ const rootDir = path.resolve(__dirname, "./");
 
 const defaultManifest: Manifest = {
   version: "2",
-  pluginConfig: {},
   refMap: {
     _app: {
+      pluginConfig: {},
       items: [
         {
           path: path.resolve(rootDir, "./test_clazz"),
@@ -21,9 +21,9 @@ const defaultManifest: Manifest = {
 
 export const manifestWithCustomLogger: Manifest = {
   version: "2",
-  pluginConfig: {},
   refMap: {
     _app: {
+      pluginConfig: {},
       items: [
         ...defaultManifest.refMap._app.items,
         {

@@ -1,10 +1,9 @@
 import 'reflect-metadata';
 import os from 'os';
-import { ArtusScanner, ArtusApplication, Manifest, RefMap } from '../../src';
+import { ArtusScanner, ArtusApplication, Manifest, RefMap, PluginConfig } from '../../src';
 
 export const DEFAULT_EMPTY_MANIFEST: Manifest = {
   version: '2',
-  pluginConfig: {},
   refMap: {},
 };
 
@@ -29,16 +28,24 @@ export function formatManifestForWindowsTest(manifest: Manifest) {
   }
   // A regexp for convert win32 path delimiter to POSIX style
   const pathReg = /\\/g;
-  for (const pluginConfig of Object.values(manifest.pluginConfig)) {
-    for (const pluginConfigItem of Object.values(pluginConfig)) {
-      if (!pluginConfigItem.refName) {
-        continue;
-      }
-      pluginConfigItem.refName = pluginConfigItem.refName.replace(pathReg, '/');
-    }
-  }
   const newRefMap: RefMap = {};
+  const handlePluginConfig = (pluginConfig: PluginConfig) => {
+    return Object.fromEntries(Object.entries(pluginConfig).map(([pluginName, pluginConfigItem]) => {
+      if (pluginConfigItem.refName) {
+        pluginConfigItem.refName = pluginConfigItem.refName.replace(pathReg, '/');
+      }
+      return [pluginName, pluginConfigItem];
+    }));
+  };
   for (const [refName, refItem] of Object.entries(manifest.refMap)) {
+    for (const pluginConfig of Object.values(refItem.pluginConfig)) {
+      for (const pluginConfigItem of Object.values(pluginConfig)) {
+        if (!pluginConfigItem.refName) {
+          continue;
+        }
+        pluginConfigItem.refName = pluginConfigItem.refName.replace(pathReg, '/');
+      }
+    }
     newRefMap[refName.replace(pathReg, '/')] = {
       ...refItem,
       relativedPath: refItem.relativedPath.replace(pathReg, '/'),
@@ -46,8 +53,12 @@ export function formatManifestForWindowsTest(manifest: Manifest) {
         ...item,
         path: item.path.replace(pathReg, '/'),
       })),
+      pluginConfig: Object.fromEntries(Object.entries(refItem.pluginConfig).map(
+        ([env, pluginConfig]) => [env, handlePluginConfig(pluginConfig)],
+      )),
     };
   }
   manifest.refMap = newRefMap;
+  manifest.extraPluginConfig = handlePluginConfig(manifest.extraPluginConfig);
   return manifest;
 }
