@@ -4,6 +4,7 @@ import { ArtusInjectEnum } from './constant';
 import { ArtusStdError } from './exception';
 import { HookFunction, LifecycleManager } from './lifecycle';
 import { LoaderFactory, Manifest } from './loader';
+import { mergeConfig } from './loader/utils/merge';
 import { Application, ApplicationInitOptions } from './types';
 import ConfigurationHandler from './configuration';
 import { Logger, LoggerType } from './logger';
@@ -114,7 +115,7 @@ export class ArtusApplication implements Application {
     const newConfig = this.configurationHandler.getMergedConfig() ?? {};
     this.container.set({
       id: ArtusInjectEnum.Config,
-      value: Object.assign(oldConfig, newConfig),
+      value: mergeConfig(oldConfig, newConfig),
     });
   }
 }
