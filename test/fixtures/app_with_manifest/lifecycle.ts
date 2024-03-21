@@ -2,12 +2,12 @@ import { LifecycleHookUnit, ApplicationLifecycle, LifecycleHook, Inject, ArtusAp
 
 @LifecycleHookUnit()
 export default class MyLifecycle implements ApplicationLifecycle {
-    @Inject(ArtusInjectEnum.Application)
-    private app: ArtusApplication;
+  @Inject(ArtusInjectEnum.Application)
+  private app: ArtusApplication;
 
-    @LifecycleHook()
-    public async configWillLoad() {
-        this.app.config.httpConfig = this.app.config.httpConfig ?? {};
-        this.app.config.httpConfig.key1 = 'value1';
-    }
+  @LifecycleHook()
+  public async configWillLoad() {
+    this.app.config.httpConfig = this.app.config.httpConfig ?? {};
+    this.app.config.httpConfig.key1 = 'value1';
+  }
 }

@@ -1,6 +1,6 @@
 
 export default {
-    httpConfig: {
-        port: 3000,
-    }
-}
+  httpConfig: {
+    port: 3000,
+  },
+};
