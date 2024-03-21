@@ -1,0 +1,49 @@
+{
+  "version": "2",
+  "refMap": {
+    "_app": {
+      "relativedPath": "",
+      "pluginConfig": {},
+      "items": [
+        {
+          "path": "config/config.default",
+          "extname": ".ts",
+          "filename": "config.default.ts",
+          "loader": "config",
+          "source": "app",
+          "unitName": "_app",
+          "loaderState": {
+            "exportNames": []
+          }
+        },
+        {
+          "path": "controller/home",
+          "extname": ".ts",
+          "filename": "home.ts",
+          "loader": "module",
+          "source": "app",
+          "unitName": "_app",
+          "loaderState": {
+            "exportNames": [
+              "default"
+            ]
+          }
+        },
+        {
+          "path": "lifecycle",
+          "extname": ".ts",
+          "filename": "lifecycle.ts",
+          "loader": "lifecycle-hook-unit",
+          "source": "app",
+          "unitName": "_app",
+          "loaderState": {
+            "exportNames": [
+              "default"
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "extraPluginConfig": {}
+}

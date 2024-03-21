@@ -16,4 +16,13 @@ describe("test/config.test.ts", () => {
       process.env[ARTUS_SERVER_ENV] = undefined;
     });
   });
+
+
+  describe("app with manifest should load config ok", () => {
+    it("should load config ok", async () => {
+      const { main } = require("./fixtures/app_with_manifest/bootstrap");
+      const app = await main();
+      expect(app.config).toEqual({ httpConfig: { key1: 'value1', port: 3000 }, plugin: {} });
+    });
+  });
 });
