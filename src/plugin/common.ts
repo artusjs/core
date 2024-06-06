@@ -73,7 +73,7 @@ export async function getInlinePackageEntryPath(
     } else if (typeof pkgJson.exports === "string") {
       entryFilePath = pkgJson.exports;
     } else if (pkgJson.exports?.["."]) {
-      entryFilePath = pkgJson.exports["."];
+      entryFilePath = pkgJson.exports["."].require;
     }
   }
   if (!entryFilePath && pkgJson.main) {
